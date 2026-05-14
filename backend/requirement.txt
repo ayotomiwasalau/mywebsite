@@ -1,0 +1,6 @@
+fastapi[standard]
+pymongo
+boto3
+mangum
+pytest
+httpx

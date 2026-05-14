@@ -1,0 +1,104 @@
+[
+  {
+    "id": "data-streaming",
+    "title": "Data Streaming",
+    "certificateUrl": "https://www.udacity.com/certificate/e/223b0c86-11fe-11ef-b31e-1f26af0ef650",
+    "imageSrc": "/cert-img/data-stream.png"
+  },
+  {
+    "id": "agentic-ai",
+    "title": "Agentic AI",
+    "certificateUrl": "https://www.udacity.com/certificate/e/4b2f7d32-5c1e-11f0-a4e7-57c85a4fb9ae",
+    "imageSrc": "/cert-img/agentic.png"
+  },
+  {
+    "id": "cloud-native-app",
+    "title": "Cloud Native Application Architecture",
+    "certificateUrl": "https://www.udacity.com/certificate/e/350db32a-c98a-11ee-9ac4-0f194ef54753",
+    "imageSrc": "/cert-img/cloud-native.png"
+  },
+  {
+    "id": "data-architecture",
+    "title": "Data Architecture",
+    "certificateUrl": "https://www.udacity.com/certificate/e/978b69aa-d18d-11ef-b1fe-77e78efebfa1",
+    "imageSrc": "/cert-img/data-arch.png"
+  },
+  {
+    "id": "generative-ai",
+    "title": "Generative AI",
+    "certificateUrl": "https://www.udacity.com/certificate/e/dde07064-2f6a-11ef-bd9c-934a2b7faf31",
+    "imageSrc": "/cert-img/gen-ai.png"
+  },
+  {
+    "id": "cloud-devops",
+    "title": "Cloud DevOps",
+    "certificateUrl": "https://www.udacity.com/certificate/e/9a02d4b0-11fe-11ef-8d49-d3fe58e28618",
+    "imageSrc": "/cert-img/cloud-devops.png"
+  },
+  {
+    "id": "fullstack",
+    "title": "Full Stack Web Developer",
+    "certificateUrl": "https://www.udacity.com/certificate/e/8fdd145a-59b1-11ea-8a65-0f7d94f042c9",
+    "imageSrc": "/cert-img/full-stack.png"
+  },
+  {
+    "id": "deep-learning",
+    "title": "Deep Learning",
+    "certificateUrl": "https://www.udacity.com/certificate/e/bc0455b4-c791-11ee-86fa-57f55bb487bf",
+    "imageSrc": "/cert-img/deep-learning.png"
+  },
+  {
+    "id": "data-engineering",
+    "title": "Data Engineering Nanodegree",
+    "certificateUrl": "https://www.udacity.com/certificate/e/c3e89d24-59b0-11ea-8167-17ad97442fe4",
+    "imageSrc": "/cert-img/data-eng.png"
+  },
+  {
+    "id": "machine-learning-devops",
+    "title": "Machine Learning DevOps",
+    "certificateUrl": "https://www.udacity.com/certificate/e/85b3a70e-d743-11ef-9ad9-c7bfef194b2f",
+    "imageSrc": "/cert-img/machine-learnig-ops.png"
+  },
+  {
+    "id": "cpp",
+    "title": "C++",
+    "certificateUrl": "https://www.udacity.com/certificate/e/af4ce30a-0f97-11f0-b1be-93ca9eeaf497",
+    "imageSrc": "/cert-img/cpp.png"
+  },
+  {
+    "id": "data-scientist",
+    "title": "Data Scientist",
+    "certificateUrl": "https://www.udacity.com/certificate/e/56608076-d187-11e8-949f-3b75dd1961cc",
+    "imageSrc": "/cert-img/data-scientist.png"
+  },
+  {
+    "id": "digital-marketing",
+    "title": "Digital Marketing",
+    "certificateUrl": "https://www.udacity.com/certificate/e/e2b0d838-11fe-11ef-8718-b33604a85f6b",
+    "imageSrc": "/cert-img/digital-mrkt.png"
+  },
+  {
+    "id": "embedded-systems",
+    "title": "Embedded Systems",
+    "certificateUrl": "https://www.udacity.com/certificate/e/85b3a70e-d743-11ef-9ad9-c7bfef194b2f",
+    "imageSrc": "/cert-img/embedded-sys.png"
+  },
+  {
+    "id": "predictive-analytics",
+    "title": "Predictive Analytics for Business",
+    "certificateUrl": "https://www.udacity.com/certificate/e/fd5d5602-b222-11e9-90f3-63dee3dbbbc8",
+    "imageSrc": "/cert-img/pred-analytics.png"
+  },
+  {
+    "id": "mcp",
+    "title": "Model Context Protocol",
+    "certificateUrl": "https://www.udacity.com/certificate/e/8505b7be-d848-11f0-aebe-27c2cea77c21",
+    "imageSrc": "/cert-img/mcp.png"
+  },
+  {
+    "id": "blockchain",
+    "title": "Blockchain",
+    "certificateUrl": "https://www.udacity.com/certificate/e/77f8ff12-38ae-11ef-8a34-f70f84d529ca",
+    "imageSrc": "/cert-img/blockchain.png"
+  }
+]

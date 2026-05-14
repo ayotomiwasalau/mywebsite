@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/posts/:page*",
+        "destination": "/posts/:page",
+        "type": 301
+      },
+      {
+        "source": "/about",
+        "destination": "/about.html"
+      },
+      {
+        "source": "/content",
+        "destination": "/content.html"
+      },
+      {
+        "source": "/uploads",
+        "destination": "/uploads.html"
+      }
+    ],
+    "cleanUrls": true
+  }
+}

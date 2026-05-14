@@ -1,0 +1,24 @@
+project_name = "portfolio-blog"
+environment  = "prod"
+aws_region   = "us-east-1"
+
+domain_name             = "example.com"
+additional_domain_names = ["www.example.com"]
+hosted_zone_name        = "example.com"
+
+lambda_image_tag = "latest"
+api_version      = "v1"
+
+cors_allowed_origins = [
+  "https://example.com",
+  "https://www.example.com",
+]
+
+lambda_environment_variables = {
+  SKIP_JSON_SEED                  = "true"
+  GITHUB_REPOSITORY               = "owner/repo"
+  GITHUB_BRANCH                   = "main"
+  GITHUB_MARKDOWN_BASE_PATH       = ""
+  GITHUB_MARKDOWN_PUBLIC_BASE_URL = "https://raw.githubusercontent.com/owner/repo/main"
+  # GITHUB_TOKEN                  = "set-this-in-a-local-tfvars-file-or-secret-store"
+}

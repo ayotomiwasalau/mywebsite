@@ -1,0 +1,23 @@
+[
+  {
+    "id": "oeo4F-EUlh0",
+    "title": "ChatPDFDoc: A question data answering RAG (Retrieval Augmented Generation) tool",
+    "description": "Retrieval-augmented Q&A over documents—walkthrough on YouTube.",
+    "videoUrl": "https://www.youtube.com/watch?v=oeo4F-EUlh0",
+    "thumbnailSrc": "/work-media/oeo4F-EUlh0.jpg"
+  },
+  {
+    "id": "kLybSiYuX5c",
+    "title": "Using Kafka Confluent Python SDK to setup producer and consumer data streams",
+    "description": "Producer and consumer patterns with the Confluent Python SDK.",
+    "videoUrl": "https://www.youtube.com/watch?v=kLybSiYuX5c",
+    "thumbnailSrc": "/work-media/kLybSiYuX5c.jpg"
+  },
+  {
+    "id": "7FKkXiMRV9E",
+    "title": "Learn how to build and deploy big data jobs to production on AWS EMR with Spark",
+    "description": "Spark on EMR for production big data pipelines on AWS.",
+    "videoUrl": "https://www.youtube.com/watch?v=7FKkXiMRV9E",
+    "thumbnailSrc": "/work-media/7FKkXiMRV9E.jpg"
+  }
+]
