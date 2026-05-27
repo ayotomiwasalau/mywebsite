@@ -12,7 +12,7 @@
       "retrieval",
       "nlp"
     ],
-    "href": "/posts/chatpdfdoc-a-data-answering-rag",
+    "href": "/work/blogs/chatpdfdoc-a-data-answering-rag",
     "filepath_md": "/markdowns/blog/chatpdfdoc-a-data-answering-rag.md",
     "created_on": "2025-04-10T12:00:00Z",
     "updated_on": "2025-04-10T12:00:00Z",
@@ -32,7 +32,7 @@
       "devops",
       "ci-cd"
     ],
-    "href": "/posts/containers-and-kubernetes-notes",
+    "href": "/work/blogs/containers-and-kubernetes-notes",
     "filepath_md": "/markdowns/blog/containers-and-kubernetes-notes.md",
     "created_on": "2025-03-12T09:00:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -51,7 +51,7 @@
       "mlflow",
       "wandb"
     ],
-    "href": "/posts/mlflow-and-wandb-tracking",
+    "href": "/work/blogs/mlflow-and-wandb-tracking",
     "filepath_md": "/markdowns/blog/mlflow-and-wandb-tracking.md",
     "created_on": "2025-02-20T18:30:00Z",
     "updated_on": "2025-02-20T18:30:00Z",
@@ -71,7 +71,7 @@
       "emr",
       "data-engineering"
     ],
-    "href": "/posts/big-data-jobs-on-emr",
+    "href": "/work/blogs/big-data-jobs-on-emr",
     "filepath_md": "/markdowns/blog/big-data-jobs-on-emr.md",
     "created_on": "2025-01-24T12:00:00Z",
     "updated_on": "2025-01-24T12:00:00Z",
@@ -90,7 +90,7 @@
       "snowflake",
       "analytics"
     ],
-    "href": "/posts/snowflake-dwh-modeling",
+    "href": "/work/blogs/snowflake-dwh-modeling",
     "filepath_md": "/markdowns/blog/snowflake-dwh-modeling.md",
     "created_on": "2024-12-18T16:00:00Z",
     "updated_on": "2024-12-18T16:00:00Z",
@@ -110,7 +110,7 @@
       "streaming",
       "confluent"
     ],
-    "href": "/posts/kafka-python-client-patterns",
+    "href": "/work/blogs/kafka-python-client-patterns",
     "filepath_md": "/markdowns/blog/kafka-python-client-patterns.md",
     "created_on": "2024-11-19T11:00:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -130,7 +130,7 @@
       "hadoop",
       "big-data"
     ],
-    "href": "/posts/distributed-computing-foundations",
+    "href": "/work/blogs/distributed-computing-foundations",
     "filepath_md": "/markdowns/blog/distributed-computing-foundations.md",
     "created_on": "2024-10-05T10:00:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -148,7 +148,7 @@
       "dbt",
       "analytics-engineering"
     ],
-    "href": "/posts/dbt-workflow-basics",
+    "href": "/work/blogs/dbt-workflow-basics",
     "filepath_md": "/markdowns/blog/dbt-workflow-basics.md",
     "created_on": "2024-09-14T08:00:00Z",
     "updated_on": "2024-09-14T08:00:00Z",
@@ -168,7 +168,7 @@
       "python",
       "mnist"
     ],
-    "href": "/posts/metaflow-mnist-walkthrough",
+    "href": "/work/blogs/metaflow-mnist-walkthrough",
     "filepath_md": "/markdowns/blog/metaflow-mnist-walkthrough.md",
     "created_on": "2024-08-08T13:30:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -188,7 +188,7 @@
       "real-time",
       "analytics"
     ],
-    "href": "/posts/streaming-as-a-service",
+    "href": "/work/blogs/streaming-as-a-service",
     "filepath_md": "/markdowns/blog/streaming-as-a-service.md",
     "created_on": "2024-07-03T12:00:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -209,7 +209,7 @@
       "data-engineering",
       "sports"
     ],
-    "href": "/posts/club-football-micro-event-data-lake",
+    "href": "/work/blogs/club-football-micro-event-data-lake",
     "filepath_md": "/markdowns/blog/club-football-micro-event-data-lake.md",
     "created_on": "2024-07-03T12:00:00Z",
     "updated_on": "2024-07-03T12:00:00Z",
@@ -229,7 +229,7 @@
       "streaming",
       "cli"
     ],
-    "href": "/posts/confluent-kafka-cli-publish-subscribe",
+    "href": "/work/blogs/confluent-kafka-cli-publish-subscribe",
     "filepath_md": "/markdowns/blog/confluent-kafka-cli-publish-subscribe.md",
     "created_on": "2024-11-12T11:00:00Z",
     "updated_on": "2025-05-21T12:00:00Z",
@@ -249,7 +249,7 @@
       "analytics",
       "dashboards"
     ],
-    "href": "/posts/data-visualization-with-tableau",
+    "href": "/work/blogs/data-visualization-with-tableau",
     "filepath_md": "/markdowns/blog/data-visualization-with-tableau.md",
     "created_on": "2024-06-15T10:00:00Z",
     "updated_on": "2025-05-26T12:00:00Z",
@@ -269,7 +269,7 @@
       "automation",
       "reporting"
     ],
-    "href": "/posts/year-end-report-generation-uipath-rpa",
+    "href": "/work/blogs/year-end-report-generation-uipath-rpa",
     "filepath_md": "/markdowns/blog/year-end-report-generation-uipath-rpa.md",
     "created_on": "2019-08-13T10:00:00Z",
     "updated_on": "2025-05-26T12:00:00Z",

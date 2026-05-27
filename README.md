@@ -92,6 +92,3 @@ c++ - https://www.udacity.com/certificate/e/af4ce30a-0f97-11f0-b1be-93ca9eeaf497
 - add a logout page - done
 - connect backend to fe - done
 
-- notification
-- monitoring
-- auth

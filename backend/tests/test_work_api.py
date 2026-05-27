@@ -23,7 +23,7 @@ def _blog(slug: str, day: int) -> dict:
         "header_img_alt": "b",
         "description": "d",
         "tags": [],
-        "href": f"/posts/{slug}",
+        "href": f"/work/blogs/{slug}",
         "filepath_md": "/b.md",
         "created_on": _dt(day),
         "updated_on": _dt(day),
@@ -43,14 +43,14 @@ def _project(slug: str, day: int) -> dict:
         "header_img_alt": "p",
         "description": "d",
         "tags": [],
-        "href": f"/projects/{slug}",
+        "href": f"/work/projects/{slug}",
         "filepath_md": "/p.md",
         "created_on": _dt(day),
         "updated_on": _dt(day),
         "feature": False,
         "feat_order": None,
         "shares": 0,
-        "blog_url": "/posts/x",
+        "blog_url": "/work/blogs/x",
     }
 
 

@@ -20,24 +20,22 @@ from .utils import (
 )
 
 
-def _default_public_root() -> Path:
-    """``backend/src/filedisk`` → repo root → ``frontend/public``."""
-    here = Path(__file__).resolve()
-    repo_root = here.parents[3]
-    return repo_root / "frontend" / "public"
+def _resolve_public_root(public_root: Path | str | None = None) -> Path:
+    if public_root is not None:
+        return Path(public_root).resolve()
+    raw = os.environ.get("PUBLIC_ROOT", "frontend/public").strip()
+    path = Path(raw).expanduser()
+    if path.is_absolute():
+        return path.resolve()
+    repo_root = Path(__file__).resolve().parents[3]
+    return (repo_root / path).resolve()
 
 
 class LocalFileDisk:
     """Store markdown/images on local filesystem inside ``{public_root}``."""
 
     def __init__(self, public_root: Path | str | None = None) -> None:
-        raw = os.environ.get("MARKDOWN_PUBLIC_ROOT", "").strip()
-        if public_root is not None:
-            self._root = Path(public_root).resolve()
-        elif raw:
-            self._root = Path(raw).expanduser().resolve()
-        else:
-            self._root = _default_public_root()
+        self._root = _resolve_public_root(public_root)
 
     def _write(self, subdir: str, url_prefix: str, basename: str, content: str) -> str:
         safe = assert_allowed_markdown_basename(basename)

@@ -24,12 +24,12 @@ def _project_json(
         "header_img_alt": "alt",
         "description": "Project desc",
         "tags": ["ml"],
-        "href": "/projects/my-project",
+        "href": "/work/projects/my-project",
         "filepath_md": "/p.md",
         "created_on": now,
         "updated_on": now,
         "shares": 0,
-        "blog_url": "/posts/example",
+        "blog_url": "/work/blogs/example",
     }
 
 

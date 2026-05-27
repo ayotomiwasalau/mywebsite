@@ -124,10 +124,11 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 
 
 
-* chatpdfdoc - blog & project
+
 * confluent kafka - using python sdk to stream data - blog
 * confluent kafka - using cli to pub and sub - blog
 
+* chatpdfdoc - blog & project
 * data warehousing with snowflake - project & blog
 * dbt - project & blog
 * how to create and deploy job on emr - project & blog
@@ -140,7 +141,6 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 * container,k8s, and ci/cd - blog 
 
 * club-football match - project & blog
-
 * stock price prediction app - project
 * movie recommender system - project
 * Music song datapipelines - project
@@ -149,4 +149,26 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 * auth app deployment - project
 * Data streaming application - project
 * Data visualization - blog
-* Report generation - blog
+* Report generation - blog 
+
+
+
+* confluent kafka - using python sdk to stream data 
+* confluent kafka - using cli to pub and sub 
+
+* metaflow - data science workflow 
+
+* distributed computing
+* technology as a service
+* container,k8s, and ci/cd 
+
+* Data visualization
+* Report generation 
+
+
+* chatpdfdoc 
+* data warehousing with snowflake 
+* dbt 
+* how to create and deploy job on emr 
+* building reproducible pipeline 
+* club-football match 

@@ -66,4 +66,4 @@ Example analytics in `report.sql` join review facts with weather dimensions to e
 ## Links
 
 - [GitHub — datawarehousing](https://github.com/ayotomiwasalau/datawarehousing)
-- [Blog — Snowflake DWH modeling](/posts/snowflake-dwh-modeling)
+- [Blog — Snowflake DWH modeling](/work/blogs/snowflake-dwh-modeling)

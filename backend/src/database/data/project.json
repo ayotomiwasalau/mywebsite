@@ -12,12 +12,12 @@
       "redshift",
       "data-engineering"
     ],
-    "href": "/projects/building-micro-event-data-lake-spark-airflow-redshift",
+    "href": "/work/projects/building-micro-event-data-lake-spark-airflow-redshift",
     "filepath_md": "/markdowns/project/building-micro-event-data-lake-spark-airflow-redshift.md",
     "created_on": "2024-07-03T12:00:00Z",
     "updated_on": "2024-07-03T12:00:00Z",
     "shares": 0,
-    "blog_url": "/posts/club-football-micro-event-data-lake"
+    "blog_url": "/work/blogs/club-football-micro-event-data-lake"
   },
   {
     "id": "project-002",
@@ -32,7 +32,7 @@
       "python",
       "machine-learning"
     ],
-    "href": "/projects/forecasting-stock-prices-sarima-flask",
+    "href": "/work/projects/forecasting-stock-prices-sarima-flask",
     "filepath_md": "/markdowns/project/forecasting-stock-prices-sarima-flask.md",
     "created_on": "2024-05-02T12:00:00Z",
     "updated_on": "2024-05-02T12:00:00Z",
@@ -52,12 +52,12 @@
       "fastapi",
       "chromadb"
     ],
-    "href": "/projects/building-chatpdfdoc-rag-fastapi-chromadb",
+    "href": "/work/projects/building-chatpdfdoc-rag-fastapi-chromadb",
     "filepath_md": "/markdowns/project/building-chatpdfdoc-rag-fastapi-chromadb.md",
     "created_on": "2025-04-10T12:00:00Z",
     "updated_on": "2025-04-10T12:00:00Z",
     "shares": 0,
-    "blog_url": "/posts/chatpdfdoc-a-data-answering-rag"
+    "blog_url": "/work/blogs/chatpdfdoc-a-data-answering-rag"
   },
   {
     "id": "project-004",
@@ -71,7 +71,7 @@
       "java",
       "streaming"
     ],
-    "href": "/projects/streaming-pos-terminal-data-kafka-java",
+    "href": "/work/projects/streaming-pos-terminal-data-kafka-java",
     "filepath_md": "/markdowns/project/streaming-pos-terminal-data-kafka-java.md",
     "created_on": "2024-06-12T09:00:00Z",
     "updated_on": "2024-06-12T09:00:00Z",
@@ -90,7 +90,7 @@
       "aws",
       "redshift"
     ],
-    "href": "/projects/automating-music-etl-airflow-s3-redshift",
+    "href": "/work/projects/automating-music-etl-airflow-s3-redshift",
     "filepath_md": "/markdowns/project/automating-music-etl-airflow-s3-redshift.md",
     "created_on": "2024-03-16T08:00:00Z",
     "updated_on": "2024-03-16T08:00:00Z",
@@ -109,7 +109,7 @@
       "emr",
       "aws"
     ],
-    "href": "/projects/processing-song-logs-spark-emr-s3",
+    "href": "/work/projects/processing-song-logs-spark-emr-s3",
     "filepath_md": "/markdowns/project/processing-song-logs-spark-emr-s3.md",
     "created_on": "2024-02-10T12:00:00Z",
     "updated_on": "2024-02-10T12:00:00Z",
@@ -129,7 +129,7 @@
       "docker",
       "cicd"
     ],
-    "href": "/projects/deploying-flask-jwt-api-kubernetes-eks",
+    "href": "/work/projects/deploying-flask-jwt-api-kubernetes-eks",
     "filepath_md": "/markdowns/project/deploying-flask-jwt-api-kubernetes-eks.md",
     "created_on": "2024-01-11T09:00:00Z",
     "updated_on": "2024-01-11T09:00:00Z",
@@ -148,7 +148,7 @@
       "python",
       "recommendation-systems"
     ],
-    "href": "/projects/building-movie-recommender-funksvd-python",
+    "href": "/work/projects/building-movie-recommender-funksvd-python",
     "filepath_md": "/markdowns/project/building-movie-recommender-funksvd-python.md",
     "created_on": "2023-12-03T13:30:00Z",
     "updated_on": "2023-12-03T13:30:00Z",
@@ -167,7 +167,7 @@
       "python",
       "api"
     ],
-    "href": "/projects/building-jwt-fun-api-flask-heroku",
+    "href": "/work/projects/building-jwt-fun-api-flask-heroku",
     "filepath_md": "/markdowns/project/building-jwt-fun-api-flask-heroku.md",
     "created_on": "2023-11-19T18:30:00Z",
     "updated_on": "2023-11-19T18:30:00Z",
@@ -187,12 +187,12 @@
       "sql",
       "analytics"
     ],
-    "href": "/projects/building-snowflake-data-warehouse-yelp-climate",
+    "href": "/work/projects/building-snowflake-data-warehouse-yelp-climate",
     "filepath_md": "/markdowns/project/building-snowflake-data-warehouse-yelp-climate.md",
     "created_on": "2024-12-18T16:00:00Z",
     "updated_on": "2024-12-18T16:00:00Z",
     "shares": 0,
-    "blog_url": "/posts/snowflake-dwh-modeling"
+    "blog_url": "/work/blogs/snowflake-dwh-modeling"
   },
   {
     "id": "project-011",
@@ -211,7 +211,7 @@
     "created_on": "2024-09-14T08:00:00Z",
     "updated_on": "2024-09-14T08:00:00Z",
     "shares": 0,
-    "blog_url": "/posts/dbt-workflow-basics"
+    "blog_url": "/work/blogs/dbt-workflow-basics"
   },
   {
     "id": "project-012",
@@ -226,12 +226,12 @@
       "aws",
       "data-engineering"
     ],
-    "href": "/projects/deploying-spark-etl-jobs-aws-emr",
+    "href": "/work/projects/deploying-spark-etl-jobs-aws-emr",
     "filepath_md": "/markdowns/project/deploying-spark-etl-jobs-aws-emr.md",
     "created_on": "2025-01-24T12:00:00Z",
     "updated_on": "2025-01-24T12:00:00Z",
     "shares": 0,
-    "blog_url": "/posts/big-data-jobs-on-emr"
+    "blog_url": "/work/blogs/big-data-jobs-on-emr"
   },
   {
     "id": "project-013",
@@ -251,6 +251,6 @@
     "created_on": "2025-02-20T18:30:00Z",
     "updated_on": "2025-02-20T18:30:00Z",
     "shares": 0,
-    "blog_url": "/posts/mlflow-and-wandb-tracking"
+    "blog_url": "/work/blogs/mlflow-and-wandb-tracking"
   }
 ]

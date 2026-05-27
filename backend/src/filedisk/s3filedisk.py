@@ -48,7 +48,10 @@ class S3FileDisk:
         public_base = os.environ.get("MARKDOWN_CDN_BASE_URL", "").strip()
         if not public_base:
             raise ValueError("MARKDOWN_CDN_BASE_URL is required when FILE_DISK_BACKEND=s3")
-        prefix = os.environ.get("AWS_S3_MARKDOWN_KEY_PREFIX", "").strip()
+        prefix = (
+            os.environ.get("AWS_S3_MARKDOWN_KEY_PREFIX", "").strip()
+            or os.environ.get("PUBLIC_ROOT", "frontend/public").strip().strip("/")
+        )
         return cls(bucket=bucket, public_base_url=public_base, key_prefix=prefix)
 
     def _object_key(self, subdir: str, filename: str) -> str:

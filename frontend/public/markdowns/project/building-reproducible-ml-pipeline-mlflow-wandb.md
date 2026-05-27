@@ -75,4 +75,4 @@ mlflow run . -P hydra_options="modeling.random_forest.n_estimators=10 etl.min_pr
 ## Links
 
 - [GitHub — Rental-ml-pipeline](https://github.com/ayotomiwasalau/Rental-ml-pipeline)
-- [Blog — MLflow & W&B experiment tracking](/posts/mlflow-and-wandb-tracking)
+- [Blog — MLflow & W&B experiment tracking](/work/blogs/mlflow-and-wandb-tracking)

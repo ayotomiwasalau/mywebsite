@@ -66,4 +66,4 @@ Decouple into object storage (S3) for raw files, Airflow/Spark for batch ingesti
 - [GitHub — chatpdfdoc](https://github.com/ayotomiwasalau/chatpdfdoc)
 - [Live app](https://chatpdfdoc-46sy.onrender.com)
 - [API docs](https://chatpdfdoc-46sy.onrender.com/docs)
-- [Blog — ChatPDFDoc RAG walkthrough](/posts/chatpdfdoc-a-data-answering-rag)
+- [Blog — ChatPDFDoc RAG walkthrough](/work/blogs/chatpdfdoc-a-data-answering-rag)

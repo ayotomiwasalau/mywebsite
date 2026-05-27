@@ -73,7 +73,7 @@ Open Confluent Control Center to view topic throughput, partition lag, and messa
 
 ## What's next
 
-Once pub/sub works from the CLI, the same topic can be accessed from application code. See [Confluent Kafka: Streaming Data with the Python SDK](/posts/kafka-python-client-patterns) for async producer and consumer setup with the Python client.
+Once pub/sub works from the CLI, the same topic can be accessed from application code. See [Confluent Kafka: Streaming Data with the Python SDK](/work/blogs/kafka-python-client-patterns) for async producer and consumer setup with the Python client.
 
 ## References
 

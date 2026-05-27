@@ -1,4 +1,4 @@
-![](/images/blog/containers-and-kubernetes-notes/containers_kubernetes.webp)
+![](/images/blog/containers-and-kubernetes-notes/kubernetes-kubelet.png)
 
 For data scientists and ML engineers who are interested in deploying statistical/machine learning models into software applications — i.e. building an AI service or product — it is important to know these concepts. You would understand what it means to deploy your models as a container, run several container instances, and push regular updates and deployments continuously.
 
@@ -13,6 +13,8 @@ This is where **Containers** come to the rescue.
 > ##### Containerization simply means deploying your app in a container. The dependencies and environmental variables are defined within the container, so when the container is run in a new environment, it simply declares and installs all the required environmental variables and dependencies the app needs to function. This is the concept of containerization.
 
 Popular container companies such as [Docker](https://twitter.com/Docker), whose containers are defined in Dockerfiles, rkt, and Linux containers.
+
+![](/images/blog/containers-and-kubernetes-notes/containerization.png)
 
 > Apart from deploying the whole app as a container, service components of the app can be grouped and each deployed as a container. This is known as microservices. This means grouping similar service endpoints together and deploying them.
 > ex. An app that has a Payment service feature and AI service features needs to be deployed — these services can be deployed individually in their own containers and run. There are many benefits of a microservice architecture. You can check it up.

@@ -14,13 +14,16 @@ def get_file_disk() -> FileDiskInterface:
     """
     ``FILE_DISK_BACKEND`` controls image storage:
 
-    - ``local`` (default): write under ``MARKDOWN_PUBLIC_ROOT`` or ``frontend/public``.
-    - ``s3``: use ``S3FileDisk`` for image uploads.
+    - ``local`` (default): write under ``PUBLIC_ROOT`` or ``frontend/public``.
+    - ``s3``: use ``S3FileDisk`` for image uploads under
+      ``AWS_S3_MARKDOWN_KEY_PREFIX`` or ``PUBLIC_ROOT``.
 
     ``MARKDOWN_FILE_BACKEND`` controls markdown storage:
 
     - ``local`` (default): use the same local disk implementation.
-    - ``github``: commit markdown files to GitHub and delegate images to ``FILE_DISK_BACKEND``.
+    - ``github``: commit markdown files to GitHub under
+      ``GITHUB_MARKDOWN_BASE_PATH`` or ``PUBLIC_ROOT``, and delegate images to
+      ``FILE_DISK_BACKEND``.
     """
     image_kind = os.environ.get("FILE_DISK_BACKEND", "local").lower().strip()
     markdown_kind = os.environ.get("MARKDOWN_FILE_BACKEND", image_kind).lower().strip()

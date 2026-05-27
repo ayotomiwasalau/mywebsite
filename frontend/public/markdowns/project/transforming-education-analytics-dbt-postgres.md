@@ -73,4 +73,4 @@ dbt docs generate
 ## Links
 
 - [GitHub — dbt-transformation](https://github.com/ayotomiwasalau/dbt-transformation)
-- [Blog — dbt workflow basics](/posts/dbt-workflow-basics)
+- [Blog — dbt workflow basics](/work/blogs/dbt-workflow-basics)

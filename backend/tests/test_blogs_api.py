@@ -24,7 +24,7 @@ def _blog_json(
         "header_img_alt": "alt",
         "description": "Desc",
         "tags": ["a"],
-        "href": "/posts/my-post",
+        "href": "/work/blogs/my-post",
         "filepath_md": "/x.md",
         "created_on": now,
         "updated_on": now,

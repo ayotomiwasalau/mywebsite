@@ -99,4 +99,4 @@ Full field-level definitions live in the [GitHub README](https://github.com/ayot
 
 - [GitHub — club_football_data_lake](https://github.com/ayotomiwasalau/club_football_data_lake)
 - [Kaggle — Club Football Event Data](https://www.kaggle.com/datasets/ayotomiwasalau/club-football-event-data)
-- [Related write-up — Club football micro-event data lake](/posts/club-football-micro-event-data-lake)
+- [Related write-up — Club football micro-event data lake](/work/blogs/club-football-micro-event-data-lake)

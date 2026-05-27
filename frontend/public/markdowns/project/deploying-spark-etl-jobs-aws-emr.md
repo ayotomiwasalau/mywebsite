@@ -70,4 +70,4 @@ Repo includes `cli_deploy.sh`, `python_deploy.py`, and the exploratory `data-not
 ## Links
 
 - [GitHub — big-data-jobs](https://github.com/ayotomiwasalau/big-data-jobs)
-- [Blog — Big data jobs on EMR](/posts/big-data-jobs-on-emr)
+- [Blog — Big data jobs on EMR](/work/blogs/big-data-jobs-on-emr)

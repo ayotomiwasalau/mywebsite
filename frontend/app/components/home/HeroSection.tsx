@@ -50,7 +50,7 @@ const HeroSection = () => {
             {...(reduceMotion ? {} : fadeUp(0))}
           >
             I build <span className="font-bold">platforms</span> at scale —
-            production data pipelines, analytics, streaming, and warehousing, plus
+            production data pipelines, analytics, streaming, data warehousing and
             applied AI & ML systems.
           </motion.p>
 

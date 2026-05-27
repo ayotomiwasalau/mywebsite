@@ -57,7 +57,10 @@ class GitHubMarkdownFileSystem:
             token=token,
             repository=repository,
             branch=os.environ.get("GITHUB_BRANCH", "main").strip() or "main",
-            base_path=os.environ.get("GITHUB_MARKDOWN_BASE_PATH", "").strip(),
+            base_path=(
+                os.environ.get("GITHUB_MARKDOWN_BASE_PATH", "").strip()
+                or os.environ.get("PUBLIC_ROOT", "frontend/public").strip().strip("/")
+            ),
             public_base_url=os.environ.get("GITHUB_MARKDOWN_PUBLIC_BASE_URL", "").strip()
             or None,
         )

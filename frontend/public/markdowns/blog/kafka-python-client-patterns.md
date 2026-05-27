@@ -1,6 +1,6 @@
 ![](/images/blog/kafka-python-client-patterns/kafka-data-streams.webp)
 
-In the previous [Kafka CLI article](/posts/confluent-kafka-cli-publish-subscribe), we published and subscribed using the console tools. Here we use the **Confluent Python SDK** to send and receive data streams from an application — the pattern you need when Kafka is embedded in production code rather than tested manually.
+In the previous [Kafka CLI article](/work/blogs/confluent-kafka-cli-publish-subscribe), we published and subscribed using the console tools. Here we use the **Confluent Python SDK** to send and receive data streams from an application — the pattern you need when Kafka is embedded in production code rather than tested manually.
 
 ## Getting started
 
@@ -144,4 +144,4 @@ Navigate to Control Center to inspect topic data, consumer lag, and throughput:
 ## References
 
 - [GitHub — confluent-kafka-projects](https://github.com/ayotomiwasalau/confluent-kafka-projects)
-- [Previous — Confluent Kafka CLI pub/sub](/posts/confluent-kafka-cli-publish-subscribe)
+- [Previous — Confluent Kafka CLI pub/sub](/work/blogs/confluent-kafka-cli-publish-subscribe)
