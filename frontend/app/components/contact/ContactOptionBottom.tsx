@@ -64,7 +64,7 @@ const ContactOptionBottom: React.FC<{ items?: SocialCardItem[] }> = ({
               unoptimized
             />
           </span>
-          <span className="font-[family-name:var(--font-geist-mono)] text-sm font-medium text-black md:text-base lg:text-lg">
+          <span className="text-sm font-medium text-black md:text-base lg:text-lg">
             {item.name}
           </span>
         </Link>

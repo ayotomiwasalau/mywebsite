@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 
 const FASTAPI_ROUTE_BASE = getFastApiRouteBaseUrl();
@@ -159,7 +160,7 @@ export default function WorkContentSection() {
         deleteTarget.type === "Blog"
           ? `${FASTAPI_ROUTE_BASE}/blogs/${encoded}`
           : `${FASTAPI_ROUTE_BASE}/projects/${encoded}`;
-      const response = await fetch(path, { method: "DELETE" });
+      const response = await adminFetch(path, { method: "DELETE" });
 
       if (!response.ok) {
         const message =

@@ -11,7 +11,7 @@ const ContactOptions = () => {
       <div className="mx-auto max-w-5xl">
         <h2
           id="contact-options-heading"
-          className="mb-10 font-[family-name:var(--font-geist-mono)] text-xl font-bold text-black md:mb-12 md:text-2xl lg:text-3xl"
+          className="mb-10 text-xl font-bold text-black md:mb-12 md:text-2xl lg:text-3xl"
         >
           Options
         </h2>

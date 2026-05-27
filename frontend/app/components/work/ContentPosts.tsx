@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
+import { normalizeTag } from "@lib/tags";
 import Card from "./ContentCard";
 import { PostsSchema } from "../utils/interface";
 
@@ -28,25 +29,14 @@ interface WorkApiResponse {
 /** Primary filters — always shown above topic tags. */
 const PRIMARY_FILTER_TAGS = ["All", "Projects", "Blogs"] as const;
 
-const TOPIC_FILTER_TAGS = [
-  "JWT",
-  "Data",
-  "Data science",
-  "Data Engineering",
-  "MLOps",
-  "Blockchain",
-  "Hacking",
-  "Cloud",
-  "AI",
-  "Deeplearning",
-  "Web",
-] as const;
-
-type FilterTag =
-  | (typeof PRIMARY_FILTER_TAGS)[number]
-  | (typeof TOPIC_FILTER_TAGS)[number];
+type PrimaryFilterTag = (typeof PRIMARY_FILTER_TAGS)[number];
+type FilterTag = PrimaryFilterTag | string;
 
 type SortOption = "latest" | "oldest" | "title";
+
+function isPrimaryFilterTag(tag: FilterTag): tag is PrimaryFilterTag {
+  return (PRIMARY_FILTER_TAGS as readonly string[]).includes(tag);
+}
 
 const ContentPosts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -97,6 +87,23 @@ const ContentPosts: React.FC = () => {
     setSelectedTag(tag);
   };
 
+  const topicFilterTags = useMemo(() => {
+    const seen = new Map<string, string>();
+
+    for (const post of posts) {
+      for (const raw of post.tags ?? []) {
+        const label = normalizeTag(raw);
+        if (!label) continue;
+        const key = label.toLowerCase();
+        if (!seen.has(key)) seen.set(key, label);
+      }
+    }
+
+    return [...seen.values()].sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: "base" })
+    );
+  }, [posts]);
+
   const filteredCards = useMemo(() => {
     return posts.filter((card) => {
       const matchesSearch =
@@ -111,8 +118,9 @@ const ContentPosts: React.FC = () => {
       } else if (selectedTag === "Blogs") {
         matchesTag = card.kind === "blog";
       } else {
+        const selected = normalizeTag(selectedTag).toLowerCase();
         matchesTag = card.tags.some(
-          (tagItem) => tagItem.slice(2) === selectedTag
+          (tagItem) => normalizeTag(tagItem).toLowerCase() === selected
         );
       }
 
@@ -216,22 +224,30 @@ const ContentPosts: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Topics">
-          {TOPIC_FILTER_TAGS.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => handleTagClick(tag)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                selectedTag === tag
-                  ? "bg-[#DE5B6F] text-white outline outline-2 outline-offset-2 outline-[#478BA2]"
-                  : "bg-[#DE5B6F] text-white hover:bg-[#c94d60]"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
+        {topicFilterTags.length > 0 ? (
+          <div
+            className="flex max-h-[10.5rem] flex-wrap gap-2 overflow-y-auto overscroll-contain pr-1"
+            role="group"
+            aria-label="Topics"
+          >
+            {topicFilterTags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => handleTagClick(tag)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  !isPrimaryFilterTag(selectedTag) &&
+                  normalizeTag(selectedTag).toLowerCase() ===
+                    normalizeTag(tag).toLowerCase()
+                    ? "bg-[#DE5B6F] text-white outline outline-2 outline-offset-2 outline-[#478BA2]"
+                    : "bg-[#DE5B6F] text-white hover:bg-[#c94d60]"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       {/* Sort + results */}

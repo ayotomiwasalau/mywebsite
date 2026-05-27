@@ -61,7 +61,7 @@ const CATEGORIES: AboutStackCategory[] = [
 const AboutStackSection = () => {
   return (
     <section className="mb-12 md:mb-16">
-      <h2 className="font-sans text-xl font-bold uppercase tracking-wide text-black md:text-2xl lg:text-3xl">
+      <h2 className="text-xl font-bold uppercase tracking-wide text-black md:text-2xl lg:text-3xl">
         Tech stack
       </h2>
       <p className="mb-8 mt-2 max-w-3xl text-sm leading-relaxed text-[#666666] md:mb-10 md:text-base">
@@ -71,7 +71,7 @@ const AboutStackSection = () => {
       <div className="flex flex-col gap-8 md:gap-10">
         {CATEGORIES.map((category) => (
           <div key={category.title}>
-            <h3 className="mb-3 font-mono text-sm font-bold text-[#333333] md:mb-4 md:text-base">
+            <h3 className="mb-3 text-sm font-bold text-[#333333] md:mb-4 md:text-base">
               {category.title}:
             </h3>
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-7 md:gap-x-8 lg:gap-x-10">

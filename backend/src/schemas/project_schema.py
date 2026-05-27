@@ -25,7 +25,6 @@ class ProjectFields(BaseModel):
     feature: bool = False
     feat_order: int | None = Field(default=None, ge=1, le=3)
     shares: int = 0
-    share_destination: str = Field(..., max_length=64)
     blog_url: str = Field(..., max_length=2048)
 
     @model_validator(mode="after")

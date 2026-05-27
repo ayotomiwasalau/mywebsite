@@ -12,6 +12,7 @@ _db: Optional[DatabaseInterface] = None
 
 
 def get_database() -> DatabaseInterface:
+    print(f"Getting database: {os.environ.get('DATABASE_BACKEND')}")
     global _db
     if _db is None:
         backend = os.environ.get("DATABASE_BACKEND", "dynamodb").lower().strip()

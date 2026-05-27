@@ -28,15 +28,15 @@ export default function GamesCard({
         />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4 md:p-5">
-        <h2 className="font-[family-name:var(--font-geist-sans)] text-xl font-bold leading-tight text-white md:text-2xl">
+        <h2 className="text-xl font-bold leading-tight text-white md:text-2xl">
           {title}
         </h2>
-        <p className="font-[family-name:var(--font-geist-sans)] text-sm leading-relaxed text-gray-300">
+        <p className="text-sm leading-relaxed text-gray-300">
           {description}
         </p>
         <Link
           href={playHref}
-          className="font-[family-name:var(--font-geist-sans)] mt-auto flex w-full items-center justify-center rounded-lg bg-[#d55f6f] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#c94f60] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="mt-auto flex w-full items-center justify-center rounded-lg bg-[#d55f6f] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#c94f60] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Play →
         </Link>

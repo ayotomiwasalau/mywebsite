@@ -6,7 +6,7 @@ import MiniNavBar from "../../components/admin/MiniNavBar";
 
 export default function AdminDashboardPage() {
   return (
-    <div className="font-[family-name:var(--font-geist-mono)]">
+    <div>
       <NavBar />
       <MiniNavBar />
       <AdminDashboard />

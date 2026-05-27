@@ -14,7 +14,7 @@ type ClientPostProps = {
 
 export default function ClientPost({ post }: ClientPostProps) {
   return (
-    <div className="font-[family-name:var(--font-geist-mono)]">
+    <div>
       <NavBar />
       <div>
         <PostLanding postSelected={post} />

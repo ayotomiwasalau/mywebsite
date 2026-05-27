@@ -62,13 +62,13 @@ export default function GamesPage() {
   const sortedGames = useMemo(() => sortGames(GAMES, sort), [sort]);
 
   return (
-    <div className="min-h-screen bg-white font-[family-name:var(--font-geist-mono)]">
+    <div className="min-h-screen bg-white">
       <NavBar />
 
       <div className="relative h-auto bg-gradient-to-r from-[#BBD5DC] to-[#F3A593]">
         <div className="mx-auto flex max-w-5xl flex-col items-center space-y-8 px-4 py-20 pb-[7rem] sm:px-8 md:flex-row md:items-center md:space-x-16 md:space-y-4">
           <div className="flex max-w-xl flex-col gap-5 md:gap-6">
-            <h1 className="font-[family-name:var(--font-geist-sans)] text-3xl font-bold leading-tight text-[#333333] md:text-4xl lg:text-[2.5rem]">
+            <h1 className="text-3xl font-bold leading-tight text-[#333333] md:text-4xl lg:text-[2.5rem]">
               Ayotoms Wall of Vibecoded Games
             </h1>
             <p className="text-lg font-light leading-relaxed text-[#333333] md:text-xl">
@@ -114,7 +114,7 @@ export default function GamesPage() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value as SortOption)}
-                className="appearance-none rounded-lg border-0 bg-[#4a869a] py-2.5 pl-4 pr-10 font-[family-name:var(--font-geist-sans)] text-sm font-medium text-white shadow-sm outline-none ring-0 transition hover:bg-[#3d7588] focus-visible:ring-2 focus-visible:ring-[#4a869a] focus-visible:ring-offset-2"
+                className="appearance-none rounded-lg border-0 bg-[#4a869a] py-2.5 pl-4 pr-10 text-sm font-medium text-white shadow-sm outline-none ring-0 transition hover:bg-[#3d7588] focus-visible:ring-2 focus-visible:ring-[#4a869a] focus-visible:ring-offset-2"
                 aria-label="Sort games"
               >
                 <option value="latest">Latest</option>

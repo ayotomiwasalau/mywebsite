@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { RotatingLines } from "react-loader-spinner";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 import { urlCleaner } from "../utils/tools";
@@ -39,6 +40,7 @@ function inferTimeLabel(value: string): string {
 const WorkAndInsight = () => {
   const [entries, setEntries] = useState<WorkInsightEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const loadEntries = async () => {
@@ -94,14 +96,23 @@ const WorkAndInsight = () => {
                 <WorkInsightComponent key={entry.id} entry={entry} index={index} />
               ))}
             </div>
-            <div className="mt-6 flex justify-end">
+            <motion.div
+              className="mt-6 flex justify-end"
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { duration: 0.5, delay: entries.length * 0.1, ease: [0.22, 1, 0.36, 1] }
+              }
+            >
               <Link
                 href="/work"
-                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#D65A78] px-6 text-2xl text-white transition hover:opacity-90"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#D65A78] px-6 text-2xl text-white transition-transform hover:scale-[1.02] hover:opacity-90 active:scale-[0.97]"
               >
                 View all
               </Link>
-            </div>
+            </motion.div>
           </>
         )}
       </div>

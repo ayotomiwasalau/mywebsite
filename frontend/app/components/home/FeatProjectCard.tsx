@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { FeatProjectTags } from "./FeatProjectTags";
 
 export interface FeatProjectCardProps {
@@ -16,6 +17,8 @@ export interface FeatProjectCardProps {
   index: number;
 }
 
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
 const FeatProjectCard: React.FC<FeatProjectCardProps> = ({
   imageSrc,
   imageAlt,
@@ -26,11 +29,20 @@ const FeatProjectCard: React.FC<FeatProjectCardProps> = ({
   caseStudyHref,
   index,
 }) => {
+  const reduceMotion = useReducedMotion();
   const backgroundClass = index % 2 === 0 ? "bg-[#E6A892]" : "bg-[#BBD5DC]";
 
   return (
-    <article
+    <motion.article
       className={`flex h-full flex-col overflow-hidden rounded-2xl ${backgroundClass} shadow-sm`}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { duration: 0.5, delay: index * 0.1, ease: easeOut }
+      }
+      whileHover={reduceMotion ? undefined : { y: -4, transition: { duration: 0.2 } }}
     >
       <div className="relative h-52 w-full shrink-0 overflow-hidden rounded-t-2xl">
         <Image
@@ -59,12 +71,14 @@ const FeatProjectCard: React.FC<FeatProjectCardProps> = ({
 
         <Link
           href={caseStudyHref}
-          className="mt-auto w-full rounded-full bg-[#D16B7A] py-3 text-center text-base font-medium text-white transition hover:opacity-90"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto w-full rounded-full bg-[#D16B7A] py-3 text-center text-base font-medium text-white transition-transform hover:scale-[1.02] hover:opacity-90 active:scale-[0.97]"
         >
-          View Case Study
+          View Post
         </Link>
       </div>
-    </article>
+    </motion.article>
   );
 };
 

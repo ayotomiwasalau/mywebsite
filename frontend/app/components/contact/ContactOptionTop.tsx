@@ -117,7 +117,7 @@ const ContactOptionTop: React.FC<{ rows?: ContactLinkRow[] }> = ({
           </div>
 
           {/* Col 2: label — fixed column so value boxes line up */}
-          <span className="min-w-0 whitespace-nowrap font-[family-name:var(--font-geist-mono)] text-[11px] text-black sm:text-sm md:text-base lg:text-lg">
+          <span className="min-w-0 whitespace-nowrap text-[11px] text-black sm:text-sm md:text-base lg:text-lg">
             {row.label}
           </span>
 
@@ -125,7 +125,7 @@ const ContactOptionTop: React.FC<{ rows?: ContactLinkRow[] }> = ({
           <div
             className={`flex min-w-0 w-full items-center gap-1.5 rounded-lg px-3 py-2.5 sm:gap-2 sm:rounded-xl sm:px-3 sm:py-2.5 md:px-4 md:py-3.5 ${boxBg[row.variant]}`}
           >
-            <span className="min-w-0 flex-1 truncate font-[family-name:var(--font-geist-mono)] text-xs text-[#333333] md:text-base lg:text-lg xl:text-xl">
+            <span className="min-w-0 flex-1 truncate text-xs text-[#333333] md:text-base lg:text-lg xl:text-xl">
               {row.displayValue}
             </span>
             <button
@@ -137,7 +137,7 @@ const ContactOptionTop: React.FC<{ rows?: ContactLinkRow[] }> = ({
               <ClipboardDocumentIcon className="h-[18px] w-[18px] sm:h-5 sm:w-5 md:h-6 md:w-6" />
             </button>
             {copiedId === row.id ? (
-              <span className="hidden shrink-0 font-[family-name:var(--font-geist-mono)] text-xs text-green-700 sm:inline md:text-sm">
+              <span className="hidden shrink-0 text-xs text-green-700 sm:inline md:text-sm">
                 Copied
               </span>
             ) : null}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 
 interface SubscriberRow {
@@ -56,7 +57,7 @@ export default function SubscriberSection() {
     async function loadSubscribers() {
       setIsLoading(true);
       try {
-        const response = await fetch(`${FASTAPI_ROUTE_BASE}/subscribers?per_page=100`);
+        const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/subscribers?per_page=100`);
 
         if (!response.ok) {
           throw new Error("Unable to load subscribers.");
@@ -115,7 +116,7 @@ export default function SubscriberSection() {
     setIsDeleting(true);
     try {
       const url = `${FASTAPI_ROUTE_BASE}/subscribers/${encodeURIComponent(deleteTargetId)}`;
-      const response = await fetch(url, { method: "DELETE" });
+      const response = await adminFetch(url, { method: "DELETE" });
 
       if (!response.ok) {
         let message = "Unable to delete subscriber.";

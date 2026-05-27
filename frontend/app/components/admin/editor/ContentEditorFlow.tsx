@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 
 const FASTAPI_ROUTE_BASE = getFastApiRouteBaseUrl();
@@ -105,7 +106,6 @@ interface ApiContentDocument {
   feature: boolean;
   feat_order: number | null;
   shares: number;
-  share_destination: string;
   project_url?: string;
   blog_url?: string;
 }
@@ -114,7 +114,6 @@ interface PersistedRecordMeta {
   id: string;
   created_on: string;
   shares: number;
-  share_destination: string;
   project_url: string;
   blog_url: string;
 }
@@ -160,7 +159,7 @@ async function uploadImageToApi(
   form.append("slug", slug);
   form.append("file", file);
 
-  const response = await fetch(`${FASTAPI_ROUTE_BASE}/images`, {
+  const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/images`, {
     method: "POST",
     body: form,
   });
@@ -256,7 +255,6 @@ export default function ContentEditorFlow() {
                 ? doc.created_on
                 : new Date(doc.created_on).toISOString(),
             shares: doc.shares,
-            share_destination: doc.share_destination,
             project_url: doc.project_url ?? "",
             blog_url: doc.blog_url ?? "",
           });
@@ -401,12 +399,6 @@ export default function ContentEditorFlow() {
     const createdOn =
       isEditMode && persistedRecord ? persistedRecord.created_on : now;
     const shares = isEditMode && persistedRecord ? persistedRecord.shares : 0;
-    const shareDestination =
-      isEditMode && persistedRecord
-        ? persistedRecord.share_destination
-        : contentType === "Blog"
-          ? "blog"
-          : "project";
     const recordId =
       isEditMode && persistedRecord ? persistedRecord.id : crypto.randomUUID();
 
@@ -456,7 +448,6 @@ export default function ContentEditorFlow() {
         feature,
         feat_order: feature ? Number(featOrder) : null,
         shares,
-        share_destination: shareDestination,
       };
 
       const apiPayload =
@@ -479,7 +470,7 @@ export default function ContentEditorFlow() {
           isBlog
             ? `${FASTAPI_ROUTE_BASE}/blogs/${encodeURIComponent(editSourceSlug)}`
             : `${FASTAPI_ROUTE_BASE}/projects/${encodeURIComponent(editSourceSlug)}`;
-        const response = await fetch(putPath, {
+        const response = await adminFetch(putPath, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(apiPayload),
@@ -507,7 +498,7 @@ export default function ContentEditorFlow() {
         setSaveSuccess("Saved. Your changes are stored on the server.");
       } else {
         const postPath = isBlog ? `${FASTAPI_ROUTE_BASE}/blogs` : `${FASTAPI_ROUTE_BASE}/projects`;
-        const response = await fetch(postPath, {
+        const response = await adminFetch(postPath, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(apiPayload),

@@ -42,20 +42,20 @@ const ExperienceComponent: React.FC<ExperienceComponentProps> = ({ entry }) => {
           >
             {entry.company}
           </Link>
-          <span className="font-mono text-sm md:text-base lg:text-lg">
+          <span className="text-sm md:text-base lg:text-lg">
             {" "}
             – {entry.role}
           </span>
         </p>
-        <p className="mt-1 font-mono text-xs text-[#333333] md:mt-1.5 md:text-sm lg:text-base">
+        <p className="mt-1 text-xs text-[#333333] md:mt-1.5 md:text-sm lg:text-base">
           {entry.dateRange}
         </p>
-        <p className="font-mono text-xs text-[#666666] md:text-sm lg:text-base">
+        <p className="text-xs text-[#666666] md:text-sm lg:text-base">
           {entry.timezone}
         </p>
       </div>
 
-      <ul className="col-span-2 row-start-2 w-full min-w-0 list-outside list-disc space-y-1.5 pl-5 font-mono text-xs leading-relaxed text-[#333333] marker:text-[#333333] md:col-span-1 md:col-start-2 md:row-start-2 md:space-y-2 md:pl-5 md:text-sm lg:text-base">
+      <ul className="col-span-2 row-start-2 w-full min-w-0 list-outside list-disc space-y-1.5 pl-5 text-xs leading-relaxed text-[#333333] marker:text-[#333333] md:col-span-1 md:col-start-2 md:row-start-2 md:space-y-2 md:pl-5 md:text-sm lg:text-base">
         {entry.highlights.map((line) => (
           <li key={line}>{line}</li>
         ))}

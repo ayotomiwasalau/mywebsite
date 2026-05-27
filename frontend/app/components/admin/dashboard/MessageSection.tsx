@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 import MessageComponent, { MessageRow } from "./MessageComponent";
 
@@ -67,7 +68,7 @@ const MessageSection = () => {
 
     async function loadMessages() {
       try {
-        const response = await fetch(`${FASTAPI_ROUTE_BASE}/messages?per_page=100`);
+        const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/messages?per_page=100`);
 
         if (!response.ok) {
           throw new Error("Unable to load messages.");
@@ -108,7 +109,7 @@ const MessageSection = () => {
     setDeleteBusy(true);
     try {
       const path = `${FASTAPI_ROUTE_BASE}/messages/${encodeURIComponent(pendingDelete.id)}`;
-      const response = await fetch(path, { method: "DELETE" });
+      const response = await adminFetch(path, { method: "DELETE" });
       if (!response.ok) {
         throw new Error(await extractApiErrorMessage(response));
       }

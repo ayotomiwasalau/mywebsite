@@ -2,11 +2,10 @@
   {
     "id": "blog-001",
     "slug": "chatpdfdoc-a-data-answering-rag",
-    "title": "ChatPDFDoc: a data-answering RAG pipeline",
-    "header_img_url": "/images/blog/chatpdfdoc-a-data-answering-rag/rag-interface.png",
-    "header_img_alt": "RAG interface screenshot",
-    "time_label": "Apr 2025",
-    "description": "End-to-end RAG pipeline for querying documents with retrieval evaluation, chunking strategy, and safe prompting.",
+    "title": "ChatPDFDoc: A RAG PDF Question-Answering System",
+    "header_img_url": "/images/blog/chatpdfdoc-a-data-answering-rag/architecture.jpg",
+    "header_img_alt": "ChatPDFDoc RAG system architecture",
+    "description": "Architecture and design of a FastAPI RAG system: ChromaDB retrieval, OpenAI embeddings, and grounded PDF Q&A.",
     "tags": [
       "rag",
       "llm",
@@ -18,38 +17,35 @@
     "created_on": "2025-04-10T12:00:00Z",
     "updated_on": "2025-04-10T12:00:00Z",
     "shares": 0,
-    "share_destination": "linkedin",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/chatpdfdoc"
   },
   {
     "id": "blog-002",
     "slug": "containers-and-kubernetes-notes",
-    "title": "Containers & Kubernetes: practical notes",
+    "title": "Containers, Kubernetes, and CI/CD: Practical Notes",
     "header_img_url": "/images/blog/containers-and-kubernetes-notes/containers_kubernetes.webp",
     "header_img_alt": "Containers and Kubernetes illustration",
-    "time_label": "Mar 2025",
-    "description": "A pragmatic walkthrough of container fundamentals, Kubernetes primitives, and how to reason about deployments.",
+    "description": "How containers, Kubernetes orchestration, and CI/CD pipelines help data scientists deploy and scale ML models in production.",
     "tags": [
       "containers",
       "kubernetes",
-      "devops"
+      "devops",
+      "ci-cd"
     ],
     "href": "/posts/containers-and-kubernetes-notes",
     "filepath_md": "/markdowns/blog/containers-and-kubernetes-notes.md",
     "created_on": "2025-03-12T09:00:00Z",
-    "updated_on": "2025-03-12T09:00:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
     "shares": 0,
-    "share_destination": "x",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/Deploy-Flask-App-to-Kubernetes-Using-EKS"
   },
   {
     "id": "blog-003",
     "slug": "mlflow-and-wandb-tracking",
-    "title": "Experiment tracking with MLflow & Weights & Biases",
-    "header_img_url": "/images/blog/mlflow-and-wandb-tracking/mlflow_wandb.png",
-    "header_img_alt": "MLflow and W&B dashboard",
-    "time_label": "Feb 2025",
-    "description": "How to structure runs, log artifacts, and keep experiments reproducible across environments.",
+    "title": "Building Reproducible ML/AI Pipelines with MLflow and Weights & Biases",
+    "header_img_url": "/images/blog/mlflow-and-wandb-tracking/architecture.png",
+    "header_img_alt": "MLflow and W&B pipeline architecture",
+    "description": "Architecture for a weekly rental-price retraining pipeline with MLflow steps, W&B artifacts, and Hydra config.",
     "tags": [
       "mlops",
       "mlflow",
@@ -60,17 +56,15 @@
     "created_on": "2025-02-20T18:30:00Z",
     "updated_on": "2025-02-20T18:30:00Z",
     "shares": 0,
-    "share_destination": "copy",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/Rental-ml-pipeline"
   },
   {
     "id": "blog-004",
     "slug": "big-data-jobs-on-emr",
-    "title": "Big data jobs on EMR: a hands-on guide",
-    "header_img_url": "/images/blog/big-data-jobs-on-emr/big_data_jobs.jpg",
-    "header_img_alt": "Big data processing cluster",
-    "time_label": "Jan 2025",
-    "description": "Running large-scale Spark workloads on EMR: sizing, tuning, storage layout, and failure recovery.",
+    "title": "How to Create and Deploy Big Data Jobs on AWS EMR (Apache Spark)",
+    "header_img_url": "/images/blog/big-data-jobs-on-emr/architecture.jpg",
+    "header_img_alt": "AWS EMR Spark cluster architecture",
+    "description": "Architecture for deploying Spark ETL on EMR: S3 inputs, star-schema outputs, and console, CLI, and Boto3 deploy paths.",
     "tags": [
       "spark",
       "aws",
@@ -82,17 +76,15 @@
     "created_on": "2025-01-24T12:00:00Z",
     "updated_on": "2025-01-24T12:00:00Z",
     "shares": 0,
-    "share_destination": "linkedin",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/big-data-jobs"
   },
   {
     "id": "blog-005",
     "slug": "snowflake-dwh-modeling",
-    "title": "Snowflake DWH modeling: staging to marts",
-    "header_img_url": "/images/blog/snowflake-dwh-modeling/dwh_snowflake.png",
-    "header_img_alt": "Snowflake warehouse diagram",
-    "time_label": "Dec 2024",
-    "description": "Data warehouse modeling patterns for Snowflake: layers, naming, and performance considerations.",
+    "title": "Data Warehousing with Snowflake: Yelp Reviews and Climate Analytics",
+    "header_img_url": "/images/blog/snowflake-dwh-modeling/architecture.jpg",
+    "header_img_alt": "Snowflake data warehouse architecture",
+    "description": "Architecture for a Snowflake DWH: staging, ODS, and star-schema layers joining Yelp reviews with climate data.",
     "tags": [
       "data-warehouse",
       "snowflake",
@@ -103,58 +95,55 @@
     "created_on": "2024-12-18T16:00:00Z",
     "updated_on": "2024-12-18T16:00:00Z",
     "shares": 0,
-    "share_destination": "x",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/datawarehousing"
   },
   {
     "id": "blog-006",
     "slug": "kafka-python-client-patterns",
-    "title": "Kafka with Python: client patterns that scale",
+    "title": "Confluent Kafka: Streaming Data with the Python SDK",
     "header_img_url": "/images/blog/kafka-python-client-patterns/kafka-data-streams.webp",
     "header_img_alt": "Kafka data stream illustration",
-    "time_label": "Nov 2024",
-    "description": "Consumer groups, retry semantics, idempotence, and practical patterns for reliable Kafka apps in Python.",
+    "description": "Async producer and consumer setup with the Confluent Python SDK — schema, topic creation, and Control Center verification.",
     "tags": [
       "kafka",
       "python",
-      "streaming"
+      "streaming",
+      "confluent"
     ],
     "href": "/posts/kafka-python-client-patterns",
     "filepath_md": "/markdowns/blog/kafka-python-client-patterns.md",
     "created_on": "2024-11-19T11:00:00Z",
-    "updated_on": "2024-11-19T11:00:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
     "shares": 0,
-    "share_destination": "linkedin",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/confluent-kafka-projects"
   },
   {
     "id": "blog-007",
     "slug": "distributed-computing-foundations",
-    "title": "Distributed computing foundations",
+    "title": "Distributed Computing Foundations",
     "header_img_url": "/images/blog/distributed-computing-foundations/distributed_compute.webp",
     "header_img_alt": "Distributed compute graphic",
-    "time_label": "Oct 2024",
-    "description": "Core ideas behind distributed systems: consistency, availability, partition tolerance, and design tradeoffs.",
+    "description": "Why big data bottlenecks CPU, RAM, and disk — and how Spark, Hadoop, Flink, and Kafka process data across clusters.",
     "tags": [
       "distributed-systems",
-      "architecture"
+      "spark",
+      "hadoop",
+      "big-data"
     ],
     "href": "/posts/distributed-computing-foundations",
     "filepath_md": "/markdowns/blog/distributed-computing-foundations.md",
     "created_on": "2024-10-05T10:00:00Z",
-    "updated_on": "2024-10-05T10:00:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
     "shares": 0,
-    "share_destination": "copy",
     "project_url": "https://github.com/ayotomiwasalau"
   },
   {
     "id": "blog-008",
     "slug": "dbt-workflow-basics",
-    "title": "dbt workflow basics: from sources to tests",
-    "header_img_url": "/images/blog/dbt-workflow-basics/dbt_schema_model.webp",
-    "header_img_alt": "dbt schema model diagram",
-    "time_label": "Sep 2024",
-    "description": "A clean dbt workflow: project structure, testing strategy, and how to keep models maintainable.",
+    "title": "Data Build Tool (dbt): Transforming Education Analytics on PostgreSQL",
+    "header_img_url": "/images/blog/dbt-workflow-basics/architecture.webp",
+    "header_img_alt": "dbt transformation architecture",
+    "description": "Architecture for a dbt Core project on PostgreSQL: OULAD staging views, production facts, and data quality tests.",
     "tags": [
       "dbt",
       "analytics-engineering"
@@ -164,49 +153,127 @@
     "created_on": "2024-09-14T08:00:00Z",
     "updated_on": "2024-09-14T08:00:00Z",
     "shares": 0,
-    "share_destination": "linkedin",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/dbt-transformation"
   },
   {
     "id": "blog-009",
     "slug": "metaflow-mnist-walkthrough",
-    "title": "Metaflow MNIST walkthrough",
-    "header_img_url": "/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_steps.jpg",
-    "header_img_alt": "Metaflow steps overview",
-    "time_label": "Aug 2024",
-    "description": "Building a simple ML pipeline with Metaflow: steps, artifacts, and iteration without chaos.",
+    "title": "Metaflow: Data Science Workflow with MNIST",
+    "header_img_url": "/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_header_img.png",
+    "header_img_alt": "Metaflow MNIST workflow header",
+    "description": "A Metaflow walkthrough on MNIST: DAG steps, branching models, data artifacts, and flow inspection.",
     "tags": [
       "metaflow",
       "mlops",
-      "python"
+      "python",
+      "mnist"
     ],
     "href": "/posts/metaflow-mnist-walkthrough",
     "filepath_md": "/markdowns/blog/metaflow-mnist-walkthrough.md",
     "created_on": "2024-08-08T13:30:00Z",
-    "updated_on": "2024-08-08T13:30:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
     "shares": 0,
-    "share_destination": "x",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/mnist-with-metaflow"
   },
   {
     "id": "blog-010",
     "slug": "streaming-as-a-service",
-    "title": "Streaming as a service: design notes",
+    "title": "Streaming as a Service: Design Notes",
     "header_img_url": "/images/blog/streaming-as-a-service/streamingsrvc_header_img.webp",
     "header_img_alt": "Streaming service header",
-    "time_label": "Jul 2024",
-    "description": "Notes on multi-tenant streaming platforms: isolation, schemas, observability, and operational guardrails.",
+    "description": "How Netflix, Uber, Twitter, and POS systems use Kafka and stream engines for real-time data and analytics.",
     "tags": [
       "streaming",
-      "platform",
-      "kafka"
+      "kafka",
+      "real-time",
+      "analytics"
     ],
     "href": "/posts/streaming-as-a-service",
     "filepath_md": "/markdowns/blog/streaming-as-a-service.md",
     "created_on": "2024-07-03T12:00:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
+    "shares": 0,
+    "project_url": "https://github.com/ayotomiwasalau/Point-of-Sale-terminal-data-streaming-application"
+  },
+  {
+    "id": "blog-011",
+    "slug": "club-football-micro-event-data-lake",
+    "title": "Building a Micro-Event Data Lake for Club Football Analytics",
+    "header_img_url": "/images/blog/club-football-micro-event-data-lake/architecture.png",
+    "header_img_alt": "Club football micro-event data lake star schema",
+    "description": "How Spark, Airflow, and Redshift process 1M+ football micro-events from S3 into a star schema for analytics and ML.",
+    "tags": [
+      "spark",
+      "airflow",
+      "redshift",
+      "data-engineering",
+      "sports"
+    ],
+    "href": "/posts/club-football-micro-event-data-lake",
+    "filepath_md": "/markdowns/blog/club-football-micro-event-data-lake.md",
+    "created_on": "2024-07-03T12:00:00Z",
     "updated_on": "2024-07-03T12:00:00Z",
     "shares": 0,
-    "share_destination": "linkedin",
-    "project_url": "https://github.com/ayotomiwasalau"
+    "project_url": "https://github.com/ayotomiwasalau/club_football_data_lake"
+  },
+  {
+    "id": "blog-012",
+    "slug": "confluent-kafka-cli-publish-subscribe",
+    "title": "Confluent Kafka: Publish and Subscribe with the CLI",
+    "header_img_url": "/images/blog/confluent-kafka-cli-publish-subscribe/kafka-service-stack.png",
+    "header_img_alt": "Confluent Kafka local service stack",
+    "description": "Prove your Kafka pipeline with console producer and consumer tools before wiring in application code.",
+    "tags": [
+      "kafka",
+      "confluent",
+      "streaming",
+      "cli"
+    ],
+    "href": "/posts/confluent-kafka-cli-publish-subscribe",
+    "filepath_md": "/markdowns/blog/confluent-kafka-cli-publish-subscribe.md",
+    "created_on": "2024-11-12T11:00:00Z",
+    "updated_on": "2025-05-21T12:00:00Z",
+    "shares": 0,
+    "project_url": "https://github.com/ayotomiwasalau/confluent-kafka-projects"
+  },
+  {
+    "id": "blog-013",
+    "slug": "data-visualization-with-tableau",
+    "title": "Data Visualization with Tableau",
+    "header_img_url": "/images/blog/data-visualization-with-tableau/dashboard-hero.webp",
+    "header_img_alt": "Analytics dashboard with charts and KPIs",
+    "description": "Turning pipeline outputs into actionable dashboards — Tableau Public portfolio, workflow, and design principles from real analytics work.",
+    "tags": [
+      "tableau",
+      "data-visualization",
+      "analytics",
+      "dashboards"
+    ],
+    "href": "/posts/data-visualization-with-tableau",
+    "filepath_md": "/markdowns/blog/data-visualization-with-tableau.md",
+    "created_on": "2024-06-15T10:00:00Z",
+    "updated_on": "2025-05-26T12:00:00Z",
+    "shares": 0,
+    "project_url": "https://public.tableau.com/app/profile/tomiwa.salau/vizzes"
+  },
+  {
+    "id": "blog-014",
+    "slug": "year-end-report-generation-uipath-rpa",
+    "title": "Report Generation with UIPath RPA",
+    "header_img_url": "/images/blog/year-end-report-generation-uipath-rpa/report-output.png",
+    "header_img_alt": "Automated year-end report output from UIPath RPA",
+    "description": "Automating year-end report collation with UIPath REFramework — Dispatcher and Performer bots, Orchestrator queues, and web portal scraping.",
+    "tags": [
+      "rpa",
+      "uipath",
+      "automation",
+      "reporting"
+    ],
+    "href": "/posts/year-end-report-generation-uipath-rpa",
+    "filepath_md": "/markdowns/blog/year-end-report-generation-uipath-rpa.md",
+    "created_on": "2019-08-13T10:00:00Z",
+    "updated_on": "2025-05-26T12:00:00Z",
+    "shares": 0,
+    "project_url": "https://github.com/ayotomiwasalau/Report-Generation---Process-Automation"
   }
 ]

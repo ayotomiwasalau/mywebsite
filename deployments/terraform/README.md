@@ -57,7 +57,7 @@ AWS Lambda does not pull container images directly from Docker Hub. If Docker Hu
 After applying the ECR repository, build and push the backend image with:
 
 ```bash
-../../backend/deploy.sh latest
+../manage.sh build-deploy-image latest
 ```
 
 The script reads `backend_ecr_repository_url` from Terraform outputs, logs in to ECR, builds `backend/Dockerfile`, tags the image, and pushes it to ECR.
@@ -82,13 +82,71 @@ Markdown writes are committed to GitHub when you provide these values through `l
 - `GITHUB_MARKDOWN_PUBLIC_BASE_URL`, optional raw/CDN base URL
 - `GITHUB_COMMIT_AUTHOR_NAME` and `GITHUB_COMMIT_AUTHOR_EMAIL`, optional
 
-Use `lambda_environment_variables` for app-specific values such as `SKIP_JSON_SEED` and the GitHub settings above. Do not commit real GitHub tokens to `terraform.tfvars`.
+Admin API routes require these auth values through `lambda_environment_variables`:
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD_HASH`, preferred for deployed environments
+- `ADMIN_PASSWORD`, local/simple fallback when no password hash is set
+- `JWT_SECRET`, a long random secret used to sign admin tokens
+- `JWT_EXPIRES_MINUTES`, optional, defaults to `60`
+
+Use `lambda_environment_variables` for app-specific values such as `SKIP_JSON_SEED`, auth secrets, and the GitHub settings above. Do not commit real GitHub tokens, admin passwords, or JWT secrets to `terraform.tfvars`.
 
 For CI/CD deployments, publish an immutable image tag and update `lambda_image_tag` when deploying a new backend image.
 
 #Todo
-- implement the s3 connection for images
+- implement the s3 connection for images - done
+- markdowns should be stored in github update - done
+- lambda installation - done
+- fastapi auth - done
+
+- notification (webhooks)
+- monitoring (uptime check)
+- implement cloudfront
+- g.analytics/seo
+
 - tests
-- markdowns should be stored in github update
-- lambda installation
-- fastapi auth
+- fix frontend tags, edit that sorting with tags - done
+- add animation, add special effect on button - done
+- fix getting releated items in tags - done
+- try diff fonts - done
+
+- setup games
+- check db contet is not init twice
+- cheking loading page and how its used
+
+- review icons
+- explore linking tiptier
+
+- the cta at the bottom should show my work - done
+- edit about personal edge & impact - done
+- structure markdown/image content edit the content of the portfolio website to suit (blogs/project) 
+
+
+
+* chatpdfdoc - blog & project
+* confluent kafka - using python sdk to stream data - blog
+* confluent kafka - using cli to pub and sub - blog
+
+* data warehousing with snowflake - project & blog
+* dbt - project & blog
+* how to create and deploy job on emr - project & blog
+* building reproducible pipeline - project & blog
+
+* metaflow - data science workflow - blog
+
+* distributed computing - blog
+* technology as a service - blog
+* container,k8s, and ci/cd - blog 
+
+* club-football match - project & blog
+
+* stock price prediction app - project
+* movie recommender system - project
+* Music song datapipelines - project
+* jokes and riddle api project - project
+* song and user data processing - project
+* auth app deployment - project
+* Data streaming application - project
+* Data visualization - blog
+* Report generation - blog

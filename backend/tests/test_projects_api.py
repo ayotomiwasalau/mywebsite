@@ -29,7 +29,6 @@ def _project_json(
         "created_on": now,
         "updated_on": now,
         "shares": 0,
-        "share_destination": "linkedin",
         "blog_url": "/posts/example",
     }
 

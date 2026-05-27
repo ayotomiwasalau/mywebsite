@@ -22,7 +22,7 @@ const AboutStackComponent: React.FC<AboutStackComponentProps> = ({ item }) => {
           sizes="(max-width: 640px) 44px, (max-width: 1024px) 64px, 72px"
         />
       </div>
-      <span className="max-w-[6.5rem] text-center font-mono text-[10px] font-normal leading-tight text-[#333333] sm:max-w-none sm:text-xs md:text-sm">
+      <span className="max-w-[6.5rem] text-center text-[10px] font-normal leading-tight text-[#333333] sm:max-w-none sm:text-xs md:text-sm">
         {item.name}
       </span>
     </div>

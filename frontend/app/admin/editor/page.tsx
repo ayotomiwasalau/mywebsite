@@ -6,7 +6,7 @@ import ContentEditorFlow from "../../components/admin/editor/ContentEditorFlow";
 
 export default function EditorPage() {
   return (
-    <div className="font-[family-name:var(--font-geist-mono)]">
+    <div>
       <NavBar />
       <MiniNavBar />
       <ContentEditorFlow />

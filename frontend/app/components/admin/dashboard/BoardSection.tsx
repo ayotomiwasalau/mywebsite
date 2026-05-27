@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 import BoardCard from "./BoardCard";
 
@@ -32,7 +33,7 @@ const BoardSection = () => {
 
     async function loadSummary() {
       try {
-        const response = await fetch(`${FASTAPI_ROUTE_BASE}/work-summary`);
+        const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/work-summary`);
 
         if (!response.ok) {
           throw new Error("Unable to load dashboard summary.");

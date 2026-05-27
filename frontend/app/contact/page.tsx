@@ -8,7 +8,7 @@ import FooterCTA from "../components/layout/FooterCTA";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white font-[family-name:var(--font-geist-mono)]">
+    <div className="min-h-screen bg-white">
       <NavBar />
       <ContactHero />
       <ContactOptions />

@@ -11,7 +11,7 @@ import FooterCTA from '../components/layout/FooterCTA'
 
 const About = () => {
   return (
-    <div className='font-[family-name:var(--font-geist-mono)]'>
+    <div>
         <NavBar/>
         <div className='relative h-auto bg-gradient-to-r from-[#BBD5DC] to-[#F3A593]'>
             <div className="flex items-center flex-col md:flex-row max-w-5xl space-y-8 md:space-x-16 mx-auto px-4 sm:px-8 py-14 pb-[7rem]">
@@ -23,15 +23,17 @@ const About = () => {
                 className="max-w-[18rem] max-h-[18rem] md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full"
             />
 
-            <div className="flex max-w-xl flex-col gap-5 md:gap-6">
-              <p className="font-bold text-lg leading-relaxed text-[#333333] md:text-xl">
-                Senior Data Engineer. Design, build, and deploy cloud-based 
-                intelligence platforms.
+            <div className="flex max-w-xl flex-col gap-4 md:gap-5">
+              <p className="font-bold text-lg leading-normal text-[#333333] md:text-xl">
+              Senior Data Engineer. 
+              Building platforms at scale for production data pipelines, analytics, streaming, warehousing, and applied AI & ML.
+              {/* Design, build, and deploy cloud-based 
+              data and intelligence platforms. */}
               </p>
-              <p className="font-light text-lg leading-relaxed text-[#333333] md:text-xl">
-                Hello there! I am Tomiwa. I have 8+ years of experience as a Data Engineer. I help businesses with ETL &
-                data warehousing, cloud engineering, pipeline automations and Agentic
-                workflows.
+              <p className="font-light text-lg leading-normal text-[#333333] md:text-xl">
+              Hello, I'm Tomiwa, 8+ years experience owning systems end to end, from architecture to observability.
+              I care as much about what survives in production and what ships on time.
+              For me, its about value to users and stakeholders.
               </p>
             </div>
             
@@ -56,17 +58,50 @@ const About = () => {
 
                 <section className="mb-8">
                     <h2 className="text-2xl font-bold text-[#333333]">Personal Edge</h2>
-                    <p className="mb-2 mt-2 max-w-3xl text-sm leading-relaxed text-[#666666] md:text-base">
-                    How I work across product, architecture, and delivery from idea to production.
+                    <p className="mb-3 mt-2 max-w-3xl text-sm leading-normal text-[#666666] md:text-base">
+                    The engineer behind the pipelines — and the person off the court.
                     </p>
-                    <p className="text-[#333333] leading-relaxed">
-                    I am an end-to-end person. I specialise in taking a product from an idea to a live solution. 
-                    I enjoy working across all value chains from the design to the deployment of large-scale distributed systems. 
-                    I work on databases, datawarehousing, APIs, batch/streaming pipelines, data modelling, analytics, machine learning, 
-                    AI engineering, cloud deployments, infrastructure as Code (Iac), microservices, Kubernetes, UI development and some blockchain projects. 
-                    {/* <Link href="https://tiptier.co" className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">Tiptier</Link>, 
-                    we build cloud-based data and AI solutions for businesses and teams, and also provide technical consultations on projects.  */}
+
+                    <h3 className="text-lg font-semibold text-[#333333]">How I work</h3>
+                    <p className="mt-1 max-w-3xl text-[#333333] leading-normal">
+                    I&apos;m an engineer who owns systems end to end, I take ideas to production, from design and data modelling,
+                    batch and streaming pipelines, observability, analytics and AI/ML.
+                    I care about reliability and cost as much as delivery speed — and I work closely with
+                    product and data science so what ships actually gets used.
                     </p>
+
+                    <h3 className="mt-4 text-lg font-semibold text-[#333333]">Beyond work</h3>
+                    <div className="mt-1 flex max-w-3xl flex-col gap-2 text-[#333333] leading-normal">
+                      <p>
+                        <span className="font-semibold">On the court &amp; the couch</span>
+                        {" "}— basketball pick-up games and videogames when I need a hard reset from the terminal.
+                      </p>
+                      <p>
+                        <span className="font-semibold">Building in public</span>
+                        {" "}— vibecoded games at{" "}
+                        <Link href="/games" className="text-black-600 underline hover:text-blue-800">
+                          /games
+                        </Link>
+                        ; blogs and project notes at{" "}
+                        <Link href="/work" className="text-black-600 underline hover:text-blue-800">
+                          /work
+                        </Link>
+                        ; always picking up new platform and ML tools (Udacity and side experiments).
+                      </p>
+                      <p>
+                        <span className="font-semibold">Consulting</span>
+                        {" "}— I also take on cloud data and platform projects through{" "}
+                        <Link
+                          href="https://tiptier.co"
+                          className="text-black-600 underline hover:text-blue-800"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Tiptier
+                        </Link>
+                        .
+                      </p>
+                    </div>
                 </section>
 
                 <FooterCTA />

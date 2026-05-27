@@ -1,4 +1,0 @@
-My Jigga
-
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum purus mauris, suscipit sed libero ac, volutpat ullamcorper odio. In a varius ante. Sed ac cursus tellus. Nunc rhoncus dolor vitae magna finibus dignissim. Sed vestibulum a erat id auctor. Aenean et molestie turpis. Etiam quis leo vehicula, finibus nibh eu, luctus ipsum. Nulla facilisi. Duis pulvinar ex eu odio tristique accumsan. Suspendisse vel neque mattis, varius neque eu, varius tellus. Sed semper scelerisque urna, aliquam tincidunt mauris dapibus malesuada. Vivamus consectetur enim eu risus aliquam, in gravida dolor molestie

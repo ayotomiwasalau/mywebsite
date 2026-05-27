@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import { adminFetch } from "@lib/adminFetch";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 
 const FASTAPI_ROUTE_BASE = getFastApiRouteBaseUrl();
@@ -59,7 +60,7 @@ export default function WorkImagesSection() {
     setLoading(true);
     setListError("");
     try {
-      const response = await fetch(`${FASTAPI_ROUTE_BASE}/images`);
+      const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/images`);
       if (!response.ok) {
         throw new Error(await extractApiErrorMessage(response));
       }
@@ -147,7 +148,7 @@ export default function WorkImagesSection() {
       form.append("slug", uploadSlug.trim());
       form.append("file", uploadFile);
 
-      const response = await fetch(`${FASTAPI_ROUTE_BASE}/images`, {
+      const response = await adminFetch(`${FASTAPI_ROUTE_BASE}/images`, {
         method: "POST",
         body: form,
       });
@@ -174,7 +175,7 @@ export default function WorkImagesSection() {
     setListError("");
     try {
       const path = `${FASTAPI_ROUTE_BASE}/images/${row.kind}/${encodeURIComponent(row.slug)}/${encodeURIComponent(row.image_name)}`;
-      const response = await fetch(path, { method: "DELETE" });
+      const response = await adminFetch(path, { method: "DELETE" });
       if (!response.ok) {
         throw new Error(await extractApiErrorMessage(response));
       }

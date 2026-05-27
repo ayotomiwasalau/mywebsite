@@ -69,14 +69,14 @@ const ContactMessageForm = () => {
       <div className="mx-auto max-w-5xl">
         <h2
           id="message-form-heading"
-          className="mb-6 font-sans text-xl font-bold text-black sm:text-2xl md:mb-8"
+          className="mb-6 text-xl font-bold text-black sm:text-2xl md:mb-8"
         >
           Message form
         </h2>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl bg-[#BDD4D8] p-8 font-sans shadow-sm sm:p-10"
+          className="rounded-2xl bg-[#BDD4D8] p-8 shadow-sm sm:p-10"
         >
           <div className="flex flex-col gap-4 sm:gap-5">
             <input
@@ -123,7 +123,7 @@ const ContactMessageForm = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-[#E06676] px-8 py-3 font-sans text-sm font-semibold text-gray-900 transition hover:opacity-90 sm:text-base"
+              className="rounded-xl bg-[#E06676] px-8 py-3 text-sm font-semibold text-gray-900 transition hover:opacity-90 sm:text-base"
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </button>

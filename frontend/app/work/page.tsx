@@ -7,7 +7,7 @@ import FooterCTA from "../components/layout/FooterCTA";
 
 export default function Work() {
   return (
-    <div className="font-[family-name:var(--font-geist-mono)] bg-white">
+    <div className="bg-white">
       <NavBar />
       <ContentPosts />
       <MediaSection />

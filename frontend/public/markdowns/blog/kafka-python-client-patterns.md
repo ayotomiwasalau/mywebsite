@@ -1,19 +1,20 @@
 ![](/images/blog/kafka-python-client-patterns/kafka-data-streams.webp)
 
-In the previous kafka [article](https://ayotomiwasalau.com/posts/confluent-kafka-publish-and-subscribe?id=46b23cd4-66cd-4112-8ce2-dc2389a3879b), we used commandline console to publish and subscribe to data, now we are going to use confluent python SDK to send and receive data stream. This is especially good when you have an application through which you want to publish or receive data
+In the previous [Kafka CLI article](/posts/confluent-kafka-cli-publish-subscribe), we published and subscribed using the console tools. Here we use the **Confluent Python SDK** to send and receive data streams from an application — the pattern you need when Kafka is embedded in production code rather than tested manually.
 
-To get started, we:
-- Setup the kafka service stack
-- Define the schema and setup the topic
-- Setup producer python lib
-- Setup the consumer python lib
-- Initiate both process
+## Getting started
 
-Here we have the kafka stack running - the broker, schema registry, connect, KSQL db, control center etc
+1. Set up the Kafka service stack
+2. Define the schema and create the topic
+3. Implement the producer (Python)
+4. Implement the consumer (Python)
+5. Run both processes and verify in Control Center
+
+Here is the Kafka stack running — broker, Schema Registry, Connect, ksqlDB, Control Center, and related services:
 
 ![](/images/blog/kafka-python-client-patterns/kafka-service-stack.png)
 
-We define our schema, we are receiving financial data generated using the [faker](https://faker.readthedocs.io/en/master/) library. The fields includes ```username```, ```currency``` and ```amount```
+We define a schema for financial data generated with the [Faker](https://faker.readthedocs.io/en/master/) library. Fields include `username`, `currency`, and `amount`:
 
 ```python
 @dataclass
@@ -33,7 +34,7 @@ class Purchase:
         )
 ```
 
-Next we setup up our topic name ```src.financials.purchases```
+Create the topic `src.financials.purchases`:
 
 ```python
 def create_topic(client, topic_name):
@@ -62,7 +63,7 @@ def create_topic(client, topic_name):
             print(f"failed to create topic {topic_name}: {e}")
 ```
 
-Then we initialize the producer to pushout data
+Initialize the producer to push data:
 
 ```python
 async def produce(topic_name):
@@ -82,26 +83,24 @@ async def produce(topic_name):
             elapse = datetime.utcnow() - starttime
             print(f"Total produced: {i}, time - {elapse}")
         i += 1
-        
-        await asyncio.sleep(0.01)
 
+        await asyncio.sleep(0.01)
 ```
 
-This is the output from the producer
+Producer output:
 
 ![](/images/blog/kafka-python-client-patterns/kafka-producer-scrnsht.png)
 
-
-Afterwards, we setup the consumer to receive the data realtime
+Set up the consumer to receive data in near real time:
 
 ```python
 async def consume(topic_name):
     """Consumes produced messages"""
     c = Consumer({"bootstrap.servers": BROKER_URL, "group.id": "0"})
     c.subscribe([topic_name])
-    num_consumed=0
+    num_consumed = 0
     while True:
-        msg = c.consume(5,timeout=1)
+        msg = c.consume(5, timeout=1)
         if msg:
             num_consumed += 1
             for message in msg:
@@ -109,46 +108,40 @@ async def consume(topic_name):
                 print(f"[{timestamp}] Consumed message: {message.value()}")
             if num_consumed % 10 == 0:
                 print(f"Total consumed: {num_consumed} messages")
-  
         else:
             await asyncio.sleep(0.01)
         c.commit(asynchronous=True)
-
 ```
 
-Here we can see the data being received by the consumer
+Consumer output:
 
 ![](/images/blog/kafka-python-client-patterns/kafka-consumer-scrnsht.png)
 
-When working with Kafka in Python, there are two primary approaches to producing and consuming event streams:
+## Synchronous vs asynchronous processing
 
-### Synchronous Processing
+When working with Kafka in Python, there are two primary approaches:
 
-In synchronous mode, the producer or consumer waits for each operation to complete before moving on to the next one. This means:
+### Synchronous processing
 
-- **Synchronous Producer:** Each message is sent, and the producer waits for an acknowledgment from the broker before sending the next message. This approach is simple and ensures delivery confirmation, but can be slower due to waiting for each round-trip. In the confluent python producer lib, we would use ```flush()``` to make sure all the data is sent and the acknowledgement is received
+- **Producer:** Each message is sent and the producer waits for broker acknowledgment before sending the next. Simple and reliable; use `flush()` to ensure delivery.
+- **Consumer:** Fetches and processes messages one batch at a time, committing offsets before fetching more. Straightforward error handling; use `commit()` before receiving new events.
 
-- **Synchronous Consumer:** The consumer fetches messages one at a time (or in small batches), processes them, and then commits the offset before fetching more. This can make error handling and message ordering straightforward, but may limit throughput. In the confluent python consumer lib, we would use ```commit()``` to commit before receiving more events.
+### Asynchronous processing
 
-### Asynchronous Processing
+- **Producer:** Messages are sent without blocking; `poll()` pushes events while acknowledgments arrive in the background. Higher throughput with batching.
+- **Consumer:** Processes without blocking on each message; use `commit(asynchronous=True)` while continuing to poll.
 
-- **Asynchronous Producer:** Messages are sent without blocking, allowing the producer to continue sending while previous messages are being acknowledged. This approach uses callbacks for delivery confirmation and can batch multiple messages together for better throughput. In the confluent python producer lib, we would use ```poll()``` to push event without waiting explicitly for acknowledgement. Python asyncio library enable us to implement the asynchronous processing
+This project uses the **async approach** for higher throughput, with Python's `asyncio` coordinating producer and consumer loops.
 
-- **Asynchronous Consumer:** Processes messages without blocking on each individual message. Can handle multiple messages concurrently and use batch processing for improved performance. In the confluent python consumer lib, we would use ```commit(asynchronous=True)``` to commit asynchronous while receiving new events
+## Control Center
 
-For this project we use the async approach because it enables high throughput
-
-
-We can also navigate to the control center to view the data in topic
+Navigate to Control Center to inspect topic data, consumer lag, and throughput:
 
 ![](/images/blog/kafka-python-client-patterns/kafka-ui-0.png)
 
 ![](/images/blog/kafka-python-client-patterns/kafka-ui-1.png)
 
+## References
 
-This wraps up using python confluent library to set up your producer and consumer
-
-### Reference
-- [Github](https://github.com/ayotomiwasalau/confluent-kafka-projects)
-
-
+- [GitHub — confluent-kafka-projects](https://github.com/ayotomiwasalau/confluent-kafka-projects)
+- [Previous — Confluent Kafka CLI pub/sub](/posts/confluent-kafka-cli-publish-subscribe)

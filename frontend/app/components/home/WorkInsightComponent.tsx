@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 export interface WorkInsightEntry {
   id: string;
@@ -21,10 +22,16 @@ interface WorkInsightComponentProps {
   index: number;
 }
 
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
+const viewButtonClass =
+  "inline-flex items-center justify-center rounded-full bg-[#D65A78] text-white transition-transform hover:scale-[1.02] hover:opacity-90 active:scale-[0.97]";
+
 const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
   entry,
   index,
 }) => {
+  const reduceMotion = useReducedMotion();
   const bgClass = index % 2 === 0 ? "bg-[#BBD5DC]" : "bg-[#E6A892]";
 
   const tagList = (
@@ -41,7 +48,17 @@ const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
   );
 
   return (
-    <article className={`rounded-2xl p-4 md:p-5 ${bgClass}`}>
+    <motion.article
+      className={`rounded-2xl p-4 md:p-5 ${bgClass}`}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { duration: 0.5, delay: index * 0.1, ease: easeOut }
+      }
+      whileHover={reduceMotion ? undefined : { y: -2, transition: { duration: 0.2 } }}
+    >
       {/* Mobile / tablet: image + header row, then description + view + tags full width below */}
       <div className="flex flex-col gap-3 lg:hidden">
         <div className="flex flex-row items-start gap-3">
@@ -72,7 +89,9 @@ const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
             </p>
             <Link
               href={entry.href}
-              className="inline-flex h-8 w-16 shrink-0 items-center justify-center rounded-full bg-[#D65A78] px-2 text-xs text-white transition hover:opacity-90 sm:h-9 sm:w-20 sm:text-sm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${viewButtonClass} h-8 w-16 shrink-0 px-2 text-xs sm:h-9 sm:w-20 sm:text-sm`}
             >
               View
             </Link>
@@ -107,12 +126,14 @@ const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
 
         <Link
           href={entry.href}
-          className="inline-flex h-10 w-[10rem] shrink-0 items-center justify-center rounded-full bg-[#D65A78] px-6 text-lg text-white transition hover:opacity-90"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${viewButtonClass} h-10 w-[10rem] shrink-0 px-6 text-lg`}
         >
           View
         </Link>
       </div>
-    </article>
+    </motion.article>
   );
 };
 

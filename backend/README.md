@@ -4,6 +4,21 @@ chmod +x .blogenv/bin/activate
 
 source .blogenv/bin/activate
 
+## Admin auth
+
+Public read routes such as `GET /api/v1/blogs`, `GET /api/v1/projects`, `POST /api/v1/messages`, and `POST /api/v1/subscribers` stay open. Admin routes require a bearer token from `POST /api/v1/auth/login`.
+
+Set these local env values in `backend/.env`:
+
+```bash
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change-me-local-only
+JWT_SECRET=change-me-to-a-long-random-secret
+JWT_EXPIRES_MINUTES=60
+```
+
+For deployed environments, prefer `ADMIN_PASSWORD_HASH` instead of `ADMIN_PASSWORD`.
+
 
 * blog & project service
 
@@ -73,7 +88,6 @@ blog
     title: "",
     header_img_url: "",
     header_img_alt: "",
-    time_label: "",
     description: "",
     tags: [],
     href: "",
@@ -81,7 +95,6 @@ blog
     created_on: "",
     updated_on: "",
     shares: 0,
-    share_destination: "",
     project_url: ""
 }
 
@@ -92,7 +105,6 @@ project
     title: "",
     header_img_url: "",
     header_img_alt: "",
-    time_label: "",
     description: "",
     tags: [],
     href: "",
@@ -100,7 +112,6 @@ project
     created_on: "",
     updated_on: "",
     shares: 0,
-    share_destination: "",
     blog_url: ""
 }
 
@@ -109,7 +120,7 @@ project
 
 {
   "id": "0",
-  "title": "Club-football match event data store",
+  "title": "Building a Micro-Event Data Lake: Spark, Airflow, and Redshift on AWS",
   "category": "Sport",
   "description": "A data store containing sourced and processed data on microevents that happened in a football game such length of pass, position of shot taken, success of tackle etc...",
   "imageSrc": "/blogimages/clubdwh.png",

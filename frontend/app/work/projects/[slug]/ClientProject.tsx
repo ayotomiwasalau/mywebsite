@@ -5,6 +5,7 @@ import Footer from "../../../components/layout/Footer";
 import PostContent from "../../../components/posts/PostContent";
 import PostLanding from "../../../components/posts/PostLanding";
 import Share from "../../../components/posts/Share";
+import RelatedItems from "../../../components/posts/RelatedItems";
 import { PostsSchema } from "../../../components/utils/interface";
 
 type ClientProjectProps = {
@@ -13,7 +14,7 @@ type ClientProjectProps = {
 
 export default function ClientProject({ project }: ClientProjectProps) {
   return (
-    <div className="font-[family-name:var(--font-geist-mono)]">
+    <div>
       <NavBar />
       <div>
         <PostLanding postSelected={project} />
@@ -23,6 +24,7 @@ export default function ClientProject({ project }: ClientProjectProps) {
             <Share postSelected={project} />
           </div>
         </div>
+        <RelatedItems postSelected={project} />
       </div>
       <Footer />
     </div>

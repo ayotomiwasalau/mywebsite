@@ -1,4 +1,7 @@
+"use client";
+
 import React, { Fragment } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import TechStack, { TechStackItem } from "./TechStack";
 
 const ROW_1: TechStackItem[] = [
@@ -22,6 +25,8 @@ const ROW_2: TechStackItem[] = [
 
 const ALL_ITEMS: TechStackItem[] = [...ROW_1, ...ROW_2];
 
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
 function SeparatorDot({ dotIndex }: { dotIndex: number }) {
   const teal = dotIndex % 2 === 0;
   return (
@@ -36,17 +41,19 @@ function SeparatorDot({ dotIndex }: { dotIndex: number }) {
 
 function TechRow({
   items,
-  dotOffset,
+  startIndex,
 }: {
   items: TechStackItem[];
-  dotOffset: number;
+  startIndex: number;
 }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-0.5 gap-y-8 md:gap-x-1 lg:gap-x-0.5 xl:gap-x-1">
       {items.map((item, i) => (
         <Fragment key={item.name}>
-          <TechStack item={item} />
-          {i < items.length - 1 && <SeparatorDot dotIndex={dotOffset + i} />}
+          <TechStack item={item} index={startIndex + i} />
+          {i < items.length - 1 && (
+            <SeparatorDot dotIndex={startIndex + i} />
+          )}
         </Fragment>
       ))}
     </div>
@@ -54,22 +61,32 @@ function TechRow({
 }
 
 export default function TechStackSection() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="w-full bg-white px-6 py-12">
       <div className="mx-auto max-w-6xl">
-        <h2 className="mb-8 text-2xl font-light text-[#333333]">Tech Stack</h2>
+        <motion.h2
+          className="mb-8 text-2xl font-light text-[#333333]"
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={
+            reduceMotion ? { duration: 0 } : { duration: 0.45, ease: easeOut }
+          }
+        >
+          Tech Stack
+        </motion.h2>
 
-        {/* Mobile: 3 cols; tablet (md+): 4 cols; no separator dots */}
         <div className="grid grid-cols-3 justify-items-center gap-x-2 gap-y-6 sm:gap-x-4 sm:gap-y-8 md:grid-cols-4 md:gap-x-3 lg:hidden">
-          {ALL_ITEMS.map((item) => (
-            <TechStack key={item.name} item={item} />
+          {ALL_ITEMS.map((item, index) => (
+            <TechStack key={item.name} item={item} index={index} />
           ))}
         </div>
 
-        {/* Desktop: two rows with alternating dots */}
         <div className="hidden flex-col items-center gap-10 lg:flex xl:gap-12">
-          <TechRow items={ROW_1} dotOffset={0} />
-          <TechRow items={ROW_2} dotOffset={ROW_1.length - 1} />
+          <TechRow items={ROW_1} startIndex={0} />
+          <TechRow items={ROW_2} startIndex={ROW_1.length} />
         </div>
       </div>
     </section>

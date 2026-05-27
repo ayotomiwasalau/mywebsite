@@ -1,11 +1,6 @@
-
-
-The priority of data scientists simply lies in picking out the right features, building and deploying their models. They do not like to be particularly bothered about other aspects like model versioning, job scheduling, flow architecture, compute resources management, which is needed to make operationalizing data science successful. This is where Metaflow comes in.
-
+The priority of data scientists simply lies in picking out the right features, building and deploying their models. They do not like to be particularly bothered about other aspects like model versioning, job scheduling, flow architecture, and compute resource management, which are needed to make operationalizing data science successful. This is where Metaflow comes in.
 
 ![header-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_header_img.png)
-
-
 
 ## What is Metaflow?
 
@@ -15,7 +10,7 @@ Metaflow is an open-source tool by Netflix for managing data science workflows. 
 
 This system is called a DAG, Directed Acyclic Graph. In this hypothetical example, the flow trains two versions of models in parallel and outputs the highest accuracy score.
 
-One other interesting attribute of Metaflow is that it ships with a [lightweight service](https://github.com/Netflix/metaflow-service) that provides a centralized place to keep inspect and track all your flow executions. Metaflow will use a local directory to keep track of all metadata on executions from your laptop. This metadata is called a Data Artifact.
+One other interesting attribute of Metaflow is that it ships with a [lightweight service](https://github.com/Netflix/metaflow-service) that provides a centralized place to inspect and track all your flow executions. Metaflow will use a local directory to keep track of all metadata on executions from your laptop. This metadata is called a Data Artifact.
 
 You can use a local Jupyter notebook to interact with data artifacts from all your previous executions as well as currently running ones. However, deploying the Metaflow service alongside Amazon S3 as a datastore is helpful if you would like to share results with your peers and track your work without fear of losing any state.
 
@@ -23,7 +18,7 @@ You can use a local Jupyter notebook to interact with data artifacts from all yo
 
 A Metaflow DAG essentially consists of the flow, step, and transition.
 
-- **Flow**: The instance that manages all the codes for the pipeline. It is a Python object in this case `class MyFlow(Flowspec)`.
+- **Flow**: The instance that manages all the code for the pipeline. It is a Python object in this case `class MyFlow(Flowspec)`.
 - **Steps**: A step is the smallest resumable unit of computation, delimited by decorator `@step`. They are Python functions in the MyFlow object, in this case, `def start`, `fitA`, `fitB`, `eval`, `end`.
 - **Transitions**: Links between the steps could be of different types (linear, branch, and for each); there are more details in the [documentation](https://docs.metaflow.org/).
 
@@ -51,22 +46,19 @@ Or upgrade already installed Metaflow:
 pip install --upgrade metaflow
 ```
 
-Now, one can prefer the remote option given the scale of the data and resource needed, or the local where fast interaction is required but the resource constraint would be there. There is also the hybrid method to get the best of both worlds - local and remote - by switching easily between both servers. Metaflow snapshots all data and code in the cloud automatically. This means that you can inspect, resume, and restore any previous Metaflow execution without having to worry that the fruits of your hard work get lost.
+Now, one can prefer the remote option given the scale of the data and resource needed, or the local where fast interaction is required but the resource constraint would be there. There is also the hybrid method to get the best of both worlds — local and remote — by switching easily between both servers. Metaflow snapshots all data and code in the cloud automatically. This means that you can inspect, resume, and restore any previous Metaflow execution without having to worry that the fruits of your hard work get lost.
 
 ## Starting Your Data Science/Machine Learning Project: MNIST
 
-For this post, we will build a data science workflow for training a machine learning model using the MNIST dataset. [MNIST](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv) dataset originally is a database of handwritten digits images but for this project, the image data has been converted to CSV format using its channels -RGB - as features in the dataset i.e. vectorized.
+For this post, we will build a data science workflow for training a machine learning model using the MNIST dataset. The [MNIST](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv) dataset originally is a database of handwritten digit images but for this project, the image data has been converted to CSV format using its channels — RGB — as features in the dataset i.e. vectorized.
 
 The data file contains the 60,000 examples and labels. Each row consists of 785 values: the first value is the label (a number from 0 to 9) and the remaining 784 values are the pixel values (a number from 0 to 255).
 
 ![data-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_data.jpg)
 
-
 It would involve data extraction, data preparation, data split, model fitting and prediction, and model evaluation. The above graph can be represented in the code below.
 
 ![steps-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_steps.jpg)
-
-The above graph can be represented in the code below
 
 ![Step 1](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_wlkthru_step01.png)
 
@@ -103,10 +95,7 @@ class MnistFlow(FlowSpec):
         # Read data from csv file
         self.mnist_df = pd.read_csv(StringIO(self.mnist_train_data))
         self.next(self.prepare_data)
-
 ```
-
-
 
 2. **Prepare the dataset by extracting the features and the label from the whole dataset**:
 
@@ -194,11 +183,10 @@ def join(self, inputs):
         merge the data artifact from the models
     """
 
-    # merge artificate during a join
+    # merge artifacts during a join
     self.merge_artifacts(inputs)
 
     self.next(self.evaluate)
-
 ```
 
 7. **Evaluate the model**:
@@ -255,8 +243,6 @@ Below, you can inspect your flow in this manner. This could be done through a Ju
 
 So we covered understanding of Metaflow, its basic components, an example of a flow execution using the MNIST dataset, and inspecting data flow.
 
-Check out the code in this [github repo](https://github.com/ayotomiwasalau/mnist-with-metaflow)
+## References
 
-Hope it was informative. Do share.
-
-Cheers
+- [GitHub — mnist-with-metaflow](https://github.com/ayotomiwasalau/mnist-with-metaflow)

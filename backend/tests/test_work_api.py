@@ -30,7 +30,6 @@ def _blog(slug: str, day: int) -> dict:
         "feature": False,
         "feat_order": None,
         "shares": 0,
-        "share_destination": "x",
         "project_url": "https://github.com/x",
     }
 
@@ -51,7 +50,6 @@ def _project(slug: str, day: int) -> dict:
         "feature": False,
         "feat_order": None,
         "shares": 0,
-        "share_destination": "x",
         "blog_url": "/posts/x",
     }
 

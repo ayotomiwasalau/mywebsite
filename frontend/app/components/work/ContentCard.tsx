@@ -59,8 +59,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   description,
   href: _href,
 }) => {
-  const kindResolved: "blog" | "project" =
-    kind ?? (index % 2 === 0 ? "blog" : "project");
+  const kindResolved: "blog" | "project" = kind ?? "blog";
 
   const resolvedSlug = slug ?? urlCleaner(title);
   const destinationHref =
@@ -81,6 +80,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
   return (
     <Link
       href={destinationHref}
+      target="_blank"
+      rel="noopener noreferrer"
       className="group block overflow-hidden rounded-xl shadow-sm transition hover:opacity-95"
     >
       <motion.div
@@ -113,7 +114,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <h3 className="text-lg font-semibold leading-snug text-[#333333]">
             {title}
           </h3>
-          <p className="line-clamp-3 font-[family-name:var(--font-geist-mono)] text-xs leading-relaxed text-[#333333] sm:text-sm">
+          <p className="line-clamp-3 text-xs leading-relaxed text-[#333333] sm:text-sm">
             {blurb}
           </p>
           <div className="mt-0.5 flex flex-wrap gap-2 pt-1">

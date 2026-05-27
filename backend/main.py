@@ -1,11 +1,24 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Annotated, Optional
 
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
+load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
+
 from src.api_config import API_PREFIX
+from src.auth import (
+    AdminLoginRequest,
+    AdminLoginResponse,
+    AdminMeResponse,
+    AdminPrincipal,
+    create_access_token,
+    require_admin,
+    verify_admin_credentials,
+)
 from src.database.factory import get_db, init_database, shutdown_database
 from src.database.interface import DatabaseInterface
 from src.exceptions import register_exception_handlers
@@ -122,6 +135,23 @@ def healthz():
     return {"message": "Blog API is running"}
 
 
+@api_router.post("/auth/login", response_model=AdminLoginResponse)
+def admin_login(request: AdminLoginRequest):
+    if not verify_admin_credentials(request.username, request.password):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid admin credentials.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token, expires_in = create_access_token(request.username)
+    return AdminLoginResponse(access_token=token, expires_in=expires_in)
+
+
+@api_router.get("/auth/me", response_model=AdminMeResponse)
+def admin_me(admin: AdminPrincipal = Depends(require_admin)):
+    return AdminMeResponse(username=admin.username, role=admin.role)
+
+
 @api_router.get("/blogs", response_model=BlogListResponse)
 def list_blogs(
     params: Annotated[BlogListParams, Depends()],
@@ -136,14 +166,22 @@ def get_blog_by_slug(slug: str, service: BlogsFunction = Depends(blog_service)):
     return service.get_blog_by_slug(slug)
 
 
-@api_router.post("/blogs", response_model=BlogCreateResponse)
+@api_router.post(
+    "/blogs",
+    response_model=BlogCreateResponse,
+    dependencies=[Depends(require_admin)],
+)
 def create_blog(
     request: BlogCreate, service: BlogsFunction = Depends(blog_service)
 ):
     return service.create_blog(request)
 
 
-@api_router.put("/blogs/{slug}", response_model=BlogUpdateResponse)
+@api_router.put(
+    "/blogs/{slug}",
+    response_model=BlogUpdateResponse,
+    dependencies=[Depends(require_admin)],
+)
 def update_blog(
     slug: str,
     request: BlogCreate,
@@ -152,7 +190,11 @@ def update_blog(
     return service.update_blog(slug, request)
 
 
-@api_router.put("/blogs/{slug}/markdown", response_model=MarkdownSaveResponse)
+@api_router.put(
+    "/blogs/{slug}/markdown",
+    response_model=MarkdownSaveResponse,
+    dependencies=[Depends(require_admin)],
+)
 def save_blog_markdown(
     slug: str,
     body: MarkdownWriteBody,
@@ -162,7 +204,11 @@ def save_blog_markdown(
     return service.save_blog_markdown(slug, body)
 
 
-@api_router.delete("/blogs/{slug}", response_model=BlogDeleteResponse)
+@api_router.delete(
+    "/blogs/{slug}",
+    response_model=BlogDeleteResponse,
+    dependencies=[Depends(require_admin)],
+)
 def delete_blog(slug: str, service: BlogsFunction = Depends(blog_service)):
     return service.delete_blog(slug)
 
@@ -183,14 +229,22 @@ def get_project_by_slug(
     return service.get_project_by_slug(slug)
 
 
-@api_router.post("/projects", response_model=ProjectCreateResponse)
+@api_router.post(
+    "/projects",
+    response_model=ProjectCreateResponse,
+    dependencies=[Depends(require_admin)],
+)
 def create_project(
     request: ProjectCreate, service: ProjectsFunction = Depends(project_service)
 ):
     return service.create_project(request)
 
 
-@api_router.put("/projects/{slug}", response_model=ProjectUpdateResponse)
+@api_router.put(
+    "/projects/{slug}",
+    response_model=ProjectUpdateResponse,
+    dependencies=[Depends(require_admin)],
+)
 def update_project(
     slug: str,
     request: ProjectCreate,
@@ -199,7 +253,11 @@ def update_project(
     return service.update_project(slug, request)
 
 
-@api_router.put("/projects/{slug}/markdown", response_model=MarkdownSaveResponse)
+@api_router.put(
+    "/projects/{slug}/markdown",
+    response_model=MarkdownSaveResponse,
+    dependencies=[Depends(require_admin)],
+)
 def save_project_markdown(
     slug: str,
     body: MarkdownWriteBody,
@@ -209,14 +267,22 @@ def save_project_markdown(
     return service.save_project_markdown(slug, body)
 
 
-@api_router.delete("/projects/{slug}", response_model=ProjectDeleteResponse)
+@api_router.delete(
+    "/projects/{slug}",
+    response_model=ProjectDeleteResponse,
+    dependencies=[Depends(require_admin)],
+)
 def delete_project(
     slug: str, service: ProjectsFunction = Depends(project_service)
 ):
     return service.delete_project(slug)
 
 
-@api_router.get("/images", response_model=ImageListResponse)
+@api_router.get(
+    "/images",
+    response_model=ImageListResponse,
+    dependencies=[Depends(require_admin)],
+)
 def list_images(
     kind: Annotated[Optional[ImageKind], Query()] = None,
     service: ImagesFunction = Depends(image_service),
@@ -225,7 +291,11 @@ def list_images(
     return service.list_images(kind_filter=kind)
 
 
-@api_router.post("/images", response_model=ImageWriteResponse)
+@api_router.post(
+    "/images",
+    response_model=ImageWriteResponse,
+    dependencies=[Depends(require_admin)],
+)
 async def upload_image(
     kind: Annotated[ImageKind, Form()],
     slug: Annotated[str, Form()],
@@ -242,7 +312,11 @@ async def upload_image(
         raise HTTPException(status_code=422, detail=str(e)) from e
 
 
-@api_router.put("/images/{kind}/{slug}/{image_name}", response_model=ImageWriteResponse)
+@api_router.put(
+    "/images/{kind}/{slug}/{image_name}",
+    response_model=ImageWriteResponse,
+    dependencies=[Depends(require_admin)],
+)
 async def replace_image(
     kind: ImageKind,
     slug: str,
@@ -261,7 +335,9 @@ async def replace_image(
 
 
 @api_router.delete(
-    "/images/{kind}/{slug}/{image_name}", response_model=ImageDeleteResponse
+    "/images/{kind}/{slug}/{image_name}",
+    response_model=ImageDeleteResponse,
+    dependencies=[Depends(require_admin)],
 )
 def delete_image(
     kind: ImageKind,
@@ -277,7 +353,11 @@ def delete_image(
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
-@api_router.get("/messages", response_model=MessageListResponse)
+@api_router.get(
+    "/messages",
+    response_model=MessageListResponse,
+    dependencies=[Depends(require_admin)],
+)
 def list_messages(
     params: Annotated[MessageListParams, Depends()],
     service: MessagesFunction = Depends(message_service),
@@ -293,7 +373,11 @@ def create_message(
     return service.create_message(request)
 
 
-@api_router.delete("/messages/{message_id}", response_model=MessageDeleteResponse)
+@api_router.delete(
+    "/messages/{message_id}",
+    response_model=MessageDeleteResponse,
+    dependencies=[Depends(require_admin)],
+)
 def delete_message(
     message_id: str, service: MessagesFunction = Depends(message_service)
 ):
@@ -301,7 +385,11 @@ def delete_message(
     return service.delete_message_by_id(message_id)
 
 
-@api_router.get("/subscribers", response_model=SubscriberListResponse)
+@api_router.get(
+    "/subscribers",
+    response_model=SubscriberListResponse,
+    dependencies=[Depends(require_admin)],
+)
 def list_subscribers(
     params: Annotated[SubscriberListParams, Depends()],
     service: SubscribersFunction = Depends(subscriber_service),
@@ -318,7 +406,11 @@ def create_subscriber(
     return service.create_subscriber(request)
 
 
-@api_router.delete("/subscribers/{subscriber_id}", response_model=SubscriberDeleteResponse)
+@api_router.delete(
+    "/subscribers/{subscriber_id}",
+    response_model=SubscriberDeleteResponse,
+    dependencies=[Depends(require_admin)],
+)
 def delete_subscriber(
     subscriber_id: str, service: SubscribersFunction = Depends(subscriber_service)
 ):
@@ -338,7 +430,11 @@ def list_work(
     return service.list_work(params)
 
 
-@api_router.get("/work-summary", response_model=WorkSummaryResponse)
+@api_router.get(
+    "/work-summary",
+    response_model=WorkSummaryResponse,
+    dependencies=[Depends(require_admin)],
+)
 def get_work_summary(service: WorksFunction = Depends(work_service)):
     """Dashboard summary counts for admin work overview."""
     return service.get_work_summary()
@@ -352,4 +448,5 @@ def list_work_featured(service: WorksFunction = Depends(work_service)):
 
 app.include_router(api_router)
 
-handler = Mangum(app)
+# handler = Mangum(app)
+handler = app
