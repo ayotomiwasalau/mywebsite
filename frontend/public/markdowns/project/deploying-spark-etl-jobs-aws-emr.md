@@ -1,4 +1,4 @@
-![](/images/project/deploying-spark-etl-jobs-aws-emr/hero.jpg)
+![](/images/project/deploying-spark-etl-jobs-aws-emr/sparkimg.png)
 
 A music streaming startup stores **JSON song metadata and user logs in S3** but needs production-grade Spark jobs — not just notebook prototypes. This project covers the full path from **EMR cluster setup through Spark ETL to deployment via console, CLI, and Boto3**.
 
