@@ -1,6 +1,6 @@
 ![](/images/project/building-chatpdfdoc-rag-fastapi-chromadb/rag-interface.png)
 
-Teams need to **query PDF documents with natural language** without sending entire files to an LLM on every request. ChatPDFDoc is a **Retrieval-Augmented Generation (RAG)** assistant that ingests PDFs, indexes chunks in a vector store, and answers questions with grounded context.
+Teams need to **query PDF documents with natural language** without sending entire files to an LLM on every request. ChatPDFDoc is a **Retrieval-Augmented Generation (RAG)** assistant that ingests PDFs, indexes chunks in a vector store, and answers questions with grounded context needed.
 
 ## Problem
 
