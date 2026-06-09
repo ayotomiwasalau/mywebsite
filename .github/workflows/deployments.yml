@@ -71,7 +71,8 @@ jobs:
             const fs = require('fs');
             const plan = fs.readFileSync('plan.txt', 'utf8');
             const truncated = plan.length > 60000 ? plan.slice(0, 60000) + '\n...truncated...' : plan;
-            const body = `#### Terraform plan (${{ steps.plan.outputs.exitcode == '0' ? 'success' : 'failed' }})\n<details><summary>Show plan</summary>\n\n\`\`\`\n${truncated}\n\`\`\`\n</details>`;
+            const status = '${{ steps.plan.outputs.exitcode }}' === '0' ? 'success' : 'failed';
+            const body = `#### Terraform plan (${status})\n<details><summary>Show plan</summary>\n\n\`\`\`\n${truncated}\n\`\`\`\n</details>`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
