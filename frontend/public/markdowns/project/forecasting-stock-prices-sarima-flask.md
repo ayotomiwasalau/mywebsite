@@ -1,82 +1,110 @@
 ![](/images/project/forecasting-stock-prices-sarima-flask/stock-app-index.png)
 
-Financial analysts often need a forward view of price movement — not just historical charts. This project is a **web app for forecasting stock prices** from daily closing history, built for practical use (professional or personal) to support analysis and investment planning.
+A **Flask web app** for forecasting a stock’s **closing price** on a future date you choose. You supply a ticker symbol, a reference training window (start and end dates), and a prediction date; the app pulls daily history from **Quandl**, fits a **SARIMAX** model, and returns a point forecast with an interactive **Plotly** chart that compares observed closes against the projected path.
 
-## Problem
+The build targets personal or professional financial analysis where an interpretable classical time-series method is preferable to a black-box model. It is a learning and demonstration project—not investment advice.
 
-Raw historical prices are easy to plot but hard to turn into a **dated forecast** without standing up a modelling workflow. Spreadsheets break down when you want:
+[GitHub — Stock_Prediction_Web_App](https://github.com/ayotomiwasalau/Stock_Prediction_Web_App) 
 
-- A repeatable forecast for a **specific future date**
-- A **time-series model** that respects seasonality in market data
-- An interactive UI analysts can use without running notebooks locally
+## Context
 
-The goal was a simple, deployable tool: enter a ticker and target date, get a forecast backed by a proper statistical model — not a black-box guess.
+Historical prices are easy to chart, but a **dated point forecast** for a specific ticker requires a repeatable workflow. Spreadsheets and notebooks do not give analysts a shared interface for choosing a **reference training window**, fitting a time-series model, and viewing **reference vs forecast** on one chart.
 
-## Solution
+## Approach
 
-Build a **Flask** web application that:
+The [repo](https://github.com/ayotomiwasalau/Stock_Prediction_Web_App) packages ingest, modelling, and visualization as a small full-stack product—Flask forms in, Plotly chart out:
 
-1. Pulls historical stock data (via Quandl in the original implementation)
-2. Fits a **SARIMA** (Seasonal Autoregressive Integrated Moving Average) model on daily closes
-3. Returns a forecast for the requested date
-4. Renders results with **Plotly** interactive charts in the browser
+1. **Ingest** — pull daily closes from Quandl (`WIKI/{SYMBOL}`) for a user-defined date range
+2. **Model** — fit **SARIMAX** on the reference window
+3. **Predict** — forecast through the target date and return a rounded point estimate
+4. **Visualize** — render reference and forecast traces with **Plotly** in `result.html`
 
-The stack keeps the backend in Python, the UI in HTML/CSS/JavaScript templates, and charting in Plotly — a small full-stack ML product rather than a notebook-only experiment.
-
-![](/images/project/forecasting-stock-prices-sarima-flask/stock-app-results.png)
+| File / folder | Role |
+|---|---|
+| **`app.py`** | Flask routes, form args, Plotly JSON to templates |
+| **`model.py`** | Quandl ingest, SARIMAX fit, predict, chart data |
+| **`templates/`** | `index.html` (inputs), `result.html` (forecast + chart) |
+| **`notebook/Stock_Prediction.ipynb`** | Exploratory order selection before app parameters |
 
 ## Architecture breakdown
 
-### Data
+HTTP stays thin in `app.py`; series logic lives in `Model` so the notebook and web app share the same SARIMAX path. Request flow and model parameters are detailed below.
 
-Historical daily closing prices feed the model. The training window comes from past observations; the user specifies the company and the forecast date through the web form.
+### Request flow
 
-### Modelling
+1. User submits **company symbol**, **reference start/end dates**, and **prediction date** on `/index.html`
+2. `/result.html` instantiates `Model()` and runs `extract_data` → `model_train` → `predict` → `plot_data`
+3. The page shows the **rounded forecast** and an embedded Plotly graph
 
-**SARIMA** captures autoregressive structure, differencing, moving-average terms, and seasonality — a standard approach for univariate financial time series when you want interpretable classical forecasting (as opposed to deep learning).
+```python
+arima = Model()
+arima.extract_data(stock_symbol, start_date, end_date)
+arima.model_train()
+stock_predict = round(arima.predict(prediction_date)[1], 2)
+graphJSON = json.dumps(arima.plot_data(), cls=plotly.utils.PlotlyJSONEncoder)
+```
 
-Core libraries:
+### Model (`model.py`)
 
-- `statsmodels.tsa.statespace.sarimax` — model fitting and prediction
-- `pandas` / `numpy` — series handling and offsets (e.g. `DateOffset` for horizon steps)
+| Step | Detail |
+|---|---|
+| Data | `quandl.get("WIKI/" + symbol)` → **Close** column as training series |
+| Fit | `SARIMAX` with `order=(0,0,1)`, `seasonal_order=(1,1,1,12)`, `trend='n'` |
+| Horizon | Days from last reference date to prediction date; `predict(..., dynamic=True)` |
+| Chart | **Reference period** and **Forecast period** as Plotly `Scatter` traces |
 
-### Application layer
+![](/images/project/forecasting-stock-prices-sarima-flask/stock-app-results.png)
 
-- **`app.py`** — Flask routes, form handling, serves predictions to the UI
-- **`model.py`** — training and inference logic separated from HTTP concerns
-- **`templates/`** — server-rendered pages for input and results
-- **`static/`** — front-end assets
-
-### Visualization
-
-**Plotly** (`plotly.graph_objs.Scatter`) plots historical series and forecast output so users can inspect the fit visually in the browser.
+The results view overlays observed closes with the modelled path. A wide gap between traces usually means the reference window or SARIMAX orders need revision.
 
 ## Tech stack
 
+Classical time-series tooling (statsmodels, Quandl) sits behind a server-rendered Flask UI—no separate frontend build or black-box forecast API.
+
 | Layer | Tools |
 |---|---|
-| Backend | Python, Flask |
-| Modelling | SARIMA (statsmodels), pandas, numpy |
-| Data | Quandl API (historical prices) |
+| Backend | Python, Flask, Flask-Bootstrap |
+| Modelling | `statsmodels` SARIMAX, pandas, numpy |
+| Data | Quandl API (`WIKI/` dataset) |
 | Frontend | HTML, CSS, JavaScript |
-| Charts | Plotly |
-| Exploration | Jupyter notebook (`notebook/`) for model development |
+| Charts | Plotly (`Scatter`, JSON encoder in templates) |
+| Exploration | Jupyter (`notebook/Stock_Prediction.ipynb`) |
+
+## Design decisions
+
+Four choices keep the app interpretable and easy to demo: explicit SARIMAX orders, user-chosen training windows, a thin HTTP layer, and server-rendered Plotly.
+
+**SARIMAX over deep learning** — explicit orders that can be tuned in the notebook and explained to stakeholders.
+
+**User-defined reference window** — the analyst chooses which historical regime to fit, not a fixed lookback.
+
+**Thin Flask layer** — HTTP stays in `app.py`; series logic lives in `Model` for reuse from the notebook.
+
+**Server-rendered Plotly** — interactive charts without a separate SPA.
 
 ## Impact
 
-- **End-to-end ML product** — from historical data to dated forecast in a browser
-- **Interpretable model** — SARIMA suitable for analysts who want classical time-series methods
-- **Interactive output** — Plotly charts for quick visual validation
-- **Deployable app** — Flask server pattern documented for local and hosted runs
+The app shows how a classical time-series model can ship as a shareable web product—not just a notebook chart—with explicit orders and a user-chosen training window.
+
+- **End-to-end ML product** — ingest → SARIMAX → dated forecast → chart in one session
+- **Interpretable method** — visible ARIMA/SARIMA orders instead of a black-box model
+- **Visual validation** — reference and forecast traces expose poor fits quickly
+- **Hosted demo** — [Heroku app](http://stockpredapp.herokuapp.com/) runs outside localhost
 
 ## Run locally
 
-1. Clone the [GitHub repository](https://github.com/ayotomiwasalau/Stock_Prediction_Web_App)
-2. Install dependencies (`numpy`, `pandas`, `flask`, `statsmodels`, `plotly`, `quandl`, etc.)
-3. Run `app.py` to start the Flask server
-4. Open the app in your browser and submit a ticker + forecast date
+```bash
+git clone https://github.com/ayotomiwasalau/Stock_Prediction_Web_App.git
+cd Stock_Prediction_Web_App
+pip install numpy pandas flask flask-bootstrap statsmodels plotly quandl requests matplotlib
+python app.py
+```
+
+Configure a Quandl API key (via env, not hard-coded in source), then open `http://127.0.0.1:5000`.
 
 ## Links
+
+Application source and notebook for order selection live in the repository; the Heroku demo runs the same Flask paths.
 
 - [GitHub — Stock_Prediction_Web_App](https://github.com/ayotomiwasalau/Stock_Prediction_Web_App)
 - [Live demo (Heroku)](http://stockpredapp.herokuapp.com/)

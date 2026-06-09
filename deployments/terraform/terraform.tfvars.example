@@ -1,0 +1,38 @@
+# Copy to terraform.tfvars (gitignored) for local use.
+# In GitHub Actions, set equivalent TF_VAR_* secrets instead of committing this file.
+
+project_name = "ayotom-web"
+environment  = "prod"
+aws_region   = "us-east-1"
+
+domain_name             = "example.com"
+additional_domain_names = []
+hosted_zone_name        = "example.com"
+create_route53_records  = true
+
+# Lambda image tags are set by manage.sh or CI deploy workflows (v1, v2, ...).
+# Do not use "latest" with immutable ECR tags.
+api_version = "v1"
+
+cors_allowed_origins = [
+  "https://example.com",
+  "http://localhost:4000",
+  "http://127.0.0.1:4000",
+]
+
+lambda_environment_variables = {
+  ADMIN_USERNAME      = "admin"
+  ADMIN_PASSWORD      = "change-me-before-deploy"
+  ADMIN_PASSWORD_HASH = ""
+  JWT_SECRET          = "change-me-to-a-long-random-secret"
+  JWT_EXPIRES_MINUTES = "60"
+  SKIP_JSON_SEED      = "false"
+
+  GITHUB_TOKEN                    = "ghp_..."
+  GITHUB_REPOSITORY               = "owner/repo"
+  GITHUB_BRANCH                   = "main"
+  GITHUB_MARKDOWN_BASE_PATH       = ""
+  GITHUB_MARKDOWN_PUBLIC_BASE_URL = "https://raw.githubusercontent.com/owner/repo/main"
+  GITHUB_COMMIT_AUTHOR_NAME       = "Your Name"
+  GITHUB_COMMIT_AUTHOR_EMAIL      = "you@example.com"
+}

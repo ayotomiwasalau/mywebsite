@@ -1,0 +1,96 @@
+{% extends 'astrobase.html' %}
+
+{% block title %}Astrolagbus Neon Belt{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Astrolagbus: Neon Belt Run</h1>
+    <p class="subtitle">Pilot a yellow lagos astrobus through thirty hostile asteroid belts. Dodge, shoot, and survive. Dey on guard.</p>
+  </section>
+
+  <div class="game-grid game-layout" data-submit-url="{{ url_for('astrolagbus.submit_score') }}">
+    <main class="game-panel">
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" aria-label="Astrolagbus game canvas"></canvas>
+        <button class="canvas-pause-btn" id="pauseBtn" type="button" aria-label="Pause game">Pause</button>
+        <div class="overlay" id="overlay">
+          <div class="overlay-card">
+            <h2 id="overlayTitle">Mission Online</h2>
+            <p id="overlayText">Use arrows or WASD to move, and Space to shoot. Drag on the game screen to fly; tap the bus to fire.</p>
+            <div class="score-submit" id="scoreSubmit" hidden>
+              <input type="text" id="playerName" maxlength="20" placeholder="Pilot name" aria-label="Pilot name">
+              <button class="action-button" id="submitScoreBtn" type="button" disabled>Submit Score</button>
+              <p class="score-submit-status" id="scoreSubmitStatus" hidden></p>
+            </div>
+            <button class="action-button" id="startBtn">Start Mission</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-footer">
+        <div class="hud-item"><span>Level</span><strong id="levelValue">1</strong></div>
+        <div class="hud-item"><span>Score</span><strong id="scoreValue">0</strong></div>
+        <div class="hud-item"><span>Lives</span><strong id="livesValue">3</strong></div>
+      </div>
+    </main>
+
+    <aside class="info-panel">
+      <section class="story-card">
+        <h2>Story</h2>
+        <p>The Astro Transit Corps refitted its fastest interstellar bus into a defense ship. Captain Tola must escort colony ferries while asteroid storms and pirate debris rain from above.</p>
+      </section>
+
+      <section class="instructions">
+        <h2>Controls</h2>
+        <ul>
+          <li><strong>Move:</strong> Arrow keys or WASD</li>
+          <li><strong>Touch:</strong> Drag on the game screen to move; tap the bus to shoot</li>
+          <li><strong>Shoot:</strong> Tap/click the bus, SHOOT button, or Space key</li>
+          <li><strong>Pause:</strong> Pause button, P key, or Escape</li>
+          <li><strong>Goal:</strong> Survive each wave and clear all asteroids</li>
+        </ul>
+      </section>
+
+      <section class="button-grid-panel">
+        <h2>On-Screen Controls</h2>
+        <div class="button-grid">
+          <button class="game-button up" id="upBtn" aria-label="Move up">▲</button>
+          <button class="game-button left" id="leftBtn" aria-label="Move left">◀</button>
+          <button class="game-button down" id="downBtn" aria-label="Move down">▼</button>
+          <button class="game-button right" id="rightBtn" aria-label="Move right">▶</button>
+        </div>
+        <button class="game-button action-button shoot" id="shootBtn">SHOOT</button>
+      </section>
+
+      <section class="level-guide">
+        <h2>30-Level Belt Campaign</h2>
+        <p class="level-guide-intro">Longer belts with more rocks and enemies each level. New threats unlock as you advance.</p>
+        <ol>
+          <li>Level 1+: Net sentinels patrol and toss capture nets</li>
+          <li>Level 2+: Drone swarms descend</li>
+          <li>Level 3+: Space bikes strafe and shoot</li>
+          <li>Level 5+: Monsters rush diagonally</li>
+          <li>Level 7+: Tiny bombs with blast radius</li>
+          <li>Level 10+: Pulse mines arm and detonate</li>
+          <li>Level 13+: Comet streakers dash across</li>
+          <li>Level 16+: Sniper satellites lock on</li>
+        </ol>
+      </section>
+
+      <div class="action-row action-row-four">
+        <button class="secondary-button" id="sidebarPauseBtn" type="button">Pause</button>
+        <button class="secondary-button" id="restartLevelBtn" type="button">Restart Level</button>
+        <button class="action-button" id="restartBtn">Restart Mission</button>
+        <button class="secondary-button" id="resumeBtn">Resume</button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-utils.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-levels.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-entities.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-renderer.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-input.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/leaderboard.js') }}"></script>
+  <script src="{{ url_for('astrolagbus.static', filename='js/game-engine.js') }}"></script>
+{% endblock %}

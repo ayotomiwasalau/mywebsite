@@ -4,7 +4,7 @@ This Terraform setup models the AWS architecture from the deployment diagram:
 
 - Route53 points the public domain at CloudFront.
 - CloudFront serves static frontend assets from a private S3 bucket.
-- CloudFront serves uploaded images from a private uploads S3 bucket under `/uploads/*`.
+- CloudFront serves uploaded images from a private uploads S3 bucket under `/images/*` (with fallback to the site bucket for static markdown images).
 - CloudFront forwards `/api/*`, `/api`, and `/healthz` requests to API Gateway.
 - API Gateway invokes the backend Lambda.
 - DynamoDB is provisioned as the application database.
@@ -23,6 +23,23 @@ from mangum import Mangum
 
 handler = Mangum(app)
 ```
+
+## Remote state bootstrap (one-time)
+
+Terraform state is stored in S3 with DynamoDB locking (`state_backend.tf`). If you already have local state:
+
+```bash
+cd deployments/terraform
+terraform apply \
+  -target=aws_s3_bucket.terraform_state \
+  -target=aws_s3_bucket_versioning.terraform_state \
+  -target=aws_s3_bucket_server_side_encryption_configuration.terraform_state \
+  -target=aws_s3_bucket_public_access_block.terraform_state \
+  -target=aws_dynamodb_table.terraform_locks
+terraform init -migrate-state
+```
+
+New environments: run the targeted apply above before the first full `terraform apply`.
 
 ## Quick Start
 
@@ -54,13 +71,14 @@ The Terraform creates an ECR repository and an image-based Lambda backend. Build
 
 AWS Lambda does not pull container images directly from Docker Hub. If Docker Hub is your source repository, mirror or promote the image into this ECR repository before applying the Lambda resources.
 
-After applying the ECR repository, build and push the backend image with:
+After applying the ECR repository, deploy with incremental tags (`v1`, `v2`, …):
 
 ```bash
-../manage.sh build-deploy-image latest
+../manage.sh deploy-backend
+../manage.sh deploy-games
 ```
 
-The script reads `backend_ecr_repository_url` from Terraform outputs, logs in to ECR, builds `backend/Dockerfile`, tags the image, and pushes it to ECR.
+Each command auto-increments the counter in `deployments/image-tags.env`, pushes to ECR, updates the Lambda, and verifies the image URI.
 
 The Lambda receives these environment variables automatically:
 
@@ -110,48 +128,49 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 - add animation, add special effect on button - done
 - fix getting releated items in tags - done
 - try diff fonts - done
+- the cta at the bottom should show my work - done
+- edit about personal edge & impact - done
+- check db contet is not init twice - done
 
-- setup games
-- check db contet is not init twice
-- cheking loading page and how its used
+- animation for about page - done
+- setup games - done
+
+
+  - structure markdown/image content edit the content of the portfolio website to suit (blogs/project) - done
+  - work on images - done
+  - project should hav links at the top -done
+  - opening a blog shld not open a new tab sometimes - done
+  - add a switch tab under work and decide a the api endpoint to use - done
+
+  - work on repo names, work on github for each project - done
+  - change the description of the project - done
+  - set the order in work, time too - done
+  - cheking loading page and how its used - done
+    - open a new tab on home or not? - done
+  - click the nav button should respond - done
+
 
 - review icons
 - explore linking tiptier
-
-- the cta at the bottom should show my work - done
-- edit about personal edge & impact - done
-- structure markdown/image content edit the content of the portfolio website to suit (blogs/project) 
+  - review the loading speed of each page - 
+  - retouch project one more time - done?
 
 
 
 
-* confluent kafka - using python sdk to stream data - blog
-* confluent kafka - using cli to pub and sub - blog
-
-* chatpdfdoc - blog & project
-* data warehousing with snowflake - project & blog
-* dbt - project & blog
-* how to create and deploy job on emr - project & blog
-* building reproducible pipeline - project & blog
-
-* metaflow - data science workflow - blog
-
-* distributed computing - blog
-* technology as a service - blog
-* container,k8s, and ci/cd - blog 
-
-* club-football match - project & blog
-* stock price prediction app - project
-* movie recommender system - project
-* Music song datapipelines - project
-* jokes and riddle api project - project
-* song and user data processing - project
-* auth app deployment - project
-* Data streaming application - project
-* Data visualization - blog
-* Report generation - blog 
 
 
+
+
+
+
+* chatpdfdoc 
+
+* data warehousing with snowflake 
+* dbt 
+* how to create and deploy job on emr 
+* building reproducible pipeline 
+* club-football match 
 
 * confluent kafka - using python sdk to stream data 
 * confluent kafka - using cli to pub and sub 
@@ -165,10 +184,10 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 * Data visualization
 * Report generation 
 
-
-* chatpdfdoc 
-* data warehousing with snowflake 
-* dbt 
-* how to create and deploy job on emr 
-* building reproducible pipeline 
-* club-football match 
+* stock price prediction app - project
+* movie recommender system - project
+* Music song datapipelines - project
+* jokes and riddle api project - project
+* song and user data processing - project
+* auth app deployment - project
+* Data streaming application - project

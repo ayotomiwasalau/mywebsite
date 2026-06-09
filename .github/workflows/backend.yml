@@ -1,0 +1,105 @@
+name: Backend
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+      - ".github/scripts/next-ecr-tag.sh"
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+      - ".github/scripts/next-ecr-tag.sh"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirement.txt
+
+      - name: Install dependencies
+        run: pip install -r requirement.txt
+
+      - name: Run tests
+        run: pytest
+
+  deploy:
+    needs: ci
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+      TERRAFORM_DIR: deployments/terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform init
+        run: terraform -chdir="$TERRAFORM_DIR" init -input=false
+
+      - name: Resolve ECR repository and next tag
+        id: image
+        run: |
+          REPO_URL="$(terraform -chdir="$TERRAFORM_DIR" output -raw backend_ecr_repository_url)"
+          REPO_NAME="${REPO_URL##*/}"
+          IMAGE_TAG="$(bash .github/scripts/next-ecr-tag.sh "$REPO_NAME" "$AWS_REGION")"
+          echo "repo_url=$REPO_URL" >> "$GITHUB_OUTPUT"
+          echo "repo_name=$REPO_NAME" >> "$GITHUB_OUTPUT"
+          echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Deploying ${REPO_URL}:${IMAGE_TAG}"
+
+      - name: Login to Amazon ECR
+        run: |
+          REGISTRY="${{ steps.image.outputs.repo_url }}"
+          REGISTRY="${REGISTRY%%/*}"
+          aws ecr get-login-password --region "$AWS_REGION" \
+            | docker login --username AWS --password-stdin "$REGISTRY"
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE_URI="${{ steps.image.outputs.repo_url }}:${{ steps.image.outputs.tag }}"
+          docker build \
+            --platform linux/amd64 \
+            -f backend/Dockerfile \
+            -t "$IMAGE_URI" \
+            backend
+          docker push "$IMAGE_URI"
+
+      - name: Update Lambda image tag
+        run: |
+          terraform -chdir="$TERRAFORM_DIR" apply -auto-approve -input=false \
+            -var="lambda_image_tag=${{ steps.image.outputs.tag }}" \
+            -target=aws_lambda_function.api
+
+      - name: Verify Lambda image
+        run: |
+          FUNCTION_NAME="$(terraform -chdir="$TERRAFORM_DIR" output -raw lambda_function_name)"
+          ACTUAL="$(aws lambda get-function --function-name "$FUNCTION_NAME" --query 'Code.ImageUri' --output text)"
+          if [[ "$ACTUAL" != *":${{ steps.image.outputs.tag }}"* ]]; then
+            echo "Expected tag ${{ steps.image.outputs.tag }} in $ACTUAL" >&2
+            exit 1
+          fi
+          echo "Verified $FUNCTION_NAME -> $ACTUAL"

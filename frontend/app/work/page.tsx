@@ -1,4 +1,5 @@
 "use client"
+import { Suspense } from "react";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import ContentPosts from "../components/work/ContentPosts";
@@ -9,7 +10,15 @@ export default function Work() {
   return (
     <div className="bg-white">
       <NavBar />
-      <ContentPosts />
+      <Suspense
+        fallback={
+          <div className="flex min-h-[40vh] items-center justify-center bg-white">
+            <p className="text-[#666666]">Loading…</p>
+          </div>
+        }
+      >
+        <ContentPosts />
+      </Suspense>
       <MediaSection />
       <FooterCTA />
       <Footer />

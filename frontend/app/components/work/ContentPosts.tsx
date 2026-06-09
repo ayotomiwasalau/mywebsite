@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { RotatingLines } from "react-loader-spinner";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
 import { normalizeTag } from "@lib/tags";
 import Card from "./ContentCard";
@@ -8,66 +10,98 @@ import { PostsSchema } from "../utils/interface";
 
 const FASTAPI_ROUTE_BASE = getFastApiRouteBaseUrl();
 
-interface WorkApiItem {
-  type: "blog" | "project";
-  item: {
-    id: string;
-    slug: string;
-    title: string;
-    header_img_url: string;
-    created_on: string;
-    tags: string[];
-    href: string;
-    description: string;
+type WorkTab = "project" | "blog";
+type SortOption = "latest" | "oldest" | "title";
+
+interface ApiWorkItem {
+  id: string;
+  slug: string;
+  title: string;
+  header_img_url: string;
+  created_on: string;
+  tags: string[];
+  href: string;
+  description: string;
+}
+
+interface BlogListResponse {
+  blogs: ApiWorkItem[];
+}
+
+interface ProjectListResponse {
+  projects: ApiWorkItem[];
+}
+
+function mapToCard(item: ApiWorkItem, kind: WorkTab): PostsSchema {
+  return {
+    id: item.id,
+    slug: item.slug,
+    title: item.title,
+    imageSrc: item.header_img_url,
+    timeAgo: item.created_on,
+    tags: item.tags ?? [],
+    filepath_md: "",
+    likes: 0,
+    kind,
+    description: item.description,
+    href: item.href,
   };
 }
 
-interface WorkApiResponse {
-  items: WorkApiItem[];
-}
-
-/** Primary filters — always shown above topic tags. */
-const PRIMARY_FILTER_TAGS = ["All", "Projects", "Blogs"] as const;
-
-type PrimaryFilterTag = (typeof PRIMARY_FILTER_TAGS)[number];
-type FilterTag = PrimaryFilterTag | string;
-
-type SortOption = "latest" | "oldest" | "title";
-
-function isPrimaryFilterTag(tag: FilterTag): tag is PrimaryFilterTag {
-  return (PRIMARY_FILTER_TAGS as readonly string[]).includes(tag);
+function tabFromSearchParam(value: string | null): WorkTab {
+  return value === "blog" ? "blog" : "project";
 }
 
 const ContentPosts: React.FC = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTag, setSelectedTag] = useState<FilterTag>("All");
+  const [selectedTopicTag, setSelectedTopicTag] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("latest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState<PostsSchema[]>([]);
+  const [activeTab, setActiveTab] = useState<WorkTab>(() =>
+    tabFromSearchParam(searchParams.get("type"))
+  );
+  const [projects, setProjects] = useState<PostsSchema[]>([]);
+  const [blogs, setBlogs] = useState<PostsSchema[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const skipPageScrollRef = useRef(true);
+
+  const scrollToPageTop = useCallback(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, []);
+
+  useEffect(() => {
+    scrollToPageTop();
+
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) scrollToPageTop();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [scrollToPageTop]);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch(`${FASTAPI_ROUTE_BASE}/work?per_page=100`);
-        const data: WorkApiResponse = await response.json();
-        const mapped: PostsSchema[] = (data.items ?? []).map((entry) => ({
-          id: entry.item.id,
-          slug: entry.item.slug,
-          title: entry.item.title,
-          imageSrc: entry.item.header_img_url,
-          timeAgo: entry.item.created_on,
-          tags: entry.item.tags ?? [],
-          filepath_md: "",
-          likes: 0,
-          kind: entry.type,
-          description: entry.item.description,
-          href: entry.item.href,
-        }));
-        setPosts(mapped);
+        const [projectsRes, blogsRes] = await Promise.all([
+          fetch(`${FASTAPI_ROUTE_BASE}/projects?per_page=100`),
+          fetch(`${FASTAPI_ROUTE_BASE}/blogs?per_page=100`),
+        ]);
+        const projectsData: ProjectListResponse = await projectsRes.json();
+        const blogsData: BlogListResponse = await blogsRes.json();
+
+        setProjects(
+          (projectsData.projects ?? []).map((item) => mapToCard(item, "project"))
+        );
+        setBlogs((blogsData.blogs ?? []).map((item) => mapToCard(item, "blog")));
       } catch (error) {
         console.error("Error loading work posts:", error);
-        setPosts([]);
+        setProjects([]);
+        setBlogs([]);
       } finally {
         setIsLoading(false);
       }
@@ -76,21 +110,54 @@ const ContentPosts: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!isLoading) scrollToPageTop();
+  }, [isLoading, scrollToPageTop]);
+
+  useEffect(() => {
+    setActiveTab(tabFromSearchParam(searchParams.get("type")));
+  }, [searchParams]);
+
+  useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedTag, sortBy]);
+  }, [searchTerm, selectedTopicTag, sortBy, activeTab]);
+
+  useEffect(() => {
+    if (skipPageScrollRef.current) {
+      skipPageScrollRef.current = false;
+      return;
+    }
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentPage]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleTagClick = (tag: FilterTag) => {
-    setSelectedTag(tag);
+  const handleAllTagClick = () => {
+    setSelectedTopicTag(null);
   };
+
+  const handleTopicTagClick = (tag: string) => {
+    const normalized = normalizeTag(tag).toLowerCase();
+    setSelectedTopicTag((current) =>
+      current === normalized ? null : normalized
+    );
+  };
+
+  const handleTabChange = useCallback(
+    (tab: WorkTab) => {
+      setActiveTab(tab);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("type", tab);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router, searchParams]
+  );
 
   const topicFilterTags = useMemo(() => {
     const seen = new Map<string, string>();
 
-    for (const post of posts) {
+    for (const post of [...projects, ...blogs]) {
       for (const raw of post.tags ?? []) {
         const label = normalizeTag(raw);
         if (!label) continue;
@@ -102,31 +169,26 @@ const ContentPosts: React.FC = () => {
     return [...seen.values()].sort((a, b) =>
       a.localeCompare(b, undefined, { sensitivity: "base" })
     );
-  }, [posts]);
+  }, [projects, blogs]);
+
+  const activePosts = activeTab === "project" ? projects : blogs;
 
   const filteredCards = useMemo(() => {
-    return posts.filter((card) => {
+    return activePosts.filter((card) => {
       const matchesSearch =
         searchTerm.trim() === "" ||
         card.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-      let matchesTag = true;
-      if (selectedTag === "All") {
-        matchesTag = true;
-      } else if (selectedTag === "Projects") {
-        matchesTag = card.kind === "project";
-      } else if (selectedTag === "Blogs") {
-        matchesTag = card.kind === "blog";
-      } else {
-        const selected = normalizeTag(selectedTag).toLowerCase();
-        matchesTag = card.tags.some(
-          (tagItem) => normalizeTag(tagItem).toLowerCase() === selected
+      const matchesTag =
+        !selectedTopicTag ||
+        card.tags.some(
+          (tagItem) =>
+            normalizeTag(tagItem).toLowerCase() === selectedTopicTag
         );
-      }
 
       return matchesSearch && matchesTag;
     });
-  }, [posts, searchTerm, selectedTag]);
+  }, [activePosts, searchTerm, selectedTopicTag]);
 
   const sortedCards = useMemo(() => {
     const copy = [...filteredCards];
@@ -173,7 +235,13 @@ const ContentPosts: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center bg-white">
-        <p className="text-[#666666]">Loading…</p>
+        <RotatingLines
+          visible
+          width="48"
+          strokeWidth="2"
+          animationDuration="0.75"
+          ariaLabel="loading work content"
+        />
       </div>
     );
   }
@@ -204,18 +272,27 @@ const ContentPosts: React.FC = () => {
         />
       </div>
 
-      
-
-      {/* Tag filters: primary row, then topics */}
-      <div className="mb-8 flex flex-col gap-3">
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Scope">
-          {PRIMARY_FILTER_TAGS.map((tag) => (
+      {/* Tag filters: All + topics */}
+      <div className="mb-8 flex max-h-[10.5rem] flex-wrap gap-2 overflow-y-auto overscroll-contain pr-1">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Topics">
+          <button
+            type="button"
+            onClick={handleAllTagClick}
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              selectedTopicTag === null
+                ? "bg-[#DE5B6F] text-white outline outline-2 outline-offset-2 outline-[#478BA2]"
+                : "bg-[#DE5B6F] text-white hover:bg-[#c94d60]"
+            }`}
+          >
+            All
+          </button>
+          {topicFilterTags.map((tag) => (
             <button
               key={tag}
               type="button"
-              onClick={() => handleTagClick(tag)}
+              onClick={() => handleTopicTagClick(tag)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                selectedTag === tag
+                selectedTopicTag === normalizeTag(tag).toLowerCase()
                   ? "bg-[#DE5B6F] text-white outline outline-2 outline-offset-2 outline-[#478BA2]"
                   : "bg-[#DE5B6F] text-white hover:bg-[#c94d60]"
               }`}
@@ -224,30 +301,6 @@ const ContentPosts: React.FC = () => {
             </button>
           ))}
         </div>
-        {topicFilterTags.length > 0 ? (
-          <div
-            className="flex max-h-[10.5rem] flex-wrap gap-2 overflow-y-auto overscroll-contain pr-1"
-            role="group"
-            aria-label="Topics"
-          >
-            {topicFilterTags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => handleTagClick(tag)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  !isPrimaryFilterTag(selectedTag) &&
-                  normalizeTag(selectedTag).toLowerCase() ===
-                    normalizeTag(tag).toLowerCase()
-                    ? "bg-[#DE5B6F] text-white outline outline-2 outline-offset-2 outline-[#478BA2]"
-                    : "bg-[#DE5B6F] text-white hover:bg-[#c94d60]"
-                }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
       </div>
 
       {/* Sort + results */}
@@ -257,9 +310,7 @@ const ContentPosts: React.FC = () => {
           <div className="relative">
             <select
               value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as SortOption)
-              }
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="appearance-none rounded-lg bg-[#478BA2] py-2 pl-3 pr-9 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-[#478BA2]/50"
               aria-label="Sort posts"
             >
@@ -278,8 +329,45 @@ const ContentPosts: React.FC = () => {
         </p>
       </div>
 
+      {/* Projects | Blogs tabs */}
+      <div className="mb-6 flex flex-col items-center gap-2">
+        <div
+          className="inline-flex rounded-lg border border-[#DE5B6F]/30 p-1"
+          role="tablist"
+          aria-label="Content type"
+        >
+          {(
+            [
+              { id: "project" as const, label: "Projects" },
+              { id: "blog" as const, label: "Blogs" },
+            ] as const
+          ).map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === id}
+              onClick={() => handleTabChange(id)}
+              className={`rounded-md px-5 py-2 text-sm font-medium transition-colors ${
+                activeTab === id
+                  ? "bg-[#DE5B6F] text-white"
+                  : "text-[#DE5B6F] hover:bg-[#DE5B6F]/10"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <p className="text-center text-xs text-[#666666]">
+          Toggle to switch tabs
+        </p>
+      </div>
+
       {/* Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+      <div
+        ref={gridRef}
+        className="scroll-mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {currentCards.map((card, index) => (
           <Card
             key={card.id}

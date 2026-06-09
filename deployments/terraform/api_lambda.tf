@@ -109,9 +109,21 @@ resource "aws_apigatewayv2_integration" "lambda" {
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "default" {
+resource "aws_apigatewayv2_route" "healthz" {
   api_id    = aws_apigatewayv2_api.api.id
-  route_key = "$default"
+  route_key = "GET /healthz"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "api" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /api"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "api_proxy" {
+  api_id    = aws_apigatewayv2_api.api.id
+  route_key = "ANY /api/{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 

@@ -80,8 +80,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
   return (
     <Link
       href={destinationHref}
-      target="_blank"
-      rel="noopener noreferrer"
       className="group block overflow-hidden rounded-xl shadow-sm transition hover:opacity-95"
     >
       <motion.div

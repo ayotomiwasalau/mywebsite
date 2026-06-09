@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { pathnameWithoutTrailingSlash } from "@lib/pathname";
 
 const buttonClass =
   "inline-flex items-center justify-center rounded-xl bg-[#E06377] px-6 py-3 text-center text-base font-medium text-white transition hover:opacity-90";
 
 const FooterCTA = () => {
   const pathname = usePathname();
-  const isAbout = pathname === "/about";
-  const isContact = pathname === "/contact";
+  const path = pathnameWithoutTrailingSlash(pathname);
+  const isAbout = path === "/about";
+  const isContact = path === "/contact";
 
   const primaryHref = isContact ? "/work" : "/contact";
   const primaryLabel = isContact ? "View my works" : "Contact me";

@@ -15,9 +15,9 @@ interface NavProps {
 
 const navObj:NavProps[] = [
     {navItem: 'HOME', link: '/'}, 
-    {navItem: 'WORK', link: '/work'}, 
-    {navItem: 'GAMES', link: '/games'}, 
+    {navItem: 'WORK', link: '/work'},  
     {navItem: 'ABOUT', link: '/about'},
+    {navItem: 'GAMES', link: '/games'},
     {navItem: 'CONTACT', link: '/contact'}
 ]
 
@@ -76,7 +76,7 @@ const NavBar = () => {
 
                     <div className="hidden md:flex md:space-x-0 lg:space-x-16 underline mt-4">
                         {navObj.map((item, index) => (
-                            <Link href={item.link} key={index} className="text-blueGray text-lg hover:underline px-6 py-2 rounded-2xl cursor-pointer">
+                            <Link href={item.link} key={index} className="inline-block text-blueGray text-lg hover:underline px-6 py-2 rounded-2xl cursor-pointer transition-all duration-150 hover:bg-white/20 hover:scale-105 active:scale-90 active:bg-white/30">
                                 {item.navItem}
                             </Link>
                         ))}
@@ -86,7 +86,11 @@ const NavBar = () => {
 
                 {/* mobile view */}
                 <div className="md:hidden py-2">
-                    <button onClick={handleClick} >
+                    <button
+                        onClick={handleClick}
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                        className="rounded-lg p-1 transition-all duration-150 hover:bg-white/20 hover:scale-110 active:scale-[0.85] active:bg-white/30"
+                    >
                         {isOpen ? (
                             <XMarkIcon className="w-[26px] h-[26px] text-blueGray font-bold md:hidden" />) 
                             : (<Bars3BottomRightIcon className="w-[26px] h-[26px] text-blueGray font-bold md:hidden" />)}
@@ -99,7 +103,7 @@ const NavBar = () => {
                     <div className="flex flex-col space-y-2 ">
                         
                             {navObj.map((item, index) => (
-                                <Link href={item.link} key={index} className="text-[#333333]  hover:underline px-6 py-1 rounded-xl">
+                                <Link href={item.link} key={index} className="inline-block text-[#333333] hover:underline px-6 py-1 rounded-xl transition-all duration-150 hover:bg-gray-100 active:scale-95 active:bg-gray-200">
                                     {item.navItem}
                                 </Link>                                
                             ))}

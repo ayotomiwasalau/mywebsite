@@ -107,7 +107,9 @@ const ExperienceSection = () => {
 
       <div className="flex flex-col gap-12 md:gap-14 lg:gap-16">
         {ENTRIES.map((entry) => (
-          <ExperienceComponent key={entry.company + entry.dateRange} entry={entry} />
+          <div key={entry.company + entry.dateRange}>
+            <ExperienceComponent entry={entry} />
+          </div>
         ))}
       </div>
     </section>

@@ -62,15 +62,15 @@ variable "cloudfront_price_class" {
 }
 
 variable "lambda_image_tag" {
-  description = "ECR image tag for the backend Lambda container image."
+  description = "ECR image tag for the backend Lambda (e.g. v3). Set via manage.sh deploy-backend."
   type        = string
-  default     = "latest"
+  default     = "v1"
 }
 
 variable "ecr_image_tag_mutability" {
-  description = "Whether ECR image tags are MUTABLE or IMMUTABLE."
+  description = "Whether ECR image tags are MUTABLE or IMMUTABLE. Use IMMUTABLE with v1, v2, ... tags from manage.sh."
   type        = string
-  default     = "MUTABLE"
+  default     = "IMMUTABLE"
 }
 
 variable "ecr_force_delete" {
@@ -119,4 +119,34 @@ variable "cors_allowed_origins" {
   description = "Allowed CORS origins for API Gateway."
   type        = list(string)
   default     = []
+}
+
+variable "games_lambda_image_tag" {
+  description = "ECR image tag for the games Lambda (e.g. v2). Set via manage.sh deploy-games."
+  type        = string
+  default     = "v1"
+}
+
+variable "games_lambda_memory_size" {
+  description = "Games Lambda memory size in MB."
+  type        = number
+  default     = 512
+}
+
+variable "games_lambda_timeout" {
+  description = "Games Lambda timeout in seconds."
+  type        = number
+  default     = 30
+}
+
+variable "games_lambda_environment_variables" {
+  description = "Extra environment variables for the games Lambda."
+  type        = map(string)
+  default     = {}
+}
+
+variable "games_ecr_max_image_count" {
+  description = "Maximum number of games images to keep in ECR."
+  type        = number
+  default     = 10
 }

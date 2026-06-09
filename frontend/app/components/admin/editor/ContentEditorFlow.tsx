@@ -417,7 +417,7 @@ export default function ContentEditorFlow() {
 
       if (!coverImagePath.trim()) {
         throw new Error(
-          "Header image URL is required (upload a cover or load an existing draft with an image URL).",
+          "Header image is required: enter an existing image path or upload a new cover image.",
         );
       }
 
@@ -680,31 +680,59 @@ export default function ContentEditorFlow() {
 
           <div className="mt-5 grid gap-5 md:grid-cols-[160px_1fr] md:items-start">
             <label className="pt-2 text-[1rem] text-[#2E4653]">Cover Image:</label>
-            <div>
-              <input
-                ref={coverInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(event) => {
-                  setCoverImage(event.target.files?.[0] ?? null);
-                  setExistingCoverImagePath("");
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => coverInputRef.current?.click()}
-                className="h-10 min-w-[140px] rounded-2xl bg-[#DE5B6F] px-8 text-[1rem] font-medium text-white transition hover:opacity-90"
-              >
-                Upload
-              </button>
-              {coverImage ? (
-                <p className="mt-2 text-[0.9rem] italic text-[#2E4653]">File: {coverImage.name}</p>
-              ) : null}
-              {!coverImage && existingCoverImagePath ? (
-                <p className="mt-2 text-[0.9rem] italic text-[#2E4653]">
-                  Existing: {existingCoverImagePath}
+            <div className="space-y-3">
+              <div>
+                <p className="text-[0.85rem] text-[#627280]">
+                  Use an image already in <span className="font-mono text-[0.9em]">public</span> (e.g.{" "}
+                  <span className="font-mono text-[0.9em]">/images/blog/my-slug/cover.jpg</span>) or
+                  upload a new file below.
                 </p>
+                <input
+                  type="text"
+                  value={existingCoverImagePath}
+                  onChange={(event) => {
+                    setExistingCoverImagePath(event.target.value);
+                    setCoverImage(null);
+                    if (coverInputRef.current) coverInputRef.current.value = "";
+                  }}
+                  placeholder="/images/blog/slug/cover.jpg or https://…"
+                  className="mt-2 h-11 w-full rounded-2xl border border-[#9A9A9A] bg-white px-5 text-[1rem] italic text-[#2E4653] outline-none focus:border-[#3E8FA3] focus:ring-2 focus:ring-[#3E8FA3]/20"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  ref={coverInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(event) => {
+                    setCoverImage(event.target.files?.[0] ?? null);
+                    setExistingCoverImagePath("");
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => coverInputRef.current?.click()}
+                  className="h-10 min-w-[140px] rounded-2xl bg-[#DE5B6F] px-8 text-[1rem] font-medium text-white transition hover:opacity-90"
+                >
+                  Upload new
+                </button>
+                {coverImage ? (
+                  <p className="text-[0.9rem] italic text-[#2E4653]">New file: {coverImage.name}</p>
+                ) : null}
+              </div>
+              {!coverImage && existingCoverImagePath.trim() ? (
+                <div className="overflow-hidden rounded-lg border border-[#E2E2E2] bg-[#F8FAFB]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={existingCoverImagePath.trim()}
+                    alt={headerImgAlt.trim() || "Cover preview"}
+                    className="max-h-40 w-full object-contain"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
               ) : null}
             </div>
 

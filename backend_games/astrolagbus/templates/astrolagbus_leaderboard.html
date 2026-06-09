@@ -1,0 +1,52 @@
+{% extends 'astrobase.html' %}
+
+{% block title %}Astrolagbus Leaderboard{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Astrolagbus Leaderboard</h1>
+    <p class="subtitle">Top convoy pilots across the thirty-belt campaign.</p>
+  </section>
+
+  <div class="leaderboard-panel">
+    {% if scores %}
+      <div class="leaderboard-table-wrap">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Pilot</th>
+              <th>Score</th>
+              <th>Level</th>
+              <th>Time</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for score in scores %}
+            <tr class="{% if loop.index == 1 %}rank-gold{% elif loop.index == 2 %}rank-silver{% elif loop.index == 3 %}rank-bronze{% endif %}">
+              <td>{{ loop.index }}</td>
+              <td>{{ score.player_name }}</td>
+              <td>{{ score.score }}</td>
+              <td>{{ score.level }}</td>
+              <td>{{ score.game_duration }}s</td>
+              <td>{{ (score.created.replace('T',' ')[:16]) if score.created else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="leaderboard-empty">
+        <p>No scores yet. Be the first pilot to clear the neon belts.</p>
+      </div>
+    {% endif %}
+
+    <div class="leaderboard-actions">
+      <a class="action-button" href="{{ url_for('astrolagbus.index') }}">Play Game</a>
+      <button class="secondary-button" type="button" id="refreshLeaderboardBtn">Refresh</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('astrolagbus.static', filename='js/leaderboard.js') }}"></script>
+{% endblock %}

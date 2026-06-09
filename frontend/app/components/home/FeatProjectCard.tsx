@@ -55,7 +55,8 @@ const FeatProjectCard: React.FC<FeatProjectCardProps> = ({
       </div>
 
       <div className="flex flex-1 flex-col gap-4 px-5 pb-5 pt-4">
-        <p className="text-sm text-[#2a2f38]">{timeLabel}</p>
+        {/* <p className="text-sm text-[#2a2f38]">{timeLabel}</p> */}
+        <p></p>
 
         <h2 className="text-xl font-bold leading-snug text-[#1a2332] sm:text-2xl">
           {title}
@@ -71,8 +72,6 @@ const FeatProjectCard: React.FC<FeatProjectCardProps> = ({
 
         <Link
           href={caseStudyHref}
-          target="_blank"
-          rel="noopener noreferrer"
           className="mt-auto w-full rounded-full bg-[#D16B7A] py-3 text-center text-base font-medium text-white transition-transform hover:scale-[1.02] hover:opacity-90 active:scale-[0.97]"
         >
           View Post

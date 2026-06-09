@@ -5,6 +5,9 @@ import Image from "next/image";
 import NavBar from "../components/layout/NavBar";
 import Footer from "../components/layout/Footer";
 import GamesCard from "../components/games/GamesCard";
+import { getFastApiRouteBaseUrl } from "@lib/fastapiRoutes";
+
+const GAMES_BASE = `${getFastApiRouteBaseUrl()}/games`;
 
 type GameItem = {
   id: string;
@@ -18,30 +21,31 @@ type GameItem = {
 
 const GAMES: GameItem[] = [
   {
-    id: "1",
+    id: "tommyjumper",
     title: "Tommy Jumper",
     description:
       "Help Tommy navigate the treacherous path to reach his goal",
-    imageSrc: "/stacklogo/techlogo/python.png",
-    playHref: "#",
-    order: 3,
-  },
-  {
-    id: "2",
-    title: "PacMan",
-    description: "Pacman is hungry, feed him",
-    imageSrc: "/stacklogo/techlogo/java.svg",
-    playHref: "#",
+    imageSrc: "/stacklogo/games/tommyjumper.png",
+    playHref: `${GAMES_BASE}/tommyjumper/`,
     order: 2,
   },
   {
-    id: "3",
-    title: "Snake Zig",
-    description: "Ziggy want to navigate to his resource, help him.",
-    imageSrc: "/stacklogo/techlogo/gcp.svg",
-    playHref: "#",
-    order: 1,
+    id: "astrolagbus",
+    title: "Astrolagbus Neon Belt",
+    description:
+      "Pilot a yellow battle-bus through seven asteroid belts. Dodge and shoot.",
+    imageSrc: "/stacklogo/games/astrolagbus.png",
+    playHref: `${GAMES_BASE}/astrolagbus/`,
+    order: 3,
   },
+  // {
+  //   id: "snake-zig",
+  //   title: "Snake Zig",
+  //   description: "Ziggy wants to navigate to his resource. Coming soon.",
+  //   imageSrc: "/stacklogo/techlogo/gcp.svg",
+  //   playHref: "#",
+  //   order: 1,
+  // },
 ];
 
 type SortOption = "latest" | "oldest" | "title";
@@ -66,18 +70,18 @@ export default function GamesPage() {
       <NavBar />
 
       <div className="relative h-auto bg-gradient-to-r from-[#BBD5DC] to-[#F3A593]">
-        <div className="mx-auto flex max-w-5xl flex-col items-center space-y-8 px-4 py-20 pb-[7rem] sm:px-8 md:flex-row md:items-center md:space-x-16 md:space-y-4">
-          <div className="flex max-w-xl flex-col gap-5 md:gap-6">
-            <h1 className="text-3xl font-bold leading-tight text-[#333333] md:text-4xl lg:text-[2.5rem]">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-14 pb-[5.5rem] sm:px-6 sm:py-16 sm:pb-[6rem] md:gap-10 md:px-8 md:py-16 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:pt-20 lg:pb-[10rem] xl:pb-[12rem]">
+          <div className="flex w-full max-w-xl flex-col gap-4 text-center sm:gap-5 md:max-w-2xl md:gap-6 lg:max-w-xl lg:flex-1 lg:text-left">
+            <h1 className="text-3xl font-bold leading-tight text-[#333333] sm:text-[2rem] md:text-4xl lg:text-[2.5rem]">
               Ayotoms Wall of Vibecoded Games
             </h1>
-            <p className="text-lg font-light leading-relaxed text-[#333333] md:text-xl">
+            <p className="text-base font-light leading-relaxed text-[#333333] sm:text-lg md:text-xl">
               Small experimental games built for fun, creativity, and exploring
               ideas beyond production systems
             </p>
           </div>
 
-          <div className="relative w-full max-w-md shrink-0 md:max-w-lg">
+          <div className="relative w-full max-w-xs shrink-0 sm:max-w-sm md:max-w-md lg:max-w-[22rem] xl:max-w-lg">
             <Image
               src="/stacklogo/games/gamesheader.svg"
               alt="Games header illustration"
@@ -91,7 +95,7 @@ export default function GamesPage() {
 
         <div className="absolute bottom-0 left-0 w-full rotate-180 transform overflow-hidden leading-none">
           <svg
-            className="relative block h-[150px] w-[calc(142%+1.3px)]"
+            className="relative block h-[100px] w-[calc(142%+1.3px)] sm:h-[120px] lg:h-[150px]"
             data-name="Layer 1"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1200 120"

@@ -18,6 +18,32 @@ resource "aws_cloudfront_origin_access_control" "s3" {
   signing_protocol                  = "sigv4"
 }
 
+# Next.js static export with trailingSlash writes about/index.html, etc.
+# Map extensionless paths to index.html before S3 lookup on direct loads and reloads.
+resource "aws_cloudfront_function" "next_static_html" {
+  name    = "${local.name_prefix}-next-static-html"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  code    = <<-EOF
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      if (uri.includes('.')) {
+        return request;
+      }
+
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      } else {
+        request.uri += '/index.html';
+      }
+
+      return request;
+    }
+  EOF
+}
+
 resource "aws_cloudfront_distribution" "web" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -50,6 +76,24 @@ resource "aws_cloudfront_distribution" "web" {
     }
   }
 
+  # Admin uploads live in uploads-s3; static markdown images from the frontend build
+  # live in site-s3 at the same /images/* paths — try uploads first, fall back to site.
+  origin_group {
+    origin_id = "images-origin-group"
+
+    failover_criteria {
+      status_codes = [403, 404]
+    }
+
+    member {
+      origin_id = "uploads-s3"
+    }
+
+    member {
+      origin_id = "site-s3"
+    }
+  }
+
   default_cache_behavior {
     target_origin_id       = "site-s3"
     viewer_protocol_policy = "redirect-to-https"
@@ -57,11 +101,16 @@ resource "aws_cloudfront_distribution" "web" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
     cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.next_static_html.arn
+    }
   }
 
   ordered_cache_behavior {
-    path_pattern           = "/uploads/*"
-    target_origin_id       = "uploads-s3"
+    path_pattern           = "/images/*"
+    target_origin_id       = "images-origin-group"
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
@@ -100,6 +149,20 @@ resource "aws_cloudfront_distribution" "web" {
     compress                 = true
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+  }
+
+  custom_error_response {
+    error_code            = 403
+    response_code         = 404
+    response_page_path    = "/404.html"
+    error_caching_min_ttl = 0
+  }
+
+  custom_error_response {
+    error_code            = 404
+    response_code         = 404
+    response_page_path    = "/404.html"
+    error_caching_min_ttl = 0
   }
 
   restrictions {

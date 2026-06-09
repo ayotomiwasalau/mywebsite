@@ -1,36 +1,47 @@
-As at 2020, 6,000 tweets are generated per second — that's 104 billion bytes per day. Think about it. Imagine what it would be like today.
+![](/images/blog/distributed-computing-foundations/schema-kafka-hadoop-spark.webp)
 
-That's Big data!
+As of 2020, about **6,000 tweets were generated per second**—roughly **104 billion bytes per day**. That volume is far higher now.
 
-![](/images/blog/distributed-computing-foundations/distributed_compute.webp)
+That's **big data**.
 
-Companies are looking for ways to harness the power of this data that is increasing exponentially; however, it's quite difficult to run processes on big data because it takes time.
+Companies want to harness it, but running processes on data at that scale is slow. To see why, look at how **CPU**, **RAM (memory)**, **disk**, and **network** work together.
 
-Let's take a look at CPU, RAM (memory), disk, and network interaction.
+## The single-machine bottleneck
 
-A large streaming company might want to know which song is the most played in a particular location. As simple as this query is in SQL, it would take a hefty chunk of your project time to run the query on data running into terabytes, not to mention data science and ML processes.
+A large streaming company might want to know which song is most played in a given location. In SQL that query is simple, but on **terabytes** of data it can consume a huge share of project time—the same pain hits data science and ML workloads.
 
-> ##### To complete a process, the CPU moves data in batches from the disk to the RAM (based on size), to itself, then it begins processing for that batch. On completion, it returns the output to RAM while it takes in another batch. It then takes that processed output from the RAM and writes to disk.
-> ##### It repeats this process for every batch and writes output to disk. When it's processing big data, after a while, processing starts slowing down. At this time, looking at your resource monitor, you would notice the CPU is barely 30% and RAM and disk would be close to 100%.
+> To complete a process, the CPU moves data in batches from disk to RAM (based on size), then into the CPU for processing. When a batch finishes, output goes back to RAM while the CPU takes the next batch. Processed output is written to disk. The cycle repeats for every batch.
+>
+> On big data, processing eventually slows even though the CPU looks idle: often **CPU is barely ~30%** while **RAM and disk are close to 100%**.
 
-This is because of the time it takes to move data from the hard disk to RAM. The time it takes to move data from disk to RAM (memory) is about 100x longer than that of RAM to CPU, and moving data on a network takes the longest.
+That happens because moving data from disk to RAM takes about **100× longer** than RAM to CPU, and moving data over a **network** takes longest. The CPU finishes a batch while the next batch is still loading from disk—a **disk–RAM bottleneck**, not weak compute.
 
-So while data is still coming from the disk, the CPU is done with that batch. Now there's a bottleneck between the disk and RAM, slowing down the work on big data. To conquer this, distributed computing was invented.
+> **Distributed computing** uses a network of computers (servers)—**clusters** or **nodes**—to run work such as that “most played song” query. At a basic level, each node is CPU plus RAM working in parallel.
 
-> ##### Distributed computing is basically using a network of computers (servers) to run your processes such as the query on the most played song. These network of computers are normally referred to as clusters or nodes, but on a basic level, they are a combination of CPU and RAM.
+## Splitting work by hand (and why frameworks exist)
 
-Understanding distributed computing: assuming you want to run a computational query on about 60GB, but the RAM (memory) capacity of your system is 4GB.
+Say you need to run a query on **~60 GB** of data but your machine has only **4 GB** of RAM.
 
-In order to save time, you split the data and send it to 14 colleagues to help you run that query, then you collate their output and present the result.
+You could split the data, send chunks to **14 colleagues**, each runs the query locally, and you collate the results. That works in principle—but as data grows, shipping chunks and merging outputs becomes the bottleneck. It does not scale.
 
-It works, but when the data becomes larger, that approach won't be effective, as it would take longer to send those larger bits over to your colleagues and collate. What a hassle.
+Frameworks avoid that manual shuffle. Technologies such as **Apache Spark**, **Apache Hadoop** (Hadoop MapReduce), **Apache Flink**, **Apache Storm**, and **Apache Kafka** run on **clusters of commodity machines**. They process data across nodes in unison, using **MapReduce**-style patterns and **functional programming** ideas so big jobs stay faster and easier to reason about.
 
-Now, without needing to send your data to 14 computers, you can process your big data using technologies such as Apache Spark, Apache Hadoop (Hadoop MapReduce), Apache Flink, Apache Storm, and Kafka whose software run on clusters of commodity computers.
+> **Apache Hadoop** — Includes **HDFS** for distributed storage and a **MapReduce** framework for batch jobs on clusters.
+>
+> **Apache Flink / Storm / Kafka** — Flink and Storm focus on **stream processing**; Kafka is the durable **event log** that connects producers and consumers at scale.
+>
+> **Apache Spark** — A faster in-memory engine with an advanced MapReduce-style execution model. Spark does not ship its own long-term file system; it integrates with **HDFS**, **Amazon S3**, and other stores.
 
-They help you process data on different computers/clusters/nodes/servers in unison. They also make use of a processing method called MapReduce and a programming methodology called functional programming, which makes the processing of big data faster and efficient.
+Cloud providers (**AWS**, **Azure**, **IBM**, and others) offer managed clusters built on these runtimes—**EMR**, **HDInsight**, **Dataproc**, and similar—so you process data distributedly on virtual machines without operating bare-metal fleets yourself.
 
-> Apache Hadoop — The framework comes with a filing system for storage, HDFS, helps work distributedly on clusters, and has a MapReduce framework.\
-> Apache Flink/Storm/Kafka is mainly for data streaming.\
-> Apache Spark — It's a faster processor which uses the advanced MapReduce framework, doesn't have a filing system. It can be integrated into a filing system such as HDFS or Amazon S3.
+## MapReduce and functional programming
 
-Cloud companies such as AWS, Azure, and IBM also provide fast processing services using the above technologies on virtual computers/clusters to enable you to process your data in a distributed manner.
+**MapReduce** breaks work into **map** (per partition), **shuffle** (group by key), and **reduce** (aggregate). **Functional programming**—immutable transforms, composable stages—helps runtimes **re-run failed partitions** after a node drops.
+
+Spark, Flink, and Kafka each apply that thinking differently: Spark on batch and structured streaming, Flink on low-latency stateful streams, Kafka on partitioned logs and parallel consumer groups.
+
+## Closing thought
+
+Big data is less about raw CPU speed and more about **how often data crosses disk, RAM, and network**. Distributed systems exist to parallelize that movement and computation—so a terabyte query or training job finishes in hours on a cluster instead of days on one overloaded machine.
+
+For a hands-on Spark path on AWS, see [Big Data Jobs on EMR](/work/blogs/big-data-jobs-on-emr). For moving events between services, see [Confluent Kafka CLI publish/subscribe](/work/blogs/confluent-kafka-cli-publish-subscribe).

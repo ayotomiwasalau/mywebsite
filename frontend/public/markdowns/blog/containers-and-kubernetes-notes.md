@@ -1,56 +1,75 @@
 ![](/images/blog/containers-and-kubernetes-notes/kubernetes-kubelet.png)
 
-For data scientists and ML engineers who are interested in deploying statistical/machine learning models into software applications — i.e. building an AI service or product — it is important to know these concepts. You would understand what it means to deploy your models as a container, run several container instances, and push regular updates and deployments continuously.
+## System overview
 
-The implementation of these concepts would help build AI services/products in a way that would allow for scale and enable a large number of users to access these services/products with reduced cost on supporting hardware.
+Data scientists and ML engineers who ship models into products eventually hit the same wall: the notebook runs locally, the demo works on one machine, and production is a different environment entirely. **Containers** package an application with its dependencies so the same artifact runs on a laptop, a CI runner, or a cloud cluster. **Kubernetes** orchestrates those containers at scale — scheduling, healing, load balancing, and rolling updates. **CI/CD** closes the loop by building, testing, and deploying on every merge.
 
-Typically, building your AI app would consist of these basic components: front-end, API endpoints, database, and statistical/ML engine. You build the app and it works fine on your local system. Now you want to deploy the app so many people can have access.
+This essay outlines how those three layers fit together for ML and API services, with trade-offs that matter before you buy hardware or wire a pipeline. For a concrete walkthrough — Docker image, JWT-secured Flask API, EKS manifests, Parameter Store secrets, and CodePipeline — see the [Flask JWT on EKS case study](/work/projects/deploying-flask-jwt-api-kubernetes-eks).
 
-When deploying your application to the host/production environment, you don't want a situation where the app suddenly fails to run in the production environment. You would say to yourself, "It ran on my system." Yes, but this is a different environment.
+## Why containers for ML deployment
 
-This is where **Containers** come to the rescue.
+An ML-powered product combines a front end, REST endpoints, a database, and an inference engine — each with different runtime requirements. Containerization bakes dependencies into an immutable **Dockerfile** image: pinned libraries, application code, and a production entrypoint (**Gunicorn** or **Uvicorn**, not a dev server). The same artifact runs on a laptop, CI runner, or cloud cluster.
 
-> ##### Containerization simply means deploying your app in a container. The dependencies and environmental variables are defined within the container, so when the container is run in a new environment, it simply declares and installs all the required environmental variables and dependencies the app needs to function. This is the concept of containerization.
+For ML, containers enable **reproducible inference** (model + preprocessing in one versioned tag), **resource isolation** (CPU/memory limits per workload), and **horizontal scale** (stateless replicas behind a load balancer). The cost is registry and base-image maintenance — worthwhile once traffic exceeds a single host.
 
-Popular container companies such as [Docker](https://twitter.com/Docker), whose containers are defined in Dockerfiles, rkt, and Linux containers.
+A typical ML product stacks four components: front end, API layer, database, and scoring engine. Containerizing each layer — or the whole app as one image — eliminates the "it worked on my machine" gap between notebook and production.
+
+## Microservices: when to split containers
+
+Not every app should become twelve services on day one. **Microservices** mean decomposing an application into independently deployable units — for example, separating authentication, payment, and model inference into distinct containers with their own release cadence and scaling policy.
+
+Split when boundaries are clear and load patterns differ:
+
+| Service | Why separate |
+|---|---|
+| Auth / JWT issuance | Security patches and token logic change often; isolate secrets and rate limits |
+| Inference API | GPU or CPU-heavy; scale on request volume |
+| Batch retraining | Spiky, long-running jobs; scale to zero between schedules |
+| Static front end | CDN-served assets; no need to co-locate with Python workers |
+
+Keep a **modular monolith** in one container when the team is small and network hops add latency without benefit. Split when failure domains or scaling needs demand it.
+
+## Kubernetes orchestration
+
+**Kubernetes** declares desired state — "run three replicas of this API" — and reconciles reality continuously. **Pods** run containers; **Deployments** manage replica count and rolling updates; **Services** provide stable DNS to healthy pods; **nodes** (or **EKS** node groups) host scheduled workloads. Crashed pods are replaced; traffic spikes raise `replicas` or trigger a **Horizontal Pod Autoscaler**. That elasticity matters when campaign traffic overlaps batch scoring jobs on the same cluster.
 
 ![](/images/blog/containers-and-kubernetes-notes/containerization.png)
 
-> Apart from deploying the whole app as a container, service components of the app can be grouped and each deployed as a container. This is known as microservices. This means grouping similar service endpoints together and deploying them.
-> ex. An app that has a Payment service feature and AI service features needs to be deployed — these services can be deployed individually in their own containers and run. There are many benefits of a microservice architecture. You can check it up.
+Managed **EKS**, **GKE**, and **AKS** reduce control-plane toil; you still own VPC networking, IAM, and upgrades.
 
-Your app has been deployed in its container and it's running on the host server. As time goes, the number of users making use of your AI platform starts increasing exponentially. You want to buy more capacity — i.e. RAM, CPU, storage (vertical scaling) — but it's expensive.
+## Load balancing and traffic management
 
-This is where **Kubernetes** comes to the rescue.
+Kubernetes **Services** spread traffic in-cluster; an **Ingress** or **AWS ALB** terminates TLS at the edge. Use **readiness probes** so pods join rotation only when ready (model loaded, DB pool warm); **liveness probes** restart stuck processes. Avoid session stickiness for stateless APIs; allow **graceful shutdown** so in-flight JWT or inference requests finish before pod termination. Gateways should enforce **timeouts** and **concurrency limits** on ML endpoints.
 
-> ##### Kubernetes is a container orchestration service. On a high level, what Kubernetes does is spin up multiple containers of a particular service (such as AI or Payment service) in case one container fails — another can pick up the slack.
+## Persistent storage
 
-ex. An app running its payment feature and AI feature — if the payment service suddenly stops and people can't make payment on the app at that moment, Kubernetes spins up another container running that payment service. It allows for a more resilient application during peak periods.
+Containers are ephemeral by design. Anything written to a container filesystem disappears when the pod is rescheduled. That is correct for stateless APIs but wrong for databases, uploaded files, or shared model caches on disk.
 
-Kubernetes runs these containers in pods. Similar containers can be grouped in a pod, or at times it can be one container to a pod. Kubernetes runs these pods on clusters/nodes which helps it to scale; however, since the containers are temporary, they can go down at any time.
+Use **PersistentVolumes** for data that outlives pods, but prefer **managed databases** (RDS) and **S3** for transactional data and large model artifacts. ReadWriteMany volumes can mount shared read-only model directories when many inference pods need the same weights.
 
-> There is need for a management system that spins up containers when there is a need and tears them down when there is none, and also redirects requests from the users to running containers in a way that does not overload the system. This is one of the core functions of Kubernetes known as load balancing.
+Inject JWT secrets and API keys via **Parameter Store** or **Kubernetes Secrets** — never bake them into images or git. The EKS project uses Parameter Store for `JWT_SECRET`.
 
-The containers need to share a more persistent data storage as the container can be torn down easily — it would be ineffective to store data within their nodes.
+## CI/CD: from commit to cluster
 
-Consequently, containers can be configured to share a file system for their service. It would reside in a more persistent location that can't be torn down easily.
+**CI/CD** automates build, test, and deploy on every push: `docker build`, run unit tests, push to **ECR**, update Kubernetes manifests, rolling deploy. **CodePipeline** and **CodeBuild** integrate natively with EKS via CloudFormation and `buildspec.yml`; **GitHub Actions**, **GitLab CI**, and **Jenkins** follow the same shape. Failing tests block promotion; image tags trace to git SHAs for rollbacks. Manual deploys — SCP to a server, restart Gunicorn — do not scale with team size or audit requirements.
 
-Google and AWS provide Kubernetes services which help manage containerized applications.
+## Design decisions
 
-Now you would want to push updates to your app — maybe to improve its AI feature, or some changes to your Payment service. This can't be done on the fly because you would need to compile and build the code, test the code, before deploying.
+**Containers first** — environment parity before orchestration. **Secrets outside git** — Parameter Store with IAM-scoped access. **Stateless pods, external state** — RDS and S3 hold durable data. **Monolith until proven otherwise** — split services when scaling or ownership boundaries demand it.
 
-Traditionally this was done by compiling and building in the development environment before deploying to production. The hassle with this process.
+## Trade-offs
 
-**Continuous integration/delivery** service comes to the rescue.
+| Pros | Cons |
+|---|---|
+| Reproducible deploys across environments | Learning curve for K8s YAML and debugging |
+| Auto-healing and horizontal scale | Cluster cost even at low traffic |
+| CI/CD audit trail and fast rollbacks | Persistent storage and networking need upfront design |
+| Industry-standard path for ML APIs | Overkill for single static sites |
 
-> Continuous Integration/Delivery is a novel way of deploying changes and updates to your AI applications. It involves automated build, test, and deployment of code. In more practical terms, Continuous delivery and integration services connect directly to your GitHub repo so when you push an update, it immediately captures this update, runs tests on it, if there is a bug returns the error else moves on and deploys the updated code as a new container running on your Kubernetes cluster.\
-> Platforms such as GitLab CI, Circle CI, and Jenkins offer Continuous integration and delivery services for the development of code. AWS also offers it as one of its services known as CodeBuild.\
-> Many companies such as Airbnb, Tinder, and Reddit have adopted containerized systems with Kubernetes for their applications. Tinder migrated about 200 services, running a Kubernetes cluster at scale totaling 1,000 nodes, 15,000 pods, and 48,000 running containers. That's massive!
+## Scaling considerations
 
-Check out courses on Containers, Kubernetes, and CI/CD on [Udemy](https://udemy.com/topic/kubernetes/), [Udacity](https://udacity.com/course/scalable-microservices-with-kubernetes--ud615), and [Pluralsight](https://pluralsight.com/courses/getting-started-kubernetes).
+A small EKS node group and two to three replicas suffice at moderate traffic. At high scale, add **cluster autoscaling**, **pod disruption budgets**, **multi-AZ** nodes, and **GitOps** (Argo CD, Flux). For ML, use **GPU node pools** or dedicated inference servers. Airbnb, Reddit, and Tinder run large Kubernetes fleets because declarative desired state and rolling updates match continuous delivery.
 
-Also check out this [video](https://t.co/ceGYxDbsso?amp=1) on AWS EKS (Amazon Kubernetes Service).
+## Link
 
-## References
-
-- [GitHub — Deploy Flask App to Kubernetes Using EKS](https://github.com/ayotomiwasalau/Deploy-Flask-App-to-Kubernetes-Using-EKS)
+Implementation details, Dockerfile, EKS manifests, and CodePipeline setup: [View project case study](/work/projects/deploying-flask-jwt-api-kubernetes-eks).

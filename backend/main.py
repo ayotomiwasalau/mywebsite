@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, Quer
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
-load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
+load_dotenv(Path(__file__).resolve().parent / ".env.test", override=True)
 
 from src.api_config import API_PREFIX
 from src.auth import (
@@ -448,5 +448,4 @@ def list_work_featured(service: WorksFunction = Depends(work_service)):
 
 app.include_router(api_router)
 
-# handler = Mangum(app)
-handler = app
+handler = Mangum(app)

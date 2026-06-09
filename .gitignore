@@ -83,6 +83,7 @@ deployments/terraform/*.tfstate*
 *.tfstate
 *.tfstate.*
 terraform.tfvars
+deployments/image-tags.env
 *.tfvars
 *.tfvars.json
 crash.log

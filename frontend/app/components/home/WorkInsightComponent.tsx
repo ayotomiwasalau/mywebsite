@@ -89,8 +89,6 @@ const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
             </p>
             <Link
               href={entry.href}
-              target="_blank"
-              rel="noopener noreferrer"
               className={`${viewButtonClass} h-8 w-16 shrink-0 px-2 text-xs sm:h-9 sm:w-20 sm:text-sm`}
             >
               View
@@ -126,8 +124,6 @@ const WorkInsightComponent: React.FC<WorkInsightComponentProps> = ({
 
         <Link
           href={entry.href}
-          target="_blank"
-          rel="noopener noreferrer"
           className={`${viewButtonClass} h-10 w-[10rem] shrink-0 px-6 text-lg`}
         >
           View

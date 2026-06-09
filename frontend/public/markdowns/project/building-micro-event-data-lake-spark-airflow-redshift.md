@@ -1,102 +1,67 @@
 ![](/images/project/building-micro-event-data-lake-spark-airflow-redshift/dataschema.png)
 
-Most public football data stops at match-level aggregates — total shots, cards, possession. That is enough for headlines, not for serious analytics. Analysts and ML teams need **atomic match events**: every pass, duel, shot, and tackle, with timing, location, outcome, and the players involved.
+Most public football data stops at match-level aggregates — total shots, cards, possession. Analysts and ML teams need **atomic match events**: every pass, duel, shot, and tackle with timing, location, outcome, and the players involved. This project builds an **S3 → Spark → Airflow → Redshift** pipeline across top European leagues (2017/18), published on Kaggle. Architectural rationale — event grain vs aggregates, scaling paths — is in the [design write-up](/work/blogs/club-football-micro-event-data-lake).
 
-This project walks through **building a micro-event data lake on AWS** — Spark for distributed ETL, Airflow for orchestration, and Redshift for analytics — across top European leagues (2017/18 season), published on Kaggle and documented on GitHub.
+[GitHub — club_football_data_lake](https://github.com/ayotomiwasalau/club_football_data_lake) · [Kaggle dataset](https://www.kaggle.com/datasets/ayotomiwasalau/club-football-event-data) · [Design write-up (blog)](/work/blogs/club-football-micro-event-data-lake)
 
-## Problem
+## Context
 
-Club and match analytics often rely on coarse statistics. That limits what you can answer:
+Club analytics built on coarse statistics cannot answer minute-level or player-sequence questions, and **expected-goals** models need shot coordinates and context — not box-score totals. Raw sources combine nested JSON, CSV extracts, and API payloads at **1M+ event rows**, too large for single-machine ETL and too messy for direct warehouse loads without a canonical schema.
 
-- What happened at a specific minute in a specific match?
-- How did pass length, pitch location, and success rate combine for a player on a given day?
-- Can you train models (e.g. **expected goals**) on event-level features instead of box-score totals?
+## Approach
 
-The raw sources are messy: JSON hierarchies, CSV extracts, multiple APIs, and **event tables large enough to need distributed processing** (1M+ rows). The goal was to collate, model, and serve this data in a way that supports analytics dashboards and downstream ML — not another "goals and assists" table.
+The pipeline lands heterogeneous sources in S3, normalizes them with Spark into a star schema, and promotes curated CSV through Airflow into Redshift—with quality gates before publication:
 
-## Solution
+1. Land raw football data in **Amazon S3** from multiple sources.
+2. **Extract and transform** with **Apache Spark** on a 3-node cluster — parse nested JSON, normalize clubs/players/matches, build star-schema tables.
+3. Write processed CSV back to S3.
+4. **Orchestrate loads** with **Apache Airflow** into **Amazon Redshift**: create tables, `COPY` from S3, run data-quality checks.
+5. Publish the curated dataset on **Kaggle** for dashboards and ML.
 
-Build an end-to-end **data lake → processing → warehouse** flow:
-
-1. Land raw football data in **Amazon S3** (JSON and CSV from multiple sources).
-2. **Extract and transform** with **Apache Spark** on a multi-node cluster — parsing nested JSON, normalizing entities, and shaping tables to a dimensional model.
-3. Write processed tables back to S3 as CSV.
-4. **Orchestrate loads** with **Apache Airflow** into **Amazon Redshift**: create tables, copy from S3, run data-quality checks.
-5. Publish the curated dataset on **Kaggle** for analysis and visualization.
-
-The logical model is a **star schema** centred on `match_event` as the fact table, with dimensions for match, club, player, and referee — suited to event-grain queries and ML feature engineering.
-
-## Architecture breakdown
-
-### Ingestion
-
-Raw data was sourced from:
-
-- [Figshare Soccer match data](https://figshare.com/articles/dataset/Soccer_match_data/8892904)
-- [Kaggle Football Events](https://www.kaggle.com/datasets/secareanualin/football-events)
-- Rapid Soccer API
-
-JSON event payloads are hierarchical; CSV and API extracts needed parsing and alignment before modelling. Everything lands in S3 as the system of record for raw and processed layers.
-
-### Processing
-
-Event data volume made single-machine ETL impractical. **Spark on a 3-node CPU cluster** handled extraction, transformation, and writes to S3.
-
-Processing included:
-
-- Parsing nested JSON event structures
-- Building fact and dimension tables per the star schema
-- Handling high-cardinality event attributes (action, modifier, coordinates, success flags)
-
-### Storage
-
-- **S3** — raw and processed CSV outputs
-- **Redshift** — analytical warehouse with partitioning suited to analytics and ML workloads
-
-Airflow DAGs automate: table creation, S3 → Redshift copy, and quality checks after load.
+The model is a **star schema** with **`match_event`** as the fact table and dimensions for `match`, `club`, `player`, and `referee` — suited to event-grain SQL and feature engineering. Fact rows carry period, action, modifier, duration, pitch coordinates, and success flags; dimensions hold competition, season, and entity metadata.
 
 ![](/images/project/building-micro-event-data-lake-spark-airflow-redshift/pipeline-runs.png)
 
-### Serving
+Airflow DAG runs show repeatable warehouse loads with explicit failure on quality checks — no silent bad data in Redshift.
 
-The curated dataset is available on Kaggle for exploration, dashboards, and modelling (including xG-style use cases). The warehouse design supports SQL analytics over match, player, club, and event grain.
+## Sources
 
-## Data model (high level)
+Three upstream feeds cover structured extracts, complementary event files, and league API data—the Spark jobs reconcile them into one canonical event grain before warehouse load.
 
-**Fact:** `match_event` — atomic in-game events (pass, foul, duel, shot, etc.) with period, action, modifier, duration, pitch coordinates, and success flag.
+| Source | Role |
+|---|---|
+| [Figshare Soccer match data](https://figshare.com/articles/dataset/Soccer_match_data/8892904) | Structured match and event extracts |
+| [Kaggle Football Events](https://www.kaggle.com/datasets/secareanualin/football-events) | Complementary event records |
+| Rapid Soccer API | Top five European leagues, 2017/18 season |
 
-**Dimensions:** `match`, `club`, `player`, `referee` — context for who, where, when, and under which competition/season.
-
-Full field-level definitions live in the [GitHub README](https://github.com/ayotomiwasalau/club_football_data_lake#data-dictionary).
+Spark jobs align heterogeneous schemas into the canonical star model before Redshift ingestion. Full field definitions are in the [GitHub data dictionary](https://github.com/ayotomiwasalau/club_football_data_lake#data-dictionary).
 
 ## Tech stack
+
+S3 is the handoff between distributed Spark transforms and Redshift loads; Airflow owns scheduling and data-quality checks on the warehouse path.
 
 | Layer | Tools |
 |---|---|
 | Storage | Amazon S3 |
-| Processing | Apache Spark (Jupyter notebook, multi-node cluster) |
+| Processing | Apache Spark (multi-node cluster) |
 | Orchestration | Apache Airflow |
 | Warehouse | Amazon Redshift |
-| Sources | Figshare, Kaggle Football Events, Rapid Soccer API |
-| Publication | Kaggle dataset |
+| Publication | Kaggle |
 
 ## Impact
 
-- **Event-grain data** — passes, shots, tackles, duels, and more with coordinates and outcomes, not just match totals
-- **1M+ event rows** processed with Spark for scalable transformation
+Beyond the Kaggle release, the project shows how to scale event-grain sports data from messy multi-source inputs to analyst-ready warehouse tables.
+
+- **1M+ micro-event rows** — passes, shots, tackles, duels with coordinates and outcomes
 - **Five top European leagues** (2017/18): English, French, Spanish, German, Italian
 - **Star schema** enabling analytics and ML (e.g. expected goals by team or player)
-- **Public dataset** on Kaggle for reproducible analysis and community use
-
-## Improvements (next iteration)
-
-- **Incremental updates** — load per match or weekly as new events are generated
-- **Scale-out pipeline** — embed Spark steps in the Airflow DAG for 100× volume growth
-- **Scheduled ingestion** — automate retrieval (e.g. daily 7am runs) with right-sized clusters
-- **Multi-tenant access** — partition Redshift for 100+ concurrent analysts without query lag
+- **Public Kaggle dataset** for reproducible analysis and community use
+- **Repeatable Airflow DAGs** with data-quality gates before warehouse promotion
 
 ## Links
 
+The repository holds Spark and Airflow code; Kaggle hosts the published dataset; the blog covers architecture trade-offs in depth.
+
 - [GitHub — club_football_data_lake](https://github.com/ayotomiwasalau/club_football_data_lake)
 - [Kaggle — Club Football Event Data](https://www.kaggle.com/datasets/ayotomiwasalau/club-football-event-data)
-- [Related write-up — Club football micro-event data lake](/work/blogs/club-football-micro-event-data-lake)
+- [Blog — architecture and design trade-offs](/work/blogs/club-football-micro-event-data-lake)

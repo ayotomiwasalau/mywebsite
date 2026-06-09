@@ -1,248 +1,237 @@
-The priority of data scientists simply lies in picking out the right features, building and deploying their models. They do not like to be particularly bothered about other aspects like model versioning, job scheduling, flow architecture, and compute resource management, which are needed to make operationalizing data science successful. This is where Metaflow comes in.
+![](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_header_img.png)
 
-![header-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_header_img.png)
+The priority for many data scientists is picking the right features, building models, and deploying them—not wrestling with model versioning, job scheduling, flow architecture, or compute management. That operational work still has to happen for production ML to succeed. **Metaflow** is where this post starts.
 
-## What is Metaflow?
+[GitHub — mnist-with-metaflow](https://github.com/ayotomiwasalau/mnist-with-metaflow)
 
-Metaflow is an open-source tool by Netflix for managing data science workflows. It aims to boost the productivity of data scientists by allowing them to focus on actual data science work and by facilitating faster productionization of their deliverables. If you are familiar with Airflow or Luigi, then you would understand the function of Metaflow. It allows you to run your data science process in steps, so each step is a node in the process and the nodes are connected like a graph.
+## System overview
+
+**Metaflow** is an open-source tool from Netflix for managing data science workflows. It helps scientists focus on modeling while making it faster to productionize deliverables. If you know **Airflow** or **Luigi**, the role is similar: your process runs in **steps**, each step is a node, and nodes connect as a graph—a **DAG** (directed acyclic graph).
 
 ![chain-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_chain.png)
 
-This system is called a DAG, Directed Acyclic Graph. In this hypothetical example, the flow trains two versions of models in parallel and outputs the highest accuracy score.
+In the example above, two model variants train in parallel and evaluation picks the higher accuracy score.
 
-One other interesting attribute of Metaflow is that it ships with a [lightweight service](https://github.com/Netflix/metaflow-service) that provides a centralized place to inspect and track all your flow executions. Metaflow will use a local directory to keep track of all metadata on executions from your laptop. This metadata is called a Data Artifact.
+Metaflow ships with a [lightweight service](https://github.com/Netflix/metaflow-service) for inspecting and tracking flow executions. On a laptop, a **local directory** stores metadata for every run—that metadata is a **data artifact**. Jupyter (or the CLI client) lets you interact with artifacts from past and in-flight runs. For team sharing and durable state, deploy Metaflow Service with **Amazon S3** as the datastore.
 
-You can use a local Jupyter notebook to interact with data artifacts from all your previous executions as well as currently running ones. However, deploying the Metaflow service alongside Amazon S3 as a datastore is helpful if you would like to share results with your peers and track your work without fear of losing any state.
+## What problem Metaflow solves
 
-## Basic Components of Metaflow
+Operationalizing data science usually splits into orchestration (chaining ingest → train → evaluate), lineage (which data and params produced which model), and recovery (resume without rerunning expensive upstream steps). Metaflow treats each `@step` as the smallest **resumable** unit, persists **data artifacts** to a **datastore**, and records run metadata so you can **inspect, resume, and compare** runs—especially when a branch fails mid-pipeline.
 
-A Metaflow DAG essentially consists of the flow, step, and transition.
+## Core concepts: flow, step, transition
 
-- **Flow**: The instance that manages all the code for the pipeline. It is a Python object in this case `class MyFlow(Flowspec)`.
-- **Steps**: A step is the smallest resumable unit of computation, delimited by decorator `@step`. They are Python functions in the MyFlow object, in this case, `def start`, `fitA`, `fitB`, `eval`, `end`.
-- **Transitions**: Links between the steps could be of different types (linear, branch, and for each); there are more details in the [documentation](https://docs.metaflow.org/).
+A Metaflow DAG is built from:
+
+- **Flow** — manages all pipeline code; a Python class such as `class MnistFlow(FlowSpec)`.
+- **Step** — smallest resumable unit of computation, marked with `@step` (e.g. `start`, `fit_predict_model1`, `join`, `end`).
+- **Transition** — links between steps: linear, branch, `foreach`, and join. See the [Metaflow docs](https://docs.metaflow.org/) for details.
 
 ![compnt-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_component.jpg)
 
-There are 3 components around the flow:
+Three components wrap the flow:
 
-- **Datastore**: The place where all the data (data artifact) generated all along the flow is stored.
-- **Metadata**: The place where the information on the execution of the flow is stored.
-- **Client**: The component that is the connection to access the data in the datastore and get information on the flow from the metadata.
+| Component | Role |
+|---|---|
+| **Datastore** | Stores data artifacts produced along the flow. |
+| **Metadata** | Stores execution information (runs, steps, status). |
+| **Client** | Connects to the datastore and metadata for inspection and debugging. |
 
-These components around the flow allow data scientists to resume a run, [inspect](https://docs.metaflow.org/metaflow/client) run metadata, do hybrid runs, and collaborate.
+Together they support resuming runs, [inspecting](https://docs.metaflow.org/metaflow/client) metadata, hybrid local/remote execution, and collaboration.
 
-## Setting Up Metaflow
+## Setup: local, cloud, or hybrid
 
-One can make use of Metaflow on both local and remote servers like AWS. On local and remote servers, one can easily install Metaflow by simply:
+Install Metaflow locally or on a remote server (e.g. AWS):
 
 ```bash
 pip install metaflow
 ```
 
-Or upgrade already installed Metaflow:
+Upgrade an existing install:
 
 ```bash
 pip install --upgrade metaflow
 ```
 
-Now, one can prefer the remote option given the scale of the data and resource needed, or the local where fast interaction is required but the resource constraint would be there. There is also the hybrid method to get the best of both worlds — local and remote — by switching easily between both servers. Metaflow snapshots all data and code in the cloud automatically. This means that you can inspect, resume, and restore any previous Metaflow execution without having to worry that the fruits of your hard work get lost.
+**Local** runs favor fast iteration and Jupyter inspection; **remote** fits larger data and heavier compute. **Hybrid** mode switches between laptop and cloud—Metaflow snapshots code and data in the cloud so you can inspect, resume, and restore prior executions without losing work.
 
-## Starting Your Data Science/Machine Learning Project: MNIST
+## MNIST walkthrough: from CSV to two models
 
-For this post, we will build a data science workflow for training a machine learning model using the MNIST dataset. The [MNIST](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv) dataset originally is a database of handwritten digit images but for this project, the image data has been converted to CSV format using its channels — RGB — as features in the dataset i.e. vectorized.
-
-The data file contains the 60,000 examples and labels. Each row consists of 785 values: the first value is the label (a number from 0 to 9) and the remaining 784 values are the pixel values (a number from 0 to 255).
+This walkthrough trains classifiers on the [MNIST CSV dataset](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv). The original MNIST images are vectorized: each row has **785 values**—label (0–9) plus **784 pixel features** (0–255). The file has **60,000** training examples.
 
 ![data-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_data.jpg)
 
-It would involve data extraction, data preparation, data split, model fitting and prediction, and model evaluation. The above graph can be represented in the code below.
+The pipeline covers extraction, preparation, train/test split, parallel model fit and predict, and evaluation:
 
 ![steps-image](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_steps.jpg)
+
+The graph maps to a `MnistFlow` class. Screenshots below show the flow definition in the repo:
 
 ![Step 1](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_wlkthru_step01.png)
 
 ![Step 2](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_wlkthru_step02.png)
 
-### Walking Through Each Step in the Graph
+### Walking through each step
 
-1. **Set the path to the MNIST data file and load the dataset into a Pandas data frame**:
+**1. Load the MNIST CSV into a Pandas DataFrame**
 
 ```python
 class MnistFlow(FlowSpec):
     """
-        The flow performs the following steps:
-        1) Ingest the MNIST csv data into Pandas DataFrame
-        2) Clean and wrangle data
-        3) Split data into train and test
-        4) Fit model on train data (multiple models with branches)
-        5) Predict on test data
-        6) Evaluate result
+    The flow performs the following steps:
+    1) Ingest the MNIST csv data into Pandas DataFrame
+    2) Clean and wrangle data
+    3) Split data into train and test
+    4) Fit model on train data (multiple models with branches)
+    5) Predict on test data
+    6) Evaluate result
     """
 
-    mnist_train_data = IncludeFile('mnist_data',
+    mnist_train_data = IncludeFile(
+        'mnist_data',
         help='The path to mnist data file.',
-        default=script_path('mnist_train.csv'))
+        default=script_path('mnist_train.csv'),
+    )
 
     @step
     def start(self):
-        """
-            Load the data
-        """
         import pandas as pd
         from io import StringIO
 
-        # Read data from csv file
         self.mnist_df = pd.read_csv(StringIO(self.mnist_train_data))
         self.next(self.prepare_data)
 ```
 
-2. **Prepare the dataset by extracting the features and the label from the whole dataset**:
+**2. Prepare features and labels**
 
 ```python
-@step
-def prepare_data(self):
-
-    """
-        prepare data
-    """
-    # Extract the features and the label from the data
-    self.X_df = self.mnist_df.drop(["label"], axis=1)
-    self.Y_df = self.mnist_df.label.values
-
-    self.next(self.split_data)
+    @step
+    def prepare_data(self):
+        self.X_df = self.mnist_df.drop(["label"], axis=1)
+        self.Y_df = self.mnist_df.label.values
+        self.next(self.split_data)
 ```
 
-3. **Split the data into train and test set in the ratio of 50:50**:
+**3. Split train and test (50:50)**
 
 ```python
-@step
-def split_data(self):
-    """
-        Split train data for modelling
-    """
-    from sklearn.model_selection import train_test_split
+    @step
+    def split_data(self):
+        from sklearn.model_selection import train_test_split
 
-    # Split data into train and test set
-    self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
-        self.X_df, self.Y_df, test_size=0.5, random_state=42
+        self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
+            self.X_df, self.Y_df, test_size=0.5, random_state=42
         )
-    self.next(self.fit_predict_model1, self.fit_predict_model2)
+        self.next(self.fit_predict_model1, self.fit_predict_model2)
 ```
 
-4. **Fit and predict on the data for the Gaussian Naive Bayes model**:
+**4. Fit and predict — Gaussian Naive Bayes**
 
 ```python
-@step
-def fit_predict_model1(self):
-    """
-        Fit a gaussian naive bayes model to the data
-    """
-    # Import model
-    from sklearn.naive_bayes import GaussianNB
+    @step
+    def fit_predict_model1(self):
+        from sklearn.naive_bayes import GaussianNB
 
-    modelA = GaussianNB()
-
-    # Fit the model
-    modelA.fit(self.X_train, self.Y_train)
-
-    # Predict
-    self.predictionA = modelA.predict(self.X_test)
-
-    self.next(self.join)
+        modelA = GaussianNB()
+        modelA.fit(self.X_train, self.Y_train)
+        self.predictionA = modelA.predict(self.X_test)
+        self.next(self.join)
 ```
 
-5. **Fit and predict on the data for the Random Forest model**:
+**5. Fit and predict — Random Forest**
 
 ```python
-@step
-def fit_predict_model2(self):
-    """
-        Fit a Random forest model to the data
-    """
-    # Import model
-    from sklearn.ensemble import RandomForestClassifier
+    @step
+    def fit_predict_model2(self):
+        from sklearn.ensemble import RandomForestClassifier
 
-    modelB = RandomForestClassifier(random_state=1)
-
-    # Fit the model
-    modelB.fit(self.X_train, self.Y_train)
-
-    # Predict
-    self.predictionB = modelB.predict(self.X_test)
-
-    self.next(self.join)
+        modelB = RandomForestClassifier(random_state=1)
+        modelB.fit(self.X_train, self.Y_train)
+        self.predictionB = modelB.predict(self.X_test)
+        self.next(self.join)
 ```
 
-6. **Join the two branches on which the classification models are running and merge data artifacts from the two branches**:
+**6. Join branches and merge artifacts**
 
 ```python
-@step
-def join(self, inputs):
-    """
-        merge the data artifact from the models
-    """
-
-    # merge artifacts during a join
-    self.merge_artifacts(inputs)
-
-    self.next(self.evaluate)
+    @step
+    def join(self, inputs):
+        self.merge_artifacts(inputs)
+        self.next(self.evaluate)
 ```
 
-7. **Evaluate the model**:
+**7. Evaluate accuracy**
 
 ```python
-@step
-def evaluate(self):
-    """
-        Evaluate the score of the models
-    """
+    @step
+    def evaluate(self):
+        from sklearn.metrics import accuracy_score
 
-    from sklearn.metrics import accuracy_score
-
-    # Measure accuracy
-    print('Accuracy score for GaussianNB {}'.format(
-        accuracy_score(self.predictionA, self.Y_test)
+        print('Accuracy score for GaussianNB {}'.format(
+            accuracy_score(self.predictionA, self.Y_test)
         ))
-    print('Accuracy score for RandomForest {}'.format(
-        accuracy_score(self.predictionB, self.Y_test)
+        print('Accuracy score for RandomForest {}'.format(
+            accuracy_score(self.predictionB, self.Y_test)
         ))
-
-    self.next(self.end)
+        self.next(self.end)
 ```
 
-8. **End the run**:
+**8. End the run**
 
 ```python
-@step
-def end(self):
-    """
-        End of flow
-    """
-
-    print("finished")
+    @step
+    def end(self):
+        print("finished")
 ```
 
-See the result of the flow run:
+Run the flow (from the repo directory):
+
+```bash
+python mnist_flow.py run
+```
 
 ![result](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_results.png)
 
-We can see that the Random Forest model performed better than the Gaussian Naive Bayes model with a score of 93.6% compared to 56.7%.
+**Random Forest** typically beats **Gaussian Naive Bayes** on this vectorized slice—in my runs, about **93.6%** vs **56.7%** accuracy. The teaching goal is **branch + join**, not state-of-the-art digit accuracy.
 
-## Inspecting Your Flow
+## Inspecting your flow
 
-With Metaflow, we can also inspect our flow i.e. check the list of flows, the number of runs, the latest run, the list of steps, and the data artifact at each step. This is particularly helpful when debugging your flow. The error usually appears in this form.
+Metaflow lets you list flows, runs, steps, and per-step artifacts—useful when debugging. Failures often surface at a specific step:
 
 ![error](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_error.png)
 
-Below, you can inspect your flow in this manner. This could be done through a Jupyter notebook or your CLI. We are using Jupyter notebook for this project.
+Inspect via **Jupyter** or the **CLI client** (this project uses a notebook):
 
 ![inspect](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_inspect0.png)
 
 ![inspect](/images/blog/metaflow-mnist-walkthrough/metaflow_mnist_inspect1.png)
 
-So we covered understanding of Metaflow, its basic components, an example of a flow execution using the MNIST dataset, and inspecting data flow.
+The loop is: run → fail → inspect artifact at step N → fix → resume.
+
+## Design decisions
+
+**Python-native flows** — The DAG lives in code you can diff; no separate YAML graph file.
+
+**Branch/join for model comparison** — Two sklearn models in parallel, one `evaluate` step—cleaner than separate jobs.
+
+**Artifacts on `self`** — Explicit per-step state; the client reloads any step later.
+
+**IncludeFile for training data** — Pins data to the flow version; swap for S3 paths when data outgrows the repo.
+
+## Trade-offs
+
+| Pros | Cons |
+|---|---|
+| Fast path from notebook to resumable pipeline | Another runtime beside Airflow/Kubeflow |
+| Built-in artifact and run history | Heavy steps need cloud configuration |
+| Branch/join fits ML experimentation | Not a full feature store or model registry |
+| Hybrid local/cloud | Team sharing needs Metaflow Service + shared datastore |
+
+## When to reach for Metaflow
+
+Use Metaflow when the pipeline owner writes **Python**, you need **step-level resume and artifact inspection**, and workflows look like **train → evaluate → compare variants**. Prefer Airflow when coordinating **many services**, strict SLAs, and non-Python operators dominate. They can coexist: Airflow can trigger Metaflow on a schedule.
 
 ## References
 
 - [GitHub — mnist-with-metaflow](https://github.com/ayotomiwasalau/mnist-with-metaflow)
+- [Metaflow documentation](https://docs.metaflow.org/)
+- [Metaflow client API](https://docs.metaflow.org/metaflow/client)

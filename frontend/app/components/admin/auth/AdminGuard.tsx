@@ -4,11 +4,12 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import LoadingPage from "../../shared/LoadingPage";
 import { isAdminSessionValid, verifyAdminSession } from "@lib/adminAuth";
+import { pathnameWithoutTrailingSlash } from "@lib/pathname";
 
 const PUBLIC_ADMIN_PATHS = new Set(["/admin/login", "/admin/logout"]);
 
 function isPublicAdminPath(pathname: string): boolean {
-  return PUBLIC_ADMIN_PATHS.has(pathname);
+  return PUBLIC_ADMIN_PATHS.has(pathnameWithoutTrailingSlash(pathname));
 }
 
 export default function AdminGuard({
@@ -25,7 +26,10 @@ export default function AdminGuard({
 
     async function checkAccess() {
       if (isPublicAdminPath(pathname)) {
-        if (pathname === "/admin/login" && isAdminSessionValid()) {
+        if (
+          pathnameWithoutTrailingSlash(pathname) === "/admin/login" &&
+          isAdminSessionValid()
+        ) {
           const valid = await verifyAdminSession();
           if (cancelled) return;
           if (valid) {

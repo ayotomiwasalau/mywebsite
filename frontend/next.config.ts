@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  output: 'export', // Enable static export
-  distDir: 'out', // Optional: Custom output directory
+  output: "export",
+  distDir: "out",
+  trailingSlash: true,
   images: {
-    unoptimized: true, // <--- Disable built-in image optimization
-  }
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

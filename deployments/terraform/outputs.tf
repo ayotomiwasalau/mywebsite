@@ -33,14 +33,29 @@ output "lambda_function_name" {
   value       = aws_lambda_function.api.function_name
 }
 
-# output "cloudfront_distribution_id" {
-#   description = "CloudFront distribution ID for cache invalidations."
-#   value       = aws_cloudfront_distribution.web.id
-# }
+output "games_ecr_repository_url" {
+  description = "ECR repository URL for the games Lambda image."
+  value       = aws_ecr_repository.games.repository_url
+}
 
-# output "cloudfront_domain_name" {
-#   description = "CloudFront distribution domain name."
-#   value       = aws_cloudfront_distribution.web.domain_name
-# }
+output "games_lambda_image_uri" {
+  description = "Full ECR image URI used by the games Lambda."
+  value       = local.games_lambda_image_uri
+}
+
+output "games_lambda_function_name" {
+  description = "Games Lambda function name."
+  value       = aws_lambda_function.games.function_name
+}
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for cache invalidations."
+  value       = aws_cloudfront_distribution.web.id
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name."
+  value       = aws_cloudfront_distribution.web.domain_name
+}
 
 

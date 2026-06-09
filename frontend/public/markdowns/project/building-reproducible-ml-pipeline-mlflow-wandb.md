@@ -1,40 +1,40 @@
 ![](/images/project/building-reproducible-ml-pipeline-mlflow-wandb/wandb-pipeline-graph.png)
 
-A property company retrains a **rental price model weekly** as new listing data arrives. One-off notebooks do not scale — the team needed a **reusable ML pipeline** with experiment tracking, artifact lineage, and configurable steps.
+A property company retrains a **rental price model weekly** as new listing data arrives. One-off notebooks do not scale—the team needed a **reusable ML pipeline** with experiment tracking, artifact lineage, and configurable steps.
 
-## Problem
+[GitHub — Rental-ml-pipeline](https://github.com/ayotomiwasalau/Rental-ml-pipeline) · [Design rationale (blog)](/work/blogs/mlflow-and-wandb-tracking)
 
-Weekly bulk data drops require automated retraining with:
+## Context
 
-- **Modular steps** (download, clean, validate, split, train, test)
-- **Reproducible environments** and hyperparameter config
-- **Artifact and metric history** across runs for comparison
-- Ability to run **all steps or a subset** for debugging
+Weekly bulk data drops require automated retraining with modular stages, reproducible Conda environments, hyperparameter config that ops can override without code changes, and full artifact and metric history to compare runs and roll back bad weeks. Manual notebooks could not guarantee the same cleaning rules, test gates, or model export format week after week.
 
-## Solution
+## Approach
 
-MLflow-orchestrated pipeline with Weights & Biases ([GitHub — Rental-ml-pipeline](https://github.com/ayotomiwasalau/Rental-ml-pipeline)):
+MLflow orchestrates the steps; Weights & Biases tracks artifacts and lineage between stages. The pipeline is configured through Hydra and runnable end-to-end or step-by-step:
 
-1. **Hydra + `config.yaml`** — ETL bounds, model params, active step list
-2. **MLflow `run` per step** — each component is its own `MLproject` with conda env
-3. **W&B artifacts** — pass CSV and model artifacts between steps with lineage
-4. **Data checks** — pytest tests on geo bounds and KL divergence vs reference distribution
-5. **Cookiecutter template** — scaffold new pipeline components quickly
+1. **Conda bootstrap** — `conda env create -f environment.yml && conda activate nyc_airbnb_dev`; each step also defines its own `conda.yml` for MLflow isolation.
+2. **Hydra + `config.yaml`** — ETL price bounds, KL threshold, stratification column, RandomForest hyperparameters, and active step list.
+3. **MLflow `run` per step** — Parent project invokes child `MLproject` directories; partial runs via `-P steps=download,basic_cleaning`.
+4. **W&B artifacts** — CSV and model files pass between steps as versioned artifacts with lineage graphs.
+5. **Data checks** — pytest on geo bounds and neighbourhood distribution (KL divergence vs reference) before training.
+6. **Cookiecutter template** — `cookiecutter cookie-mlflow-step -o src` scaffolds new pipeline components.
 
 ![](/images/project/building-reproducible-ml-pipeline-mlflow-wandb/mlflow-runs.png)
 
 ## Architecture breakdown
 
+Each step is an isolated MLflow project with its own `conda.yml`; the parent run wires them together and passes W&B artifacts forward. Details below cover step responsibilities and run commands.
+
 ### Pipeline steps
 
 | Step | Purpose |
 |---|---|
-| `download` | Fetch sample CSV, log raw artifact |
-| `basic_cleaning` | Outlier/null removal, price bounds |
-| `data_check` | Distribution and boundary tests |
-| `data_split` | Train/val/test with stratification |
+| `download` | Fetch sample CSV, log raw W&B artifact |
+| `basic_cleaning` | Remove outliers/nulls, enforce min/max price |
+| `data_check` | Boundary and distribution tests vs reference |
+| `data_split` | Train/val/test split with stratification |
 | `train_random_forest` | TF-IDF + RandomForestRegressor, export model |
-| `test_regression_model` | Holdout evaluation (R², MAE) |
+| `test_regression_model` | Holdout evaluation (R², MAE) against prod-tagged model |
 
 ### Run commands
 
@@ -42,12 +42,12 @@ MLflow-orchestrated pipeline with Weights & Biases ([GitHub — Rental-ml-pipeli
 mlflow run .
 mlflow run . -P steps=download,basic_cleaning
 mlflow run . -P hydra_options="modeling.random_forest.n_estimators=10 etl.min_price=50"
+mlflow run src/eda   # optional EDA notebook step
 ```
 
-### Tracking
+### Tracking evidence
 
-- **W&B** — artifacts, metrics, feature importance plots, data lineage
-- **MLflow UI** — per-step run metadata and model exports
+W&B stores artifact lineage from raw CSV through model export; MLflow UI records per-step run metadata.
 
 ![](/images/project/building-reproducible-ml-pipeline-mlflow-wandb/train_data_lineage.png)
 
@@ -57,22 +57,30 @@ mlflow run . -P hydra_options="modeling.random_forest.n_estimators=10 etl.min_pr
 
 ## Tech stack
 
+MLflow supplies orchestration and run metadata; W&B owns artifact graphs; Hydra and Cookiecutter keep config and new steps maintainable without forking the parent project.
+
 | Layer | Tools |
 |---|---|
 | Orchestration | MLflow |
-| Tracking | Weights & Biases |
+| Tracking & artifacts | Weights & Biases |
 | Config | Hydra |
 | Model | scikit-learn (RandomForest + TF-IDF) |
-| Env | Conda (`environment.yml`) |
+| Environment | Conda (`environment.yml`, per-step `conda.yml`) |
 | Scaffolding | Cookiecutter MLflow step template |
+| Quality | pytest (data_check) |
 
 ## Impact
 
-- **Weekly retrain automation** with one command and overridable config
-- **Full artifact lineage** from raw CSV through exported model
-- **Quality gates** before training — geo bounds and distribution drift checks
+The repo is a template for weekly rental-price retraining with observable lineage—ops can rerun subsets, override hyperparameters, and audit what shipped each week.
+
+- **Weekly retrain automation** — one command, overridable config, subset runs for debugging
+- **Full artifact lineage** — raw CSV → cleaned data → splits → exported model, visible in W&B
+- **Quality gates** — geo and distribution checks fail fast before expensive training
+- **Extensible pipeline** — Cookiecutter and per-step `MLproject` layout simplify adding stages without rewriting orchestration
 
 ## Links
+
+Pipeline source and step templates live in the repository; the blog walks through MLflow and W&B setup in depth.
 
 - [GitHub — Rental-ml-pipeline](https://github.com/ayotomiwasalau/Rental-ml-pipeline)
 - [Blog — MLflow & W&B experiment tracking](/work/blogs/mlflow-and-wandb-tracking)

@@ -1,0 +1,696 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: #39ff14;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.35);
+  background: #000000;
+}
+
+a.logo {
+  color: #39ff14;
+  font-size: 0.72rem;
+  text-decoration: none;
+  text-shadow: 0 0 12px rgba(57, 255, 20, 0.8);
+  letter-spacing: 0.05em;
+}
+
+a.logo:hover {
+  color: #7dff5c;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #39ff14;
+  border: 1px solid rgba(57, 255, 20, 0.5);
+  padding: 8px 12px;
+  font-size: 0.55rem;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+}
+
+.menu li a:hover {
+  background: rgba(57, 255, 20, 0.12);
+  box-shadow: 0 0 14px rgba(57, 255, 20, 0.45);
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  padding: 18px 16px 28px;
+}
+
+.hero {
+  text-align: center;
+  margin: 8px 0 16px;
+}
+
+.hero h1 {
+  margin: 0 0 10px;
+  color: #39ff14;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-shadow: 0 0 16px rgba(57, 255, 20, 0.75);
+}
+
+.hero .subtitle {
+  margin: 0 auto;
+  color: #7dff5c;
+  max-width: 840px;
+  font-size: 0.55rem;
+  line-height: 1.8;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) 360px;
+  gap: 20px;
+}
+
+.game-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  aspect-ratio: 1 / 1;
+  min-height: 430px;
+  border: 2px solid rgba(57, 255, 20, 0.45);
+  box-shadow: 0 0 24px rgba(57, 255, 20, 0.15), inset 0 0 40px rgba(0, 0, 0, 0.8);
+  background: #000000;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000000;
+  touch-action: none;
+}
+
+.canvas-pause-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 0.45rem;
+  color: #ff4df5;
+  background: rgba(0, 0, 0, 0.82);
+  border: 2px solid rgba(255, 77, 245, 0.65);
+  text-shadow: 0 0 8px rgba(255, 77, 245, 0.5);
+}
+
+.canvas-pause-btn:hover:not(:disabled) {
+  box-shadow: 0 0 14px rgba(255, 77, 245, 0.45);
+}
+
+.canvas-pause-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.88);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.overlay-card {
+  width: min(450px, 94%);
+  background: #000000;
+  border-radius: 4px;
+  padding: 22px 18px;
+  text-align: center;
+  border: 2px solid rgba(57, 255, 20, 0.55);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.25);
+}
+
+.overlay-card h2 {
+  margin: 0 0 12px;
+  color: #39ff14;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  text-shadow: 0 0 12px rgba(57, 255, 20, 0.7);
+}
+
+.overlay-card p {
+  margin: 0 0 16px;
+  line-height: 1.9;
+  color: #7dff5c;
+  font-size: 0.5rem;
+}
+
+.game-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hud-item {
+  border-radius: 4px;
+  padding: 12px 14px;
+  background: #000000;
+  border: 1px solid rgba(57, 255, 20, 0.4);
+}
+
+.hud-item span {
+  display: block;
+  font-size: 0.45rem;
+  color: #5ce63d;
+}
+
+.hud-item strong {
+  color: #39ff14;
+  font-size: 0.55rem;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+}
+
+.info-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.story-card,
+.instructions,
+.level-guide,
+.button-grid-panel,
+.about-container {
+  background: #000000;
+  border: 1px solid rgba(57, 255, 20, 0.35);
+  border-radius: 4px;
+  padding: 14px 15px;
+}
+
+.story-card h2,
+.instructions h2,
+.level-guide h2,
+.button-grid-panel h2 {
+  margin: 0 0 8px;
+  color: #39ff14;
+  font-size: 0.6rem;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.story-card p,
+.instructions li,
+.level-guide li,
+.level-guide p,
+.about-section p {
+  color: #7dff5c;
+  margin: 0;
+  line-height: 1.9;
+  font-size: 0.5rem;
+}
+
+.instructions ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  grid-template-areas:
+    ". up ."
+    "left down right";
+}
+
+#upBtn {
+  grid-area: up;
+}
+
+#leftBtn {
+  grid-area: left;
+}
+
+#downBtn {
+  grid-area: down;
+}
+
+#rightBtn {
+  grid-area: right;
+}
+
+.game-button,
+.action-button,
+.secondary-button {
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 0.55rem;
+}
+
+.game-button {
+  background: #000000;
+  color: #00d4ff;
+  border: 2px solid rgba(0, 212, 255, 0.65);
+  min-height: 46px;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.game-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.5);
+}
+
+.action-button {
+  background: #000000;
+  color: #39ff14;
+  border: 2px solid rgba(57, 255, 20, 0.7);
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.7);
+}
+
+.secondary-button {
+  color: #ff4df5;
+  background: #000000;
+  border: 2px solid rgba(255, 77, 245, 0.6);
+  text-shadow: 0 0 8px rgba(255, 77, 245, 0.5);
+}
+
+.shoot {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.action-row-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.action-row-four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.level-guide ol {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.about-content {
+  display: grid;
+  gap: 10px;
+}
+
+.about-section {
+  background: #000000;
+  border-left: 3px solid #39ff14;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.about-section h2 {
+  margin: 0 0 6px;
+  color: #39ff14;
+  font-size: 0.6rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  text-decoration: none;
+}
+
+.card-body {
+  background: #000000;
+  border: 1px solid rgba(57, 255, 20, 0.4);
+  border-radius: 4px;
+  padding: 14px;
+}
+
+.card-body h3 {
+  margin: 0 0 6px;
+  color: #39ff14;
+  font-size: 0.6rem;
+}
+
+.card-body p {
+  margin: 0;
+  color: #7dff5c;
+  font-size: 0.5rem;
+  line-height: 1.8;
+}
+
+.leaderboard-panel {
+  background: #000000;
+  border: 1px solid rgba(57, 255, 20, 0.35);
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.leaderboard-table-wrap {
+  overflow-x: auto;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.45rem;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+}
+
+.leaderboard-table th {
+  color: #39ff14;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
+}
+
+.leaderboard-table td {
+  color: #7dff5c;
+}
+
+.leaderboard-table tr.rank-gold td:first-child {
+  color: #ffd400;
+}
+
+.leaderboard-table tr.rank-silver td:first-child {
+  color: #c0c0c0;
+}
+
+.leaderboard-table tr.rank-bronze td:first-child {
+  color: #cd7f32;
+}
+
+.leaderboard-empty p {
+  margin: 0;
+  color: #7dff5c;
+  font-size: 0.5rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.leaderboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.score-submit {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.score-submit[hidden] {
+  display: none !important;
+}
+
+.score-submit-status {
+  margin: 0;
+  font-size: 0.42rem;
+  line-height: 1.7;
+  color: #7dff5c;
+}
+
+.score-submit-status[hidden] {
+  display: none !important;
+}
+
+.score-submit-status.is-error {
+  color: #ff4df5;
+}
+
+.score-submit-status.is-success {
+  color: #39ff14;
+}
+
+.score-submit input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 2px solid rgba(57, 255, 20, 0.45);
+  background: #000000;
+  color: #39ff14;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 0.45rem;
+}
+
+.score-submit input::placeholder {
+  color: rgba(125, 255, 92, 0.55);
+}
+
+@media (min-width: 1025px) {
+  body:has(.game-layout) {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  body:has(.game-layout) header {
+    flex-shrink: 0;
+  }
+
+  body:has(.game-layout) .container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 10px 16px 14px;
+  }
+
+  body:has(.game-layout) .hero {
+    flex-shrink: 0;
+    margin: 0 0 10px;
+  }
+
+  body:has(.game-layout) .hero h1 {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+
+  body:has(.game-layout) .hero .subtitle {
+    font-size: 0.5rem;
+    line-height: 1.7;
+  }
+
+  body:has(.game-layout) .game-layout {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  body:has(.game-layout) .game-panel {
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  body:has(.game-layout) .canvas-wrap {
+    flex: 1;
+    min-height: 0;
+    aspect-ratio: unset;
+    min-height: unset;
+  }
+
+  body:has(.game-layout) .game-footer {
+    flex-shrink: 0;
+  }
+
+  body:has(.game-layout) .info-panel {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    align-content: start;
+  }
+}
+
+@media (max-width: 1024px) {
+  .game-grid {
+    grid-template-columns: 1fr;
+  }
+
+  html:has(.game-layout),
+  body:has(.game-layout) {
+    height: 100%;
+    height: 100svh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  body:has(.game-layout) header {
+    flex-shrink: 0;
+    position: static;
+    padding: 8px 12px;
+  }
+
+  body:has(.game-layout) .container {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    padding: 6px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  body:has(.game-layout) .hero {
+    flex-shrink: 0;
+    margin: 0 0 6px;
+  }
+
+  body:has(.game-layout) .hero h1 {
+    font-size: 0.58rem;
+    margin-bottom: 0;
+    line-height: 1.4;
+  }
+
+  body:has(.game-layout) .hero .subtitle {
+    display: none;
+  }
+
+  body:has(.game-layout) .game-layout {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  body:has(.game-layout) .game-panel {
+    flex: 4 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  body:has(.game-layout) .canvas-wrap {
+    flex: 1;
+    min-height: 0;
+    aspect-ratio: unset;
+    min-height: unset;
+    width: 100%;
+  }
+
+  body:has(.game-layout) .game-footer {
+    flex-shrink: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  body:has(.game-layout) .hud-item {
+    padding: 8px 10px;
+  }
+
+  body:has(.game-layout) .info-panel {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 740px) {
+  header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  body:has(.game-layout) header {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  body:has(.game-layout) .menu li a {
+    padding: 6px 8px;
+    font-size: 0.48rem;
+  }
+
+  body:has(.game-layout) .story-card,
+  body:has(.game-layout) .level-guide {
+    display: none;
+  }
+
+  body:has(.game-layout) .instructions,
+  body:has(.game-layout) .button-grid-panel,
+  body:has(.game-layout) .story-card,
+  body:has(.game-layout) .level-guide,
+  body:has(.game-layout) .about-container {
+    padding: 10px 12px;
+  }
+
+  body:has(.game-layout) .game-button {
+    min-height: 40px;
+  }
+
+  .action-row,
+  .action-row-three,
+  .action-row-four {
+    grid-template-columns: 1fr;
+  }
+}

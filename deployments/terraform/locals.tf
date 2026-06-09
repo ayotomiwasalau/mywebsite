@@ -7,9 +7,10 @@ locals {
     var.additional_domain_names,
   )
 
-  route53_zone_id    = var.route53_zone_id != null ? var.route53_zone_id : try(data.aws_route53_zone.selected[0].zone_id, null)
-  create_certificate = var.acm_certificate_arn == null
-  lambda_image_uri   = "${aws_ecr_repository.backend.repository_url}:${var.lambda_image_tag}"
+  route53_zone_id        = var.route53_zone_id != null ? var.route53_zone_id : try(data.aws_route53_zone.selected[0].zone_id, null)
+  create_certificate     = var.acm_certificate_arn == null
+  lambda_image_uri       = "${aws_ecr_repository.backend.repository_url}:${var.lambda_image_tag}"
+  games_lambda_image_uri = "${aws_ecr_repository.games.repository_url}:${var.games_lambda_image_tag}"
 
   common_lambda_environment = merge(
     {
@@ -22,6 +23,15 @@ locals {
       MARKDOWN_CDN_BASE_URL      = "https://${var.domain_name}"
       AWS_S3_MARKDOWN_KEY_PREFIX = var.uploads_key_prefix
     }
+  )
+
+  common_games_lambda_environment = merge(
+    {
+      API_VERSION      = var.api_version
+      DATABASE_BACKEND = "dynamodb"
+      APP_TABLE_NAME   = aws_dynamodb_table.app.name
+    },
+    var.games_lambda_environment_variables,
   )
 
   tags = {
