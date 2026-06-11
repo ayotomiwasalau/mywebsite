@@ -50,7 +50,7 @@ const HeroSection = () => {
             {...(reduceMotion ? {} : fadeUp(0))}
           >
             <p className="font-normal">
-              I design and build data and AI platforms businesses depend on:
+              I am a senior data engineer, I design and build data and AI platforms businesses depend on:
             </p>
             <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
               <li>pipelines that scale without breaking</li>

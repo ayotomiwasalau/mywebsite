@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Logo from '../components/Logo';
+import Logo from '../components/layout/Logo';
 
 test('logo', () => {
     render(<Logo />);
