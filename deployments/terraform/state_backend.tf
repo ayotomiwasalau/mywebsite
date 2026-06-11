@@ -1,10 +1,9 @@
 # Remote state bucket and lock table. Bootstrap once with local state, then migrate:
-#   terraform apply -target=aws_s3_bucket.terraform_state \
-#     -target=aws_s3_bucket_versioning.terraform_state \
-#     -target=aws_s3_bucket_server_side_encryption_configuration.terraform_state \
-#     -target=aws_s3_bucket_public_access_block.terraform_state \
-#     -target=aws_dynamodb_table.terraform_locks
-#   terraform init -migrate-state
+#   1) Comment out backend "s3" in versions.tf
+#   2) terraform init -reconfigure
+#   3) terraform apply -target=aws_s3_bucket.terraform_state ... -target=aws_dynamodb_table.terraform_locks
+#   4) Uncomment backend block
+#   5) terraform init -migrate-state
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "${local.name_prefix}-terraform-state"

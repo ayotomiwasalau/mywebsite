@@ -30,14 +30,24 @@ Terraform state is stored in S3 with DynamoDB locking (`state_backend.tf`). If y
 
 ```bash
 cd deployments/terraform
+
+# Step 1: temporarily disable the remote backend (chicken-and-egg: bucket does not exist yet).
+# Comment out the backend "s3" { ... } block in versions.tf, then:
+terraform init -reconfigure
+
+# Step 2: create the state bucket + lock table using local state
 terraform apply \
   -target=aws_s3_bucket.terraform_state \
   -target=aws_s3_bucket_versioning.terraform_state \
   -target=aws_s3_bucket_server_side_encryption_configuration.terraform_state \
   -target=aws_s3_bucket_public_access_block.terraform_state \
   -target=aws_dynamodb_table.terraform_locks
+
+# Step 3: restore the backend block in versions.tf, then migrate local state to S3
 terraform init -migrate-state
 ```
+
+`terraform init -backend=false` alone is not enough on current Terraform versions — `plan`/`apply` still require backend setup until step 3 completes.
 
 New environments: run the targeted apply above before the first full `terraform apply`.
 

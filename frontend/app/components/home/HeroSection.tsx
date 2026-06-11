@@ -46,19 +46,18 @@ const HeroSection = () => {
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-10">
         <div className="flex w-full max-w-2xl flex-col justify-center gap-6 text-[#2f3945] lg:min-h-0 lg:flex-1 lg:gap-8">
           <motion.p
-            className="text-lg leading-relaxed sm:text-xl md:text-2xl"
+            className="text-2xl leading-relaxed sm:text-2xl md:text-3xl"
             {...(reduceMotion ? {} : fadeUp(0))}
           >
-            I build <span className="font-bold">platforms</span> at scale —
-            production pipelines, analytics, streaming, data migration/warehousing and
-            applied AI & ML systems.
+            I build intelligence and automation platforms to help businesses with decision making and operations.
           </motion.p>
 
           <motion.p
-            className="text-xl font-semibold leading-snug text-[#2c3746] sm:text-xl md:text-2xl"
+            className="text-lg font-semibold leading-snug text-[#2c3746] sm:text-lg md:text-xl"
             {...(reduceMotion ? {} : fadeUp(0.12))}
           >
-            Real-time/Batch processing, Big data systems and Agentic workflows
+            real-time / batch data pipelines, analytics, streaming, applied AI, data migration, warehousing,
+            and agentic workflows
           </motion.p>
 
           <motion.div

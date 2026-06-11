@@ -14,13 +14,13 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
   TERRAFORM_DIR: deployments/terraform
   TF_VAR_project_name: ${{ secrets.TF_VAR_project_name || 'ayotom-web' }}
   TF_VAR_environment: ${{ secrets.TF_VAR_environment || 'prod' }}
-  TF_VAR_aws_region: ${{ secrets.AWS_REGION || 'us-east-1' }}
-  TF_VAR_domain_name: ${{ secrets.TF_VAR_domain_name }}
-  TF_VAR_hosted_zone_name: ${{ secrets.TF_VAR_hosted_zone_name }}
+  TF_VAR_aws_region: ${{ vars.AWS_REGION || 'us-east-1' }}
+  TF_VAR_domain_name: ${{ vars.TF_VAR_domain_name }}
+  TF_VAR_hosted_zone_name: ${{ vars.TF_VAR_hosted_zone_name }}
   TF_VAR_create_route53_records: ${{ secrets.TF_VAR_create_route53_records || 'true' }}
   TF_VAR_api_version: ${{ secrets.TF_VAR_api_version || 'v1' }}
   TF_VAR_lambda_environment_variables: ${{ secrets.TF_VAR_lambda_environment_variables }}

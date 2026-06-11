@@ -25,25 +25,30 @@ Four workflows under `.github/workflows/`:
 
 Deploy jobs run on **push to `main`** when matching paths change, or via **workflow_dispatch** on any branch.
 
+### Required GitHub Variables
+
+Configure under **Settings → Secrets and variables → Actions → Variables**:
+
+| Variable | Used by |
+|----------|---------|
+| `SITE_BUCKET_NAME` | Frontend deploy |
+| `CLOUDFRONT_DISTRIBUTION_ID` | Frontend deploy |
+| `NEXT_PUBLIC_API_BASE_URL` | Frontend build (e.g. `https://votenigeria.com`) |
+| `TF_VAR_domain_name` | Deployments plan/apply |
+| `TF_VAR_hosted_zone_name` | Deployments plan/apply |
+| `AWS_REGION` | All deploy jobs (optional, default `us-east-1`) |
+
+Optional variables: `NEXT_PUBLIC_API_VERSION`, `NEXT_PUBLIC_SITE_URL`, `TF_VAR_project_name`, `TF_VAR_environment`, `TF_VAR_api_version`, `TF_VAR_create_route53_records`.
+
 ### Required GitHub Secrets
 
 | Secret | Used by |
 |--------|---------|
 | `AWS_ACCESS_KEY_ID` | All deploy jobs |
 | `AWS_SECRET_ACCESS_KEY` | All deploy jobs |
-| `AWS_REGION` | All deploy jobs (optional, default `us-east-1`) |
-| `SITE_BUCKET_NAME` | Frontend deploy |
-| `CLOUDFRONT_DISTRIBUTION_ID` | Frontend deploy |
-| `NEXT_PUBLIC_API_BASE_URL` | Frontend build (e.g. `https://votenigeria.com`) |
-| `NEXT_PUBLIC_API_VERSION` | Frontend build (optional, default `v1`) |
-| `NEXT_PUBLIC_SITE_URL` | Frontend build (optional) |
-| `TF_VAR_domain_name` | Deployments plan/apply |
-| `TF_VAR_hosted_zone_name` | Deployments plan/apply |
 | `TF_VAR_lambda_environment_variables` | Deployments plan/apply (JSON map) |
 
-Optional Terraform overrides: `TF_VAR_project_name`, `TF_VAR_environment`, `TF_VAR_api_version`, `TF_VAR_create_route53_records`.
-
-Do **not** commit `terraform.tfvars` — copy from `deployments/terraform/terraform.tfvars.example` locally and mirror values into GitHub Secrets for CI.
+Do **not** commit `terraform.tfvars` — copy from `deployments/terraform/terraform.tfvars.example` locally and mirror sensitive values into GitHub Secrets; non-sensitive deploy config goes in GitHub Variables.
 
 ### IAM permissions (CI user)
 
@@ -55,7 +60,18 @@ Do **not** commit `terraform.tfvars` — copy from `deployments/terraform/terraf
 
 ### Remote state bootstrap (one-time)
 
-See [terraform/README.md](terraform/README.md#remote-state-bootstrap-one-time). Required before CI can run `terraform plan/apply`.
+See [terraform/README.md](terraform/README.md#remote-state-bootstrap-one-time). Summary:
+
+```bash
+cd deployments/terraform
+# Comment out backend "s3" in versions.tf, then:
+terraform init -reconfigure
+terraform apply -target=aws_s3_bucket.terraform_state ... -target=aws_dynamodb_table.terraform_locks
+# Uncomment backend block, then:
+terraform init -migrate-state
+```
+
+Required before CI can run `terraform plan/apply`.
 
 ## Local bootstrap
 
