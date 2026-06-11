@@ -21,7 +21,7 @@ const AboutHeroSection = () => {
           </p>
           <p className="font-light text-lg leading-normal text-[#333333] md:text-xl">
             Hello, I&apos;m Tomiwa, I have 8+ years experience owning data infrastructures and AI automations end to end for enterprise SaaS,
-            from architecture to observability across fintech, banking, insurance, education and professional services domains.
+            from architecture to observability across domains such as credit, payment, insurance, edtech and professional services.
             I care about what is simple, what ships on time and what survives in production.
             At core for me, its about value to users and stakeholders.
           </p>

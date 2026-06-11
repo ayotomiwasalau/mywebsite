@@ -6,7 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 const heroLinks = [
   { text: "Contact me", url: "/contact" },
-  { text: "Learn more about me", url: "/about" },
+  { text: "More about me", url: "/about" },
   { text: "Subscribe to my newsletter", url: "#subscription-form" },
   {
     text: "Request for proposal",
@@ -45,15 +45,22 @@ const HeroSection = () => {
 
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-10">
         <div className="flex w-full max-w-2xl flex-col justify-center gap-6 text-[#2f3945] lg:min-h-0 lg:flex-1 lg:gap-8">
-          <motion.p
-            className="text-2xl leading-relaxed sm:text-2xl md:text-3xl"
+          <motion.div
+            className="text-xl leading-relaxed sm:text-2xl md:text-2xl"
             {...(reduceMotion ? {} : fadeUp(0))}
           >
-            I build intelligence and automation platforms to help businesses with decision making and operations.
-          </motion.p>
+            <p className="font-normal">
+              I design and build data and AI platforms businesses depend on:
+            </p>
+            <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
+              <li>pipelines that scale without breaking</li>
+              <li>dashboards & metrics teams can actually trust</li>
+              <li>operations automated end to end with AI</li>
+            </ul>
+          </motion.div>
 
           <motion.p
-            className="text-lg font-semibold leading-snug text-[#2c3746] sm:text-lg md:text-xl"
+            className="text-lg font-bold leading-snug text-[#2c3746] sm:text-lg md:text-xl"
             {...(reduceMotion ? {} : fadeUp(0.12))}
           >
             real-time / batch data pipelines, analytics, streaming, applied AI, data migration, warehousing,
