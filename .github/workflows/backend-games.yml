@@ -41,7 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
-      TERRAFORM_DIR: deployments/terraform
+      ECR_REPOSITORY_NAME: ${{ vars.GAMES_ECR_REPOSITORY_NAME || 'ayotom-web-prod-games' }}
+      LAMBDA_FUNCTION_NAME: ${{ vars.GAMES_LAMBDA_FUNCTION_NAME || 'ayotom-web-prod-games' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,21 +53,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.0
-
-      - name: Terraform init
-        run: terraform -chdir="$TERRAFORM_DIR" init -input=false
-
       - name: Resolve ECR repository and next tag
         id: image
         run: |
-          REPO_URL="$(terraform -chdir="$TERRAFORM_DIR" output -raw games_ecr_repository_url)"
-          REPO_NAME="${REPO_URL##*/}"
-          IMAGE_TAG="$(bash .github/scripts/next-ecr-tag.sh "$REPO_NAME" "$AWS_REGION")"
+          REPO_URL="$(aws ecr describe-repositories \
+            --repository-names "$ECR_REPOSITORY_NAME" \
+            --query 'repositories[0].repositoryUri' \
+            --output text)"
+          IMAGE_TAG="$(bash .github/scripts/next-ecr-tag.sh "$ECR_REPOSITORY_NAME" "$AWS_REGION")"
           echo "repo_url=$REPO_URL" >> "$GITHUB_OUTPUT"
-          echo "repo_name=$REPO_NAME" >> "$GITHUB_OUTPUT"
           echo "tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
           echo "Deploying ${REPO_URL}:${IMAGE_TAG}"
 
@@ -87,18 +82,20 @@ jobs:
             .
           docker push "$IMAGE_URI"
 
-      - name: Update Lambda image tag
+      - name: Update Lambda function code
         run: |
-          terraform -chdir="$TERRAFORM_DIR" apply -auto-approve -input=false \
-            -var="games_lambda_image_tag=${{ steps.image.outputs.tag }}" \
-            -target=aws_lambda_function.games
+          aws lambda update-function-code \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --image-uri "${{ steps.image.outputs.repo_url }}:${{ steps.image.outputs.tag }}"
 
       - name: Verify Lambda image
         run: |
-          FUNCTION_NAME="$(terraform -chdir="$TERRAFORM_DIR" output -raw games_lambda_function_name)"
-          ACTUAL="$(aws lambda get-function --function-name "$FUNCTION_NAME" --query 'Code.ImageUri' --output text)"
+          ACTUAL="$(aws lambda get-function \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --query 'Code.ImageUri' \
+            --output text)"
           if [[ "$ACTUAL" != *":${{ steps.image.outputs.tag }}"* ]]; then
             echo "Expected tag ${{ steps.image.outputs.tag }} in $ACTUAL" >&2
             exit 1
           fi
-          echo "Verified $FUNCTION_NAME -> $ACTUAL"
+          echo "Verified $LAMBDA_FUNCTION_NAME -> $ACTUAL"

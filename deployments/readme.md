@@ -37,6 +37,10 @@ Configure under **Settings → Secrets and variables → Actions → Variables**
 | `TF_VAR_domain_name` | Deployments plan/apply |
 | `TF_VAR_hosted_zone_name` | Deployments plan/apply |
 | `AWS_REGION` | All deploy jobs (optional, default `us-east-1`) |
+| `BACKEND_ECR_REPOSITORY_NAME` | Backend deploy (optional, default `ayotom-web-prod-backend`) |
+| `BACKEND_LAMBDA_FUNCTION_NAME` | Backend deploy (optional, default `ayotom-web-prod-api`) |
+| `GAMES_ECR_REPOSITORY_NAME` | Games deploy (optional, default `ayotom-web-prod-games`) |
+| `GAMES_LAMBDA_FUNCTION_NAME` | Games deploy (optional, default `ayotom-web-prod-games`) |
 
 Optional variables: `NEXT_PUBLIC_API_VERSION`, `NEXT_PUBLIC_SITE_URL`, `TF_VAR_project_name`, `TF_VAR_environment`, `TF_VAR_api_version`, `TF_VAR_create_route53_records`.
 
@@ -52,11 +56,20 @@ Do **not** commit `terraform.tfvars` — copy from `deployments/terraform/terraf
 
 ### IAM permissions (CI user)
 
-- ECR: push/describe images
-- Lambda: update function code, get-function
+**Backend / games deploy** (`backend.yml`, `backend-games.yml`):
+
+- ECR: `GetAuthorizationToken`, push, `DescribeImages`, `DescribeRepositories`
+- Lambda: `GetFunction`, `UpdateFunctionCode` on `ayotom-web-prod-api` and `ayotom-web-prod-games`
+
+**Frontend deploy** (`frontend.yml`):
+
 - S3: sync to site bucket
 - CloudFront: create invalidation
-- Terraform-managed resources (full apply for deployments workflow)
+
+**Infrastructure** (`deployments.yml` only):
+
+- Terraform remote state (S3 + DynamoDB locks)
+- Full apply permissions for managed resources
 
 ### Remote state bootstrap (one-time)
 
