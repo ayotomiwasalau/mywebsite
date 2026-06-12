@@ -89,7 +89,6 @@ deployments/image-tags.env
 crash.log
 crash.*.log
 
-# Frontend public assets
-frontend/public/*
-!frontend/public/markdowns/
-!frontend/public/markdowns/**
+# Content images live in the uploads S3 bucket (served via CloudFront /images/*),
+# not in git. All other public assets are committed and deployed with the site.
+frontend/public/images/
