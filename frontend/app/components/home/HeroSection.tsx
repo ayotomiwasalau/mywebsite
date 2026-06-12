@@ -50,21 +50,33 @@ const HeroSection = () => {
             {...(reduceMotion ? {} : fadeUp(0))}
           >
             <p className="font-normal">
-              I am a senior data engineer, I design and build data and AI platforms businesses depend on:
+              I architect and build{" "}
+              <span className="font-bold">data and AI platforms</span> businesses depend on:
             </p>
             <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
-              <li>pipelines that scale without breaking</li>
-              <li>dashboards & metrics teams can actually trust</li>
-              <li>operations automated end to end with AI</li>
+              <li>
+                <span className="font-bold">pipelines</span> that{" "}
+                <span className="font-bold">scale</span> without breaking
+              </li>
+              <li>
+                <span className="font-bold">dashboards & reports</span> teams can actually{" "}
+                <span className="font-bold">trust</span>
+              </li>
+              <li>
+                
+                <span className="font-bold"> operations</span>{" "}
+                <span className="font-bold">automated</span> end to end with{" "}
+                <span className="font-bold">AI</span>
+              </li>
             </ul>
           </motion.div>
 
           <motion.p
-            className="text-lg font-bold leading-snug text-[#2c3746] sm:text-lg md:text-xl"
+            className="text-lg font-semibold leading-snug text-[#2c3746] sm:text-lg md:text-xl"
             {...(reduceMotion ? {} : fadeUp(0.12))}
           >
-            real-time / batch data pipelines, analytics, streaming, applied AI, data migration, warehousing,
-            and agentic workflows
+            real-time / batch pipelines - analytics - streaming - applied AI - data migration - warehousing -
+            agentic workflows
           </motion.p>
 
           <motion.div

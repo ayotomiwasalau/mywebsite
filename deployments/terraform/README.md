@@ -129,8 +129,8 @@ For CI/CD deployments, publish an immutable image tag and update `lambda_image_t
 - fastapi auth - done
 
 - notification (webhooks)
-- monitoring (uptime check)
-- implement cloudfront
+- monitoring (uptime check, telegram or slack)
+- implement cloudfront - done
 - g.analytics/seo
 
 - tests

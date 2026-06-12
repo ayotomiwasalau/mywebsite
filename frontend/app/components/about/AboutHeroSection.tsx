@@ -20,10 +20,24 @@ const AboutHeroSection = () => {
             Senior Data Engineer. Building platforms at scale.
           </p>
           <p className="font-light text-lg leading-normal text-[#333333] md:text-xl">
-            Hello, I&apos;m Tomiwa, I have 8+ years experience owning data infrastructures and AI automations end to end for enterprise SaaS,
-            from architecture to observability across domains such as credit, payment, insurance, edtech and professional services.
-            I care about what is simple, what ships on time and what survives in production.
-            At core for me, its about value to users and stakeholders.
+            Hello, I&apos;m Tomiwa. I have{" "}
+            <span className="font-bold">8+ years</span> experience owning{" "}
+            <span className="font-bold">data infrastructures</span> and{" "}
+            <span className="font-bold">AI automations</span>{" "}
+            <span className="font-bold">end to end</span> for{" "}
+            <span className="font-bold">enterprise SaaS</span>, from{" "}
+            <span className="font-bold">architecture to observability</span> across
+            domains such as <span className="font-bold">credit</span>,{" "}
+            <span className="font-bold">payment</span>,{" "}
+            <span className="font-bold">audit</span>,{" "}
+            <span className="font-bold">edtech</span>, {" "}
+            <span className="font-bold">professional services</span>. I care about what is{" "}
+            <span className="font-bold">simple</span>, what{" "}
+            <span className="font-bold">ships on time</span>, what{" "}
+            <span className="font-bold">saves cost</span> and what{" "}
+            <span className="font-bold">survives in production</span>. At core for
+            me, it&apos;s about{" "}
+            <span className="font-bold">value to users and stakeholders</span>.
           </p>
         </div>
       </div>

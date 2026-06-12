@@ -2,9 +2,10 @@ import { render, screen } from "@testing-library/react";
 import HeroSection from "../../components/home/HeroSection";
 
 describe("HeroSection", () => {
-  it("introduces the senior data engineer positioning", () => {
+  it("introduces the senior engineer positioning", () => {
     render(<HeroSection />);
-    expect(screen.getByText(/senior data engineer/i)).toBeInTheDocument();
+    expect(screen.getByText(/senior engineer/i)).toBeInTheDocument();
+    expect(screen.getByText(/data and AI platforms/i)).toBeInTheDocument();
   });
 
   it("lists the outcome bullets", () => {

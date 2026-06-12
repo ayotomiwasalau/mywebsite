@@ -17,7 +17,7 @@ const FooterCTA = () => {
   const primaryLabel = isContact ? "View my works" : "Contact me";
 
   const secondaryHref = isAbout ? "/work" : "/about";
-  const secondaryLabel = isAbout ? "View my works" : "Learn more";
+  const secondaryLabel = isAbout ? "View my works" : "More about me";
 
   return (
     <section className="w-full bg-white px-6 py-10">
