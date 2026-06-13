@@ -56,3 +56,5 @@ def pipeline_health(rows_processed: int, failures: int) -> float:
     return 1 - (failures / rows_processed)
 
 ![sample mailchimp ff](https://votenigeria.com/images/blog/test-blog-project-ayonz123/sample_mailchimp-ff.jpg)
+
+![sample mailchimp ff](https://votenigeria.com/images/blog/test-blog-project-ayonz123/sample_mailchimp-ff.jpg)
