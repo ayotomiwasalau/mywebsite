@@ -10,7 +10,7 @@ const ITEMS: WhatIdoItem[] = [
   },
   {
     title: "Cloud Architecture",
-    description: "AWS, GCP, scalable distributed systems",
+    description: "AWS, GCP, Azure scalable distributed systems",
     iconSrc: "/stacklogo/aboutme/wid_cloud.svg",
     variant: "salmon",
   },

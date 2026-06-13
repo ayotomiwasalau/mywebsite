@@ -15,8 +15,8 @@ def get_file_disk() -> FileDiskInterface:
     ``FILE_DISK_BACKEND`` controls image storage:
 
     - ``local`` (default): write under ``PUBLIC_ROOT`` or ``frontend/public``.
-    - ``s3``: use ``S3FileDisk`` for image uploads under
-      ``AWS_S3_MARKDOWN_KEY_PREFIX`` or ``PUBLIC_ROOT``.
+    - ``s3``: use ``S3FileDisk`` for image uploads. Keys are
+      ``{AWS_S3_MARKDOWN_KEY_PREFIX/}images/{blog|project}/<slug>/…`` (prefix optional).
 
     ``MARKDOWN_FILE_BACKEND`` controls markdown storage:
 
