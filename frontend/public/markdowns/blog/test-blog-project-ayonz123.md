@@ -4,7 +4,7 @@ slug: test-markdown-rendering
 description: A sample post to verify headings, lists, code, links, and images render correctly.
 tags: ["test", "markdown", "data-engineering"]
 ---
-![](/images/blog/test-blog-project-ayonz123/ 87fb75d8-cecc-44d8-889e-6718a8a9c872.png)
+![](/images/blog/test-blog-project-ayonz123/87fb75d8-cecc-44d8-889e-6718a8a9c872.png)
 # Test Post — Markdown Rendering Check
 
 This is a **smoke test** for the blog editor and renderer. If everything below looks correct, basic markdown support is working.
@@ -13,7 +13,7 @@ This is a **smoke test** for the blog editor and renderer. If everything below l
 
 ### H3 — Subsection
 #### H4 — Detail level
-![](/images/blog/test-blog-project-ayonz123/ sample_mailchimp-ff.jpeg)
+![](/images/blog/test-blog-project-ayonz123/sample_mailchimp-ff.jpeg)
 ---
 
 ## Text formatting
