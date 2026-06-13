@@ -56,7 +56,7 @@ const HeroSection = () => {
             <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
               <li>
                 <span className="font-bold">pipelines</span> that{" "}
-                <span className="font-bold">scale</span> without breaking
+                <span className="font-bold">cheaply scale</span> without breaking
               </li>
               <li>
                 <span className="font-bold">metric dashboards</span> teams can actually{" "}

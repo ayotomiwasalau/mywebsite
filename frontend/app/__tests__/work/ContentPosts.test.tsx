@@ -12,13 +12,19 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => mockSearchParams,
 }));
 
-function buildPost(id: string, slug: string, title: string, tag: string) {
+function buildPost(
+  id: string,
+  slug: string,
+  title: string,
+  tag: string,
+  createdOn = "2024-01-15T00:00:00Z"
+) {
   return {
     id,
     slug,
     title,
     header_img_url: `/images/${slug}/cover.jpg`,
-    created_on: "2024-01-15T00:00:00Z",
+    created_on: createdOn,
     tags: [tag],
     href: "",
     description: `${title} description`,
@@ -30,7 +36,15 @@ const PROJECTS = [
   buildPost("p2", "beta-warehouse", "Beta Warehouse", "snowflake"),
 ];
 
-const BLOGS = [buildPost("b1", "gamma-notes", "Gamma Notes", "spark")];
+const BLOGS = [
+  buildPost(
+    "b1",
+    "gamma-notes",
+    "Gamma Notes",
+    "spark",
+    "2025-06-01T00:00:00Z"
+  ),
+];
 
 function mockListFetch() {
   global.fetch = jest.fn((input: RequestInfo | URL) => {
@@ -45,6 +59,7 @@ function mockListFetch() {
 describe("ContentPosts", () => {
   beforeEach(() => {
     mockReplace.mockClear();
+    mockSearchParams.delete("type");
     mockListFetch();
   });
 
@@ -57,14 +72,38 @@ describe("ContentPosts", () => {
     expect(screen.getByRole("combobox", { name: /sort posts/i })).toBeInTheDocument();
   });
 
-  it("shows project cards by default", async () => {
+  it("defaults to the tab with the latest content", async () => {
+    render(<ContentPosts />);
+    expect(await screen.findByText("Gamma Notes")).toBeInTheDocument();
+    expect(screen.queryByText("Alpha Pipeline")).not.toBeInTheDocument();
+    expect(mockReplace).toHaveBeenCalledWith("/work?type=blog", {
+      scroll: false,
+    });
+  });
+
+  it("honours explicit ?type=project in the URL", async () => {
+    mockSearchParams.set("type", "project");
     render(<ContentPosts />);
     expect(await screen.findByText("Alpha Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("Beta Warehouse")).toBeInTheDocument();
     expect(screen.queryByText("Gamma Notes")).not.toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it("switches to projects when the Projects tab is clicked", async () => {
+    render(<ContentPosts />);
+    await screen.findByText("Gamma Notes");
+
+    fireEvent.click(screen.getByRole("tab", { name: "Projects" }));
+
+    expect(screen.getByText("Alpha Pipeline")).toBeInTheDocument();
+    expect(screen.queryByText("Gamma Notes")).not.toBeInTheDocument();
+    expect(mockReplace).toHaveBeenCalledWith("/work?type=project", {
+      scroll: false,
+    });
   });
 
   it("switches to blogs when the Blogs tab is clicked", async () => {
+    mockSearchParams.set("type", "project");
     render(<ContentPosts />);
     await screen.findByText("Alpha Pipeline");
 
@@ -78,6 +117,7 @@ describe("ContentPosts", () => {
   });
 
   it("filters cards by search term", async () => {
+    mockSearchParams.set("type", "project");
     render(<ContentPosts />);
     await screen.findByText("Alpha Pipeline");
 
@@ -90,6 +130,7 @@ describe("ContentPosts", () => {
   });
 
   it("shows an empty state when no posts match", async () => {
+    mockSearchParams.set("type", "project");
     render(<ContentPosts />);
     await screen.findByText("Alpha Pipeline");
 
@@ -103,6 +144,7 @@ describe("ContentPosts", () => {
   });
 
   it("offers topic tag filters built from post tags", async () => {
+    mockSearchParams.set("type", "project");
     render(<ContentPosts />);
     await screen.findByText("Alpha Pipeline");
 

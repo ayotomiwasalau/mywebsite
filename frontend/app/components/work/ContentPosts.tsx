@@ -48,8 +48,30 @@ function mapToCard(item: ApiWorkItem, kind: WorkTab): PostsSchema {
   };
 }
 
+function parseWorkTabParam(value: string | null): WorkTab | null {
+  if (value === "blog" || value === "project") return value;
+  return null;
+}
+
 function tabFromSearchParam(value: string | null): WorkTab {
-  return value === "blog" ? "blog" : "project";
+  return parseWorkTabParam(value) ?? "project";
+}
+
+function latestTimestamp(items: PostsSchema[]): number {
+  return items.reduce(
+    (max, item) => Math.max(max, new Date(item.timeAgo).getTime() || 0),
+    0
+  );
+}
+
+function defaultTabFromLatestContent(
+  projects: PostsSchema[],
+  blogs: PostsSchema[]
+): WorkTab {
+  const blogLatest = latestTimestamp(blogs);
+  const projectLatest = latestTimestamp(projects);
+  if (blogLatest === 0 && projectLatest === 0) return "project";
+  return blogLatest > projectLatest ? "blog" : "project";
 }
 
 const ContentPosts: React.FC = () => {
@@ -69,6 +91,7 @@ const ContentPosts: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
   const skipPageScrollRef = useRef(true);
+  const defaultTabAppliedRef = useRef(false);
 
   const scrollToPageTop = useCallback(() => {
     window.scrollTo({ top: 0, left: 0 });
@@ -116,6 +139,23 @@ const ContentPosts: React.FC = () => {
   useEffect(() => {
     setActiveTab(tabFromSearchParam(searchParams.get("type")));
   }, [searchParams]);
+
+  useEffect(() => {
+    if (isLoading || defaultTabAppliedRef.current) return;
+
+    const explicitType = parseWorkTabParam(searchParams.get("type"));
+    if (explicitType !== null) {
+      defaultTabAppliedRef.current = true;
+      return;
+    }
+
+    const tab = defaultTabFromLatestContent(projects, blogs);
+    defaultTabAppliedRef.current = true;
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("type", tab);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [isLoading, projects, blogs, pathname, router, searchParams]);
 
   useEffect(() => {
     setCurrentPage(1);
