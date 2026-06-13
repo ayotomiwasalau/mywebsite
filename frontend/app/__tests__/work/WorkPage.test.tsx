@@ -40,9 +40,8 @@ describe("Work page", () => {
     expect(
       screen.getByText(/let's build something scalable/i)
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /learn more/i })).toHaveAttribute(
-      "href",
-      "/about"
-    );
+    expect(
+      screen.getByRole("link", { name: /more about me/i })
+    ).toHaveAttribute("href", "/about");
   });
 });

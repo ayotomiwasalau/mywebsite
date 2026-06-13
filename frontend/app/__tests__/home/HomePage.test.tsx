@@ -31,7 +31,10 @@ describe("Home page", () => {
     expect(workLinks[0]).toHaveAttribute("href", "/work");
 
     // Sections
-    expect(screen.getByText(/senior engineer/i)).toBeInTheDocument();
+    expect(screen.getByText(/I architect and build/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/data and AI platforms/i).length).toBeGreaterThan(
+      0
+    );
     expect(
       screen.getByRole("heading", { name: "Featured Post" })
     ).toBeInTheDocument();
