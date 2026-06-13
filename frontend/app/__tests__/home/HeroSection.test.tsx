@@ -5,16 +5,16 @@ describe("HeroSection", () => {
   it("introduces the platform positioning", () => {
     render(<HeroSection />);
     expect(screen.getByText(/I architect and build/i)).toBeInTheDocument();
-    expect(screen.getByText(/data products and AI platforms/i)).toBeInTheDocument();
+    expect(screen.getByText(/data platforms and AI products/i)).toBeInTheDocument();
   });
 
   it("lists the outcome bullets", () => {
     render(<HeroSection />);
     const bullets = screen.getByRole("list");
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
-    expect(bullets).toHaveTextContent(/pipelines.*scale.*without breaking/i);
-    expect(bullets).toHaveTextContent(/metric dashboards.*trust/i);
-    expect(bullets).toHaveTextContent(/operations.*automated.*AI/i);
+    expect(bullets).toHaveTextContent(/data pipelines.*scale cheaply.*without breaking/i);
+    expect(bullets).toHaveTextContent(/AI-powered dashboards.*growth decisions/i);
+    expect(bullets).toHaveTextContent(/operations.*automated.*AI agents/i);
   });
 
   it("mentions the stack focus areas", () => {
