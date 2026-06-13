@@ -32,9 +32,9 @@ describe("Home page", () => {
 
     // Sections
     expect(screen.getByText(/I architect and build/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/data and AI platforms/i).length).toBeGreaterThan(
-      0
-    );
+    expect(
+      screen.getAllByText(/data products and AI platforms/i).length
+    ).toBeGreaterThan(0);
     expect(
       screen.getByRole("heading", { name: "Featured Post" })
     ).toBeInTheDocument();

@@ -51,7 +51,7 @@ const HeroSection = () => {
           >
             <p className="font-normal">
               I architect and build{" "}
-              <span className="font-bold">data and AI platforms</span> businesses depend on:
+              <span className="font-bold">data products and AI platforms</span> businesses depend on:
             </p>
             <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
               <li>
@@ -59,12 +59,11 @@ const HeroSection = () => {
                 <span className="font-bold">scale</span> without breaking
               </li>
               <li>
-                <span className="font-bold">dashboards & reports</span> teams can actually{" "}
+                <span className="font-bold">metric dashboards</span> teams can actually{" "}
                 <span className="font-bold">trust</span>
               </li>
               <li>
-                
-                <span className="font-bold"> operations</span>{" "}
+                <span className="font-bold">operations</span>{" "}
                 <span className="font-bold">automated</span> end to end with{" "}
                 <span className="font-bold">AI</span>
               </li>
