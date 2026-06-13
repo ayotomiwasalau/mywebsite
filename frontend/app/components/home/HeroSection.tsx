@@ -51,21 +51,21 @@ const HeroSection = () => {
           >
             <p className="font-normal">
               I architect and build{" "}
-              <span className="font-bold">data products and AI platforms</span> businesses depend on:
+              <span className="font-bold">data platforms and AI products</span> businesses depend on:
             </p>
             <ul className="mt-3 list-disc space-y-1 pl-6 sm:pl-8">
               <li>
-                <span className="font-bold">pipelines</span> that{" "}
-                <span className="font-bold">cheaply scale</span> without breaking
+                <span className="font-bold">data pipelines</span> that{" "}
+                <span className="font-bold">scale cheaply</span> without breaking
               </li>
               <li>
-                <span className="font-bold">metric dashboards</span> teams can actually{" "}
-                <span className="font-bold">trust</span>
+                 <span className="font-bold">AI-powered dashboards</span> that turn data into{" "}
+                <span className="font-bold">growth decisions</span>
               </li>
               <li>
                 <span className="font-bold">operations</span>{" "}
                 <span className="font-bold">automated</span> end to end with{" "}
-                <span className="font-bold">AI</span>
+                <span className="font-bold">AI agents</span>
               </li>
             </ul>
           </motion.div>
